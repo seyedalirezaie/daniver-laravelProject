@@ -572,6 +572,12 @@
 
                 <profile-header-component :user="{{$user}}"></profile-header-component>
 
+                @hasanyrole($allRoles)
+                <div class="mt-1">
+                    <a href="{{route('admin.home')}}" class="btn btn-sm btn-secondary">صفحه ی مدیریت</a>
+                </div>
+                @endhasanyrole
+
             @else
 
                 <div class="text-right p-2 mt-1">

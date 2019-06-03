@@ -37,9 +37,9 @@
     },
     "autoload": {
         "files":["app/Helpers/MakeSlugHelper.php",
-            "app/Helpers/Slugify.php",
             "app/Helpers/CreateThumbnail.php",
             "app/Helpers/CreateThumbnail2.php",
+            "app/Helpers/GetAllChildrenIds.php",
             "app/Helpers/NumberFaToEn.php"
         ],
         "psr-4": {

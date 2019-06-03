@@ -68,6 +68,7 @@ Vue.component('panel-component', require('./components/PanelComponent.vue').defa
 /*admin*/
 Vue.component('create-post-component', require('./components/AdminCreatePost.vue').default);
 Vue.component('admin-users-component', require('./components/AdminUsers.vue').default);
+Vue.component('blog-category-component', require('./components/BlogCategoryComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

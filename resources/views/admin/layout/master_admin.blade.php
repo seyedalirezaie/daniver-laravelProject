@@ -388,7 +388,10 @@
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href=""><i class="fa fa-circle-o"></i>لیست دسته بندی ها</a></li>
+                        <li><a href=""><i class="fa fa-circle-o"></i>وبلاگ</a></li>
+                        <li><a href=""><i class="fa fa-circle-o"></i>درس و بحث</a></li>
+                        <li><a href=""><i class="fa fa-circle-o"></i>خوابگاه ها</a></li>
+                        <li><a href=""><i class="fa fa-circle-o"></i>هم کلاسی ها</a></li>
                     </ul>
                 </li>
 
@@ -650,6 +653,8 @@
 </div>
 <!-- ./wrapper -->
 
+@yield('scripts')
+
 <!-- jQuery 2.2.0 -->
 <script src="/admin/plugins/jQuery/jQuery-2.2.0.min.js"></script>
 <!-- jQuery UI 1.11.4 -->
@@ -688,7 +693,7 @@
 <!-- AdminLTE for demo purposes -->
 <script src="/admin/dist/js/demo.js"></script>
 
-@yield('scripts')
+
 
 </body>
 </html>

@@ -1,3 +1,5 @@
+.gitignore
+
 /node_modules
 /public/hot
 /public/storage
@@ -6,8 +8,6 @@
 /public/svg
 /public/admin
 /public/css
-/public/frontend
-!/public/frontend/css
 /public/js
 /storage/*.key
 /vendor

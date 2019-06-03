@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Spatie\Permission\Models\Role;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,8 +33,9 @@ class AppServiceProvider extends ServiceProvider
             $majors = Category::with('childrenRecursive')->whereSort('major')->where('parent_id' , 1)->get();
             $dorms = Category::whereSort('dorm')->where('parent_id' , 2)->get();
             $user = User::with('photo')->whereId(Auth::id())->first();
+            $allRoles = Role::pluck('name')->toArray();
 
-            $view->with(['majors' => $majors , 'dorms' => $dorms , 'user' => $user]);
+            $view->with(['majors' => $majors , 'dorms' => $dorms , 'user' => $user , 'allRoles' => $allRoles]);
         });
     }
 }

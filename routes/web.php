@@ -18,18 +18,24 @@
 
 /**admin**/
 
-Route::group(['middleware' => 'verified'] , function () {
-    Route::get('/administrator', 'Admin\MainController@index');
-    Route::get('/administrator/blog/create', 'Admin\PostController@create')->name('blog.post.create');/*->middleware('role:master-admin');*/
-    Route::post('/api/administrator/blog/store', 'Admin\PostController@store');
-    Route::post('api/administrator/post/upload', 'Admin\PhotoController@apiPostImage');
 
-    Route::resource('/administrator/roles', 'Admin\RoleController');
-    Route::resource('/administrator/permissions', 'Admin\PermissionController');
-    Route::get('/administrator/users', 'Admin\UserController@index');
-    Route::get('/api/administrator/users/{query?}/{items?}', 'Admin\UserController@users');
-    Route::get('/administrator/user/{userId}/permissions', 'Admin\UserController@permissions');
-    Route::post('/administrator/store/user/{userId}', 'Admin\UserController@storePermissions')->name('user.store');
+Route::group(['middleware' =>  ['verified' , 'permission:enter-admin-panel']] , function () {
+    Route::group(['prefix' => 'administrator'] , function () {
+        Route::get('/', 'Admin\MainController@index')->name('admin.home');
+        Route::get('/blog/create', 'Admin\PostController@create')->name('blog.post.create');/*->middleware('role:master-admin');*/
+        Route::resource('/roles', 'Admin\RoleController');
+        Route::resource('/permissions', 'Admin\PermissionController');
+        Route::get('/users', 'Admin\UserController@index');
+        Route::get('/user/{userId}/permissions', 'Admin\UserController@permissions');
+        Route::post('/store/user/{userId}', 'Admin\UserController@storePermissions')->name('user.store');
+        Route::get('/categories/blog', 'Admin\CategoryController@blogCategories')->name('categories.blog');
+        Route::get('/api/categories/{type}', 'Admin\CategoryController@getCategories');
+        Route::post('/api/categories/delete', 'Admin\CategoryController@deleteCategories');
+    });
+        Route::post('/api/administrator/blog/store', 'Admin\PostController@store');
+        Route::post('api/administrator/post/upload', 'Admin\PhotoController@apiPostImage');
+        Route::get('/api/administrator/users/{query?}/{items?}', 'Admin\UserController@users');
+
 });
 /**end admin**/
 

@@ -1,6 +1,6 @@
 <?php
 
-define('MYCONST', array("someValue1","someValue2"));
+define('CONST_URL', 'http://localhost:8000/');
 
 class Constants
 {
