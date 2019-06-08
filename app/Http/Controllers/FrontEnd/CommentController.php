@@ -23,9 +23,10 @@ class CommentController extends Controller
         $comment = new Comment();
         $comment->user_id = $userId;
         $comment->description = $commentText;
-        if (isset($request->parentId) && empty($request->parentId)){
-            $comment->parentId = $request->parentId;
+        if (isset($request->parent_id) && empty($request->parentId)){
+            $comment->parent_id = $request->parent_id;
         }
+
         $post->comments()->save($comment);
 
     }

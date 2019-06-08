@@ -65,6 +65,7 @@ Vue.component('profile-header-component', require('./components/ProfileHeaderCom
 Vue.component('friends-list-component', require('./components/FriendsListComponent.vue').default);
 Vue.component('blog-posts-component', require('./components/BlogPostsComponent.vue').default);
 Vue.component('panel-component', require('./components/PanelComponent.vue').default);
+Vue.component('blog-post-content-show-component', require('./components/BlogPostContentShowComponent.vue').default);
 /*admin*/
 Vue.component('create-post-component', require('./components/AdminCreatePost.vue').default);
 Vue.component('admin-users-component', require('./components/AdminUsers.vue').default);

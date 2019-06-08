@@ -63,79 +63,23 @@ class UserController extends Controller
             ->get();
     }
 
-    public function search(Request $request)
+    public function getUsers($searchQuery='')
     {
-        if($request->has('search')){
-            $users = User::search($request->get('search'))->get();
-        }else{
-            $users = User::get();
-        }
-        return view('index', compact('users'));
-    }
-
-    public function initNotifications()
-    {
-
-        /*
-        1 - unread comments
-        2 - unread messages
-        3 - unread friend requests
-        4 - unread mentions
-        */
-
-        /*1 - on post comments*/
-        $posts = Post::whereHas('user' , function ($q){
-            $q->where('user_id' , Auth::id());
-        })->pluck('id');
-
-        $commentsByPost = Comment::with('child')->whereIn('commentable_id' , $posts)->get();
-        $seens = Seen::whereIn('seenable_id' , $commentsByPost->pluck('id'))->pluck('seenable_id');
-
-        foreach ($seens as $seen){
-            foreach ($commentsByPost as $key => $comment){
-                if ($comment->id == $seen){
-                    unset($commentsByPost[$key]);
-                }
-            }
-        }
-
-        /*1 - on comment answer comments*/
-        $commentAnswers = Comment::with('child')->where('user_id' , Auth::id())->get();
-
-        foreach ($commentAnswers as $comment){
-            foreach ($comment->child() as $child)
-            if ($child->parent_id == $child->id){
-                array_push($commentsByPost , $comment);
-            }
-        }
-
-        return $commentsByPost;
-
-
-
-        $comments = [];
-
-
-
-        $mentions = Mention::with('mentionable' , 'user.photo')->where('user_id' , Auth::id())->whereSeen(0)->get();
-        $friendAnswers = Friend::with('sender.photo')->where('receiver_id' , Auth::id())->where('accepted' , '!=' ,0)->whereSeen(0)->get();
-
-        $notifications = array_merge($comments , $mentions->toArray() , $friendAnswers->toArray());
-        $notifications = collect($notifications);
-
-        $sortedNotification = $notifications->sortByDesc(function ($element) {
-            return $element['created_at'];
-        })->values()->all();
-
-        $messages = Message::with('sender.photo')->where('receiver_id' , Auth::id())->whereSeen(0)->get();
-        $friendRequests = Friend::with('sender.photo')->where('receiver_id' , Auth::id())->where('accepted' , 0)->whereSeen(0)->get();
+        $users = User::with('photo' , 'categories')
+            ->where('active' , 1)
+            ->where('email_verified_at' , '!=' , null)
+            ->where('visible' , 1)
+            ->when($searchQuery != '' , function ($q) use($searchQuery){
+            $q->where(\DB::raw('concat(name, " ", last_name)'), 'LIKE', "%{$searchQuery}%")->orWhere('alias_original' , 'like' , "%".$searchQuery."%")
+                ->where('email_verified_at' , '!=' , null);
+        })
+            ->orderBy('id' , 'DESC')->paginate(15);
 
         $response = [
-            'notifications' => $sortedNotification,
-            'messages' => $messages,
-            'friendRequests' => $friendRequests,
+            'users' => $users
         ];
-
         return response()->json($response , 200);
     }
+
+
 }

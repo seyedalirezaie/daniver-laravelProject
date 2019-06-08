@@ -15,10 +15,7 @@
     return view('welcome');
 });*/
 
-
 /**admin**/
-
-
 Route::group(['middleware' =>  ['verified' , 'permission:enter-admin-panel']] , function () {
     Route::group(['prefix' => 'administrator'] , function () {
         Route::get('/', 'Admin\MainController@index')->name('admin.home');
@@ -42,66 +39,71 @@ Route::group(['middleware' =>  ['verified' , 'permission:enter-admin-panel']] , 
 
 /**home**/
 Route::get('/' , 'FrontEnd\HomeController@index');
-Route::get('/api/blog/posts/{searchQuery?}' , 'FrontEnd\PostController@apiBlogPosts');
-
+Route::get('/api/blog/posts/{searchQuery?}' , 'FrontEnd\BlogPostController@apiBlogPosts');
 /**study**/
 Route::get('study' , 'FrontEnd\StudyController@index')->name('study');
 Route::get('study/college/{slug}' , 'FrontEnd\StudyController@college')->name('study.college');
 Route::get('study/posts/{categoryId}/{postSlug?}' , 'FrontEnd\StudyController@posts')->name('study.posts');
 Route::post('study/photoUpload' , 'FrontEnd\PhotoController@postPhotoUpload');
-/*api*/
 Route::get('api/tags' , 'FrontEnd\TagController@apiTags');
-/*api*/
-
-/*api*/
-Route::get('api/posts/{slug}/{query?}/{searchType?}/{timeFilter}/{otherFilters}/{orderFilter}/{searchTag}/{items?}' , 'FrontEnd\PostController@apiPosts');
+Route::get('api/posts/{slug}/{query?}/{searchType?}/{timeFilter}/{otherFilters}/{orderFilter}/{searchTag?}/{items?}' , 'FrontEnd\PostController@apiPosts');
 Route::get('api/post/{postId}' , 'FrontEnd\PostController@apiSelectPost');
 Route::get('api/postBySlug/{postSlug}/{postItems}' , 'FrontEnd\PostController@apiSelectPostBySlug');
-/*api*/
 Route::post('api/upload/post' , 'FrontEnd\PhotoController@apiPostImage');
 
 /**register**/
-/*api*/
 Route::get('api/register/initial' , 'Auth\RegisterController@initialize');
 Route::get('api/register/getCities/{provinceId}' , 'Auth\RegisterController@getCities');
 Route::get('api/register/getSubCities/{cityId}' , 'Auth\RegisterController@getSubCities');
 Route::post('register' , 'Auth\RegisterController@create');
 Route::post('api/upload' , 'FrontEnd\PhotoController@apiProfileImage');
 
-
 /**users**/
 Route::get('users' , 'FrontEnd\UserController@index');
 /*profile*/
 Route::get('profile/{alias}' , 'FrontEnd\ProfileController@profile');
-Route::get('api/getUsers/{searchQuery?}' , 'FrontEnd\ProfileController@getUsers');
+Route::get('api/getUsers/{searchQuery?}' , 'FrontEnd\UserController@getUsers');
 Route::post('api/profile/checkFriendShip' , 'FrontEnd\FriendController@checkFriendShip');
 /*friend*/
 Route::get('api/getFriends/{userId}/{searchQuery?}' , 'FrontEnd\FriendController@getFriends');
 Route::post('api/friends/friendRequest' , 'FrontEnd\FriendController@friendRequest');
 Route::post('api/profile/acceptFriendShip' , 'FrontEnd\FriendController@acceptFriendShip');
 
-/**panel**/
-Route::get('panel/{userId}' , 'FrontEnd\PanelController@index');
-Route::post('api/friends/cancelFriendShip' , 'FrontEnd\FriendController@cancelFriendShip');
+/*blog*/
+Route::get('blog/posts/{categorySlug}/{postSlug}' , 'FrontEnd\BlogPostController@post');
 
 
-/*api check auth*/
+/*check auth*/
 Route::post('api/checkAuth' , 'FrontEnd\UserController@apiCheckAuth');
-/*api check category*/
+/*check category*/
 Route::get('api/checkCategory/{categoryId}' , 'FrontEnd\UserController@apiCheckCategory');
+Route::post('api/hasLike' , 'FrontEnd\LikeController@apihasLike');
 
 
-Route::group(['middleware' => 'auth' , 'verified'] , function (){
+Route::group(['middleware' => ['auth']] , function (){
+    /*panel*/
+    Route::get('panel' , 'FrontEnd\PanelController@index');
+    Route::get('api/notifications/init' , 'FrontEnd\PanelController@initNotifications');
+
+});
+
+
+Route::group(['middleware' => ['auth' , 'verified']] , function (){
     Route::post('api/doLike' , 'FrontEnd\LikeController@apiDoLike');
-    Route::post('api/hasLike' , 'FrontEnd\LikeController@apihasLike');
     /*last seen*/
     Route::post('api/lastSeen' , 'FrontEnd\UserController@apiSetLastSeen');
     /*post comment*/
     Route::post('api/postComment' , 'FrontEnd\CommentController@apiPostComment');
-
-    Route::get('api/notifications/init' , 'FrontEnd\UserController@initNotifications');
     /*post store*/
     Route::post('api/storePost' , 'FrontEnd\PostController@apiPostStore');
+
+
+
+    /**panel**/
+
+    Route::post('api/friends/cancelFriendShip' , 'FrontEnd\FriendController@cancelFriendShip');
+    Route::post('/api/notifications/read' , 'FrontEnd\PanelController@readNotifications');
+    Route::post('/api/status/change' , 'FrontEnd\PanelController@changeStatusNow');
 });
 
 

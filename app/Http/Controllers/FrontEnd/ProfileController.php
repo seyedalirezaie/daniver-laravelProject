@@ -69,25 +69,4 @@ class ProfileController extends Controller
 
         return view('frontend.profile.index' , compact(['user' , 'posts' , 'sortedActions' , 'birthday' , 'receivedLikes' , 'receivedComments' , 'friendShipStatus']));
     }
-
-    public function getUsers($searchQuery='')
-    {
-
-
-            $users = User::with('photo' , 'categories')->
-            when($searchQuery != '' , function ($q) use($searchQuery){
-                $q->where(\DB::raw('concat(name, " ", last_name)'), 'LIKE', "%{$searchQuery}%")->orWhere('alias_original' , 'like' , "%".$searchQuery."%");
-
-            })
-                ->orderBy('id' , 'DESC')->paginate(15);
-
-
-            $response = [
-                'users' => $users
-            ];
-            return response()->json($response , 200);
-
-
-
-    }
 }

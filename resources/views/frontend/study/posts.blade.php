@@ -2,6 +2,7 @@
 
 @section('styles')
     <link rel="stylesheet" href="https://unpkg.com/vue2-animate/dist/vue2-animate.min.css"/>
+    <link rel="stylesheet" href="/js/emojionearea-master/dist/emojionearea.min.css">
 @endsection
 
 @section('content')
@@ -21,16 +22,16 @@
 @endsection
 
 @section('scripts')
-    <script src="{{asset('/js/app.js')}}"></script>
+    <script src="{{asset('/js/emojionearea-master/dist/emojionearea.min.js')}}"></script>
     <script src="{{asset('/js/ckeditor/ckeditor.js')}}"></script>
     <script src="/js/ckeditor/translations/fa.js"></script>
 
     <script>
         $(document).on('click', '.btn-comment-circle', function () {
-
             $('.text-comment').parent().addClass('is-focused');
+        });
 
-        })
+
 
         $(document).on('click', '.btn-insert-post', function () {
 
@@ -38,20 +39,32 @@
             $('#editor img').each(function () {
                 var imageSRC = $(this).attr('src');
                 srcArray.push(imageSRC);
-            })
+            });
             $('.photos-path').val(srcArray);
-        })
+        });
+
+        $(document).ready(function () {
+            setTimeout(function () {
+                $(".emoji-editor").emojioneArea({
+                    attributes: {
+                        dir: "rtl",
+                    }
+                });
+            },4000);
+        });
 
 
 
 
 
 
-
-
-
-
+   /*     $(document).ready(function () {
+            setTimeout(function () {
+                CKEDITOR.replace( 'editor1' );
+            },4000)
+        })*/
 
 
     </script>
+    <script src="{{asset('/js/app.js')}}"></script>
 @endsection

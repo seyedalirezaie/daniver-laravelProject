@@ -64,13 +64,6 @@
     export default {
         data(){
             return{
-                /*value: { title: 'Explorer', desc: 'Discovering new species!', img: '/frontend/static/posters/creatures.png' },
-                options: [
-                    { title: 'Space Pirate', desc: 'More space battles!', img: '/frontend/static/posters/fleet.png' },
-                    { title: 'Merchant', desc: 'PROFIT!', img: '/frontend/static/posters/trading_post.png' },
-                    { title: 'Explorer', desc: 'Discovering new species!', img: '/frontend/static/posters/creatures.png' },
-                    { title: 'Miner', desc: 'We need to go deeper!', img: '/frontend/static/posters/resource_lab.png' }
-                ],*/
                 users: [],
                 showItemsNumber: 10,
                 flag_showLoader: false,
@@ -113,10 +106,6 @@
         },
 
         methods: {
-
-            /*customLabel ({ title, desc }) {
-                return `${title} – ${desc}`
-            },*/
 
             getUsers:function(n){
                 this.currentPage = n;

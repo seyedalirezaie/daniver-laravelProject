@@ -20,4 +20,18 @@ class Message extends Model
     {
         return $this->morphMany(Seen::class , 'seenable');
     }
+
+    protected $appends=['full_date' , 'message'];
+
+    public function getFullDateAttribute()
+    {
+        $v = verta($this->created_at);
+        return $v->format('Y-n-j ساعت H:i');
+    }
+
+    public function getMessageAttribute()
+    {
+        return '';
+    }
+
 }

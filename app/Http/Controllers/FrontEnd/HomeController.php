@@ -62,6 +62,9 @@ class HomeController extends Controller
         $newestUsers = User
             ::with('photo')
             ->orderBy('id' , 'DESC')
+            ->where('active' , 1)
+            ->where('email_verified_at' , '!=' , null)
+            ->where('visible' , 1)
             ->take(25)
             ->get();
 

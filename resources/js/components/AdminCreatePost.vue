@@ -56,7 +56,8 @@
 
                                         <div class="form-group">
                                             <label>متن پیش نمایش</label>
-                                            <textarea name="description_preview" class="form-control" v-model="description_preview"></textarea>
+                                            <textarea @keyup="remaincharCount(description_preview , maxcharacterPreview , 'preview')" name="description_preview" class="form-control" v-model="description_preview"></textarea>
+                                            <span>{{remaincharactersPreview}}</span>
                                         </div>
 
 
@@ -74,8 +75,8 @@
                                                     :accept="'image/*'"
                                                     :file-size-limit="0"
                                                     :prevent-white-space="true"
-                                                    :width="400"
-                                                    :height="280"
+                                                    :width="600"
+                                                    :height="420"
                                                     :quality="1.2">
                                                 ></croppa>
 
@@ -245,7 +246,9 @@
                 /*end croppa*/
                 v_status: 1,
                 v_commentable: 1,
-                description_preview: ''
+                description_preview: '',
+                remaincharactersPreview: '',
+                maxcharacterPreview: 255
             }
         },
         components: {
@@ -383,6 +386,25 @@
                 },2500);
 
             },
+
+            remaincharCount: function(context , limit , type){
+
+                if(context.length > limit){
+                    if (type === 'preview') {
+                        var remainCharacters = limit - context.length;
+                        this.remaincharactersPreview = remainCharacters + " کاراکتر بیش از حد مجاز.";
+                    }
+
+                }else{
+                    if (type === 'preview') {
+                        var remainCharacters = limit - context.length;
+                        this.remaincharactersPreview = remainCharacters + " کاراکتر باقی مانده.";
+                    }
+
+
+                }
+
+            }
 
 
 

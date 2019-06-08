@@ -34,14 +34,20 @@ class Comment extends Model
 
     public function child()
     {
-        return $this->replies()->with('child' , 'child.user');
+        return $this->replies()->with('child' , 'child.user' , 'child.likes')->withCount(['likes']);
     }
 
-    protected $appends = ['date' , 'liked'];
+    protected $appends = ['date' , 'liked' , 'full_date'];
 
     public function getDateAttribute()
     {
         return \Hekmatinasser\Verta\Verta::instance($this->created_at)->formatDifference();
+    }
+
+    public function getFullDateAttribute()
+    {
+        $v = verta($this->created_at);
+        return $v->format('Y-n-j ساعت H:i');
     }
 
     public function getLikedAttribute()

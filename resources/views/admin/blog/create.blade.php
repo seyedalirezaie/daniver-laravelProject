@@ -27,7 +27,8 @@
 
 @section('scripts')
 <script src="{{asset('/js/app.js')}}"></script>
-<script src="{{asset('/js/ckeditor.js')}}"></script>
+<script src="{{asset('/js/ckeditor/ckeditor.js')}}"></script>
+<script src="/js/ckeditor/translations/fa.js"></script>
 
 <script>
 $(document).on('click', '.btn-insert-post', function () {

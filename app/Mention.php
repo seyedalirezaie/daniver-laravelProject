@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Mention extends Model
 {
+
     public function mentionable()
     {
         return $this->morphTo();
@@ -21,8 +22,16 @@ class Mention extends Model
         return $this->morphMany(Seen::class , 'seenable');
     }
 
-    public function getCreatedAtAttribute($value)
+    protected $appends = ['date' , 'full_date'];
+
+    public function getDateAttribute()
     {
-        return \Hekmatinasser\Verta\Verta::instance($value)->formatDifference();
+        return \Hekmatinasser\Verta\Verta::instance($this->created_at)->formatDifference();
+    }
+
+    public function getFullDateAttribute()
+    {
+        $v = verta($this->created_at);
+        return $v->format('Y-n-j ساعت H:i');
     }
 }

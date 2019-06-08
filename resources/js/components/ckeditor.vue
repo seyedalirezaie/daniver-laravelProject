@@ -15,17 +15,10 @@
 
 <script>
 
-
-
-
-
     export default {
         mounted() {
-
                 this.$nextTick(function() {
-
                     $(document).ready(function () {
-
 
                         DecoupledEditor
                             .create( document.querySelector( '.document-editor__editable' ) , {
@@ -43,12 +36,6 @@
 
                                 editor.config.get( 'image.toolbar' );
 
-                                editor.on('change',function(){
-                                    alert();
-                                });
-
-
-
                                 $('.btn-insert-post').click(function () {
                                     const contentData = editor.getData();
                                     $('.content-data').val(contentData);
@@ -60,18 +47,14 @@
                             } );
 
 
-
                         class UploadAdapter {
                             constructor(loader) {
                                 this.loader = loader;
                             }
-
                             upload() {
                                 return this.loader.file
                                     .then( uploadedFile => {
                                         return new Promise((resolve, reject) => {
-
-
 
                                             const data = new FormData();
                                             /*data.append("_token", "{{csrf_token()}}");*/
@@ -105,25 +88,16 @@
                                                     } else {
                                                         reject(data.msg);
                                                     }
-
                                                 }
                                             });
-
                                         });
                                     })
                             }
                             abort() {
                             }
-
                         }
-
                     })
-
-
-                    })
-
-
+                })
             }
-
     }
 </script>

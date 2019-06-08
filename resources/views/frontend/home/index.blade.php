@@ -20,7 +20,7 @@
 
             <a href="{{route('study')}}" class="crumina-module crumina-info-box p-5" data-mh="box--classic" style="height: 299.4px;">
                 <div class="info-box-image">
-                    <img width="45%" src="/frontend/svg-icons/books.svg" alt="icon">
+                    <img class="icons-main" width="45%" src="/frontend/svg-icons/books.svg" alt="درس و بحث" title="درس و بحث">
                 </div>
                 <div class="info-box-content">
                     <h4 class="info-box-title">درس و بحث</h4>
@@ -38,7 +38,7 @@
 
             <a class="crumina-module crumina-info-box p-5" data-mh="box--classic" style="height: 299.4px;">
                 <div class="info-box-image">
-                    <img width="45%" src="/frontend/svg-icons/bed.svg" alt="icon">
+                    <img class="icons-main" width="45%" src="/frontend/svg-icons/bed.svg" alt="خوابگاه ها" title="خوابگاه ها">
                 </div>
                 <div class="info-box-content">
                     <h4 class="info-box-title">خوابگاه ها</h4>
@@ -56,7 +56,7 @@
 
             <a class="crumina-module crumina-info-box p-5" data-mh="box--classic" style="height: 299.4px;">
                 <div class="info-box-image">
-                    <img width="45%" src="/frontend/svg-icons/store.svg" alt="icon">
+                    <img class="icons-main" width="45%" src="/frontend/svg-icons/store.svg" alt="بازارچه" title="بازارچه">
                 </div>
                 <div class="info-box-content">
                     <h4 class="info-box-title mb-0">بازارچه</h4>
@@ -75,7 +75,7 @@
 
             <a class="crumina-module crumina-info-box p-5" data-mh="box--classic" style="height: 299.4px;">
                 <div class="info-box-image">
-                    <img width="45%" src="/frontend/svg-icons/school.svg" alt="icon">
+                    <img class="icons-main" width="45%" src="/frontend/svg-icons/school.svg" alt="هم کلاسی ها" title="هم کلاسی ها">
                 </div>
                 <div class="info-box-content">
                     <h4 class="info-box-title">هم کلاسی</h4>

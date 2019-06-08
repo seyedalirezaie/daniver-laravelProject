@@ -10,7 +10,7 @@
             <article class="hentry blog-post blog-post-v3">
 
                 <div class="post-thumb">
-                    <img :src="'/images/md/'+post.photos[post.photos.length - 1].path" :alt="post.title" :title="post.title">
+                    <img v-if="post.photo_preview !== null" :src="'/images/md/'+post.photo_preview.path" :alt="post.title" :title="post.title">
                     <a href="#" class="post-category bg-blue-light fs0-8">{{post.category.title}}</a>
                 </div>
 

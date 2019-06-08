@@ -653,7 +653,7 @@
 </div>
 <!-- ./wrapper -->
 
-@yield('scripts')
+
 
 <!-- jQuery 2.2.0 -->
 <script src="/admin/plugins/jQuery/jQuery-2.2.0.min.js"></script>
@@ -665,6 +665,8 @@
 </script>
 <!-- Bootstrap 3.3.6 -->
 <script src="/admin/bootstrap/js/bootstrap.min.js"></script>
+
+@yield('scripts')
 <!-- Morris.js charts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
 <script src="/admin/plugins/morris/morris.min.js"></script>

@@ -28,7 +28,6 @@ class PostController extends Controller
     {
         $post = new Post();
 
-
         $post->title = $request->title;
         if ($request->slug){
             $post->slug = make_slug($request->slug);
@@ -45,7 +44,6 @@ class PostController extends Controller
         $post->category_id = $request->categoryId;
         $post->save();
 
-
         if (isset($request->uploadedFiles) && !empty($request->uploadedFiles)) {
             $array = $request->uploadedFiles;
             /*this foreach is just for when user upload files and he can't upload more than 10 files in each post*/
@@ -55,7 +53,6 @@ class PostController extends Controller
                 }
             }
         }
-
 
         if (isset($request->editorPhotos) && !empty($request->editorPhotos)) {
 
@@ -103,8 +100,6 @@ class PostController extends Controller
             $totalTagIds = array_merge($tagIds, $insertedTags->toArray());
 
             $post->tags()->attach($totalTagIds);
-
-
         }
 
         Session::put('postId', $post->id);

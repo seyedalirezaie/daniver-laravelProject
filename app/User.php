@@ -21,7 +21,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
 
     protected $fillable = [
-        'name', 'email', 'password', 'last_name' , 'location' , 'status' , 'alias' , 'alias_original' , 'birthday' , 'phone' , 'gender' , 'description' , 'favorites' , 'cv' , 'favorites_book' , 'skills' , 'favorites_music' , 'favorites_movie'
+        'name', 'email', 'password', 'last_name' , 'location' , 'status' , 'alias' , 'alias_original' , 'birthday' , 'phone' , 'gender' , 'description' , 'favorites' , 'cv' , 'favorites_book' , 'skills' , 'favorites_music' , 'favorites_movie' , 'active' , 'visible'
     ];
 
     /**
@@ -76,6 +76,14 @@ class User extends Authenticatable implements MustVerifyEmail
             });
     }
 
+    public function blogPosts()
+    {
+        return $this->hasMany(Post::class)
+            ->whereHas('category' , function ($q){
+                $q->where('categories.sort' , 'blog');
+            });
+    }
+
     public function products()
     {
         return $this->hasMany(Product::class);
@@ -96,7 +104,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(Category::class)->withPivot('status' , 'year');
     }
 
-    protected $appends = ['family' , 'url' , 'birthday_jalali'];
+    protected $appends = ['family' , 'url' , 'birthday_jalali' , 'path_sm' , 'path_md' , 'path_lg'];
 
     public function getFamilyAttribute()
     {
@@ -233,4 +241,48 @@ class User extends Authenticatable implements MustVerifyEmail
             return $this->id;
         }
     }
+
+    public function getPathSmAttribute()
+    {
+        return $this->totalPath($this->photo['path'] , $this->gender , 'sm');
+    }
+
+    public function getPathMdAttribute()
+    {
+        return $this->totalPath($this->photo['path'] , $this->gender ,'md');
+    }
+
+    public function getPathLgAttribute()
+    {
+        return $this->totalPath($this->photo['path'] , $this->gender ,'lg');
+    }
+
+    public function totalPath($path , $gender , $type)
+    {
+        if (empty($path)){
+            if (empty($gender)){
+                $totalPath = \Constants::$img['user_avatar_unknown'];
+            } elseif ($gender == 1) {
+                $totalPath = \Constants::$img['user_avatar_male'];
+            } elseif ($gender == 0){
+                $totalPath = \Constants::$img['user_avatar_female'];
+            }
+            return $totalPath;
+        }
+
+        switch ($type){
+            case 'sm':
+                $totalPath = '/images/sm/'.$path;
+                break;
+            case 'md':
+                $totalPath = '/images/md/'.$path;
+                break;
+            case 'lg':
+                $totalPath = '/images/lg/'.$path;
+                break;
+        }
+
+        return $totalPath;
+    }
+
 }

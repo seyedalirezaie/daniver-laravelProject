@@ -20,4 +20,12 @@ class Friend extends Model
     {
         return $this->morphMany(Seen::class , 'seenable');
     }
+
+    protected  $appends=['full_date'];
+
+    public function getFullDateAttribute()
+    {
+        $v = verta($this->created_at);
+        return $v->format('Y-n-j ساعت H:i');
+    }
 }

@@ -168,6 +168,7 @@ class PostController extends Controller
     public function apiPosts($categoryId , $query , $searchType='' , $timeFilter , $otherFilters , $orderFilter , $tagFilter , $items=20)
     {
 
+
         $type = '';
         $field = '';
         $field1 = '';
@@ -236,7 +237,9 @@ class PostController extends Controller
         }
 
 
-            $posts = Post::with('user.photo', 'user.categories' , 'comments.user.photo' , 'comments.child.user' , 'comments.likes' , 'photos' , 'likes.user.photo' , 'category')->withCount(['likes' , 'comments'])->where('category_id' , $categoryId)->orderBy($orderFilter , 'DESC')
+
+            $posts = Post::with('user.photo', 'user.categories' , 'likes.user.photo' , 'category')->withCount(['likes' , 'comments'])->orderBy($orderFilter , 'DESC')
+                ->where('active' , 1)
                 /*check time filters*/
                 ->when($timeFilter != 'all' , function ($q) use ($timeFilter){
                         if ($timeFilter == 'today') {
@@ -297,33 +300,29 @@ class PostController extends Controller
                 ->when($query != 'noSearch' , function ($q) use($query , $type , $categoryId , $field , $field1 , $field2){
 
                     if ($type == 'one'){
-
                         $q->where($field , 'like' , "%".$query."%");
 
                     } elseif ($type == 'two'){
-
                         $q->where($field1 , 'like' , "%".$query."%")->orWhere($field2 , 'like' , "%".$query."%");
 
                     } elseif ($type == 'user'){
-
                         $q->WhereHas('user' , function ($q2) use ($query){
                             $q2->where(\DB::raw('concat(name, " ", last_name)'), 'LIKE', "%{$query}%");
                         });
 
                     } elseif ($type == 'userByOne'){
-
                         $q->where($field , 'like' , "%".$query."%")->orWhereHas('user' , function ($q2) use ($query){
                             $q2->where(\DB::raw('concat(name, " ", last_name)'), 'LIKE', "%{$query}%");
                         });
 
                     } elseif ($type == 'userByTwo'){
-
                         $q->where($field1 , 'like' , "%".$query."%")->orWhere($field2 , 'like' , "%".$query."%")->orWhereHas('user' , function ($q2) use ($query){
                             $q2->where(\DB::raw('concat(name, " ", last_name)'), 'LIKE', "%{$query}%");
                         });
-
                     }
 
+                })->when(1==1 , function ($q) use($categoryId){
+                    $q->where('category_id' , $categoryId);
                 })
                 ->paginate($items);
 
@@ -334,23 +333,5 @@ class PostController extends Controller
 
         return response()->json($response , 200);
 
-    }
-
-    public function apiBlogPosts($searchQuery='')
-    {
-
-        $posts = Post
-            ::with('category' , 'user' , 'photos')
-            ->whereHas('category' , function ($q){
-                $q->where('categories.sort' , 'blog');
-            })
-            ->orderBy('id' , 'DESC')
-            ->paginate(10);
-
-        $response = [
-            'posts' => $posts
-        ];
-
-        return response()->json($response , 200);
     }
 }

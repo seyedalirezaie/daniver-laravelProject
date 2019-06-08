@@ -26,6 +26,7 @@ class PhotoController extends Controller
         $original_name = $uploaded_file->getClientOriginalName();
         $file_name = time() . $this->generateRandomString(4) . $original_name;
 
+        create_thumbnail($uploaded_file, 'images/lg/' . $file_name, 600, 420 , 'jpeg');
         create_thumbnail($uploaded_file, 'images/md/' . $file_name, 400, 280 , 'jpeg');
         create_thumbnail($uploaded_file, 'images/sm/' . $file_name, 200, 140 , 'jpeg');
 
@@ -36,6 +37,7 @@ class PhotoController extends Controller
         $photo->path = $file_name;
         $photo->original_name = $original_name;
         $photo->post_id = Session::get('postId');
+        $photo->is_preview = 1;
         $photo->save();
 
         Session::forget('postId');

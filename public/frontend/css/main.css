@@ -1035,7 +1035,7 @@ Preserve the relative scale, though. */
     padding: 0;
     background-color: #3f4257;
     border-color: #e6ecf5;
-    box-shadow: 0 0 34px 0 rgba(63, 66, 87, 0.1); }
+    box-shadow: 0 14px 15px 4px rgba(63, 66, 87, 0.3); }
   .header-menu .dropdown-item:focus, .header-menu .dropdown-item:hover {
     color: #ff5e3a;
     background-color: transparent; }
@@ -3537,7 +3537,7 @@ button:hover {
   stroke: inherit;
   transition: all .3s ease;
   bottom: 10px;
-  right: 85px;
+  right: 10px;
   cursor: pointer;
   box-shadow: 0 0 10px 0 rgba(63, 66, 87, 0.4);
   border-radius: 100%;
@@ -4687,7 +4687,7 @@ fieldset[disabled] .checkbox, fieldset[disabled] .checkbox input[type=checkbox],
 .more:hover .more-dropdown {
   visibility: visible;
   opacity: 1;
-  transition-delay: 0s; }
+  transition-delay: .5s; }
 
 .more {
   position: relative;
@@ -6849,7 +6849,7 @@ ol ol li {
 .comment-form {
   padding: 25px;
   border-top: 1px solid #e6ecf5;
-  overflow: hidden; }
+  /*overflow: hidden;*/ }
   .comment-form .add-options-message {
     position: absolute;
     right: 20px;
@@ -15840,7 +15840,8 @@ input[type=checkbox] {
 }
 
 .header-menu-main{
-
+  padding: 25px!important;
+  padding-bottom: 0!important;
 }
 
 .__cov-progress{
@@ -15882,7 +15883,7 @@ input[type=checkbox] {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 1001;
   border-bottom: 1px solid whitesmoke;
 }
 
@@ -15903,7 +15904,8 @@ input[type=checkbox] {
 }
 
 .input-search-posts::placeholder{
-  font-size: .8rem;
+  font-size: .78rem;
+  color: #adb1c8!important;
 }
 
 .search-box-header .author-name{
@@ -15933,7 +15935,7 @@ input[type=checkbox] {
 }
 
 .text-gold{
-  color: goldenrod!important;
+  color: goldenrod;
 }
 
 .img-notify{
@@ -16187,4 +16189,125 @@ input[type=checkbox] {
   right: -100px;
   top: 60px;
   color: #fff6f6;
+}
+
+.icons-main:hover{
+  transform:scale(1.15);
+  transition: 1s;
+  cursor: pointer;
+}
+
+.panel-header img{
+  width: 30px!important;
+  height: 30px!important;
+}
+
+.panel-header .notification-event{
+  width: 80%!important;
+}
+
+.see-all:hover{
+  color: blue;
+  cursor: pointer;
+}
+
+.text-darkturquoise{
+  color: darkturquoise;
+}
+
+.text-tomato{
+  color: tomato;
+}
+
+.bg-tomato{
+  background-color: tomato;
+}
+
+.text-teal{
+  color: teal;
+}
+
+.bg-gold{
+  background-color: goldenrod;
+}
+
+
+
+.bg-teal{
+  background-color: teal!important;
+}
+
+.verification-email-card{
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  padding-right: 100px;
+  padding-left: 100px;
+  z-index: 400;
+}
+
+.verification-email-card .row.justify-content-center{
+  box-shadow: 0px 0px 15px 12px rgba(0,0,0,.2);
+}
+
+.verification-email-card , .card-body , .card-header{
+  transition: 4s;
+}
+
+.verification-email-card:hover .card-header , .verification-email-card:hover .card-body{
+  background-color: rgb(255, 239, 13);
+  transition: 4s;
+}
+
+.account-preview span{
+  font-weight: 500!important;
+}
+
+.account-preview{
+  font-weight: 500!important;
+  padding: 15px 5px!important;
+}
+
+.alert-light{
+    -webkit-animation: color-change-2x 1.4s linear infinite alternate both;
+    animation: color-change-2x 1.4s linear infinite alternate both;
+}
+
+@-webkit-keyframes color-change-2x {
+  /*0% {
+    color: #eee;
+  }*/
+  100% {
+    color: #ebebeb;
+  }
+}
+@keyframes color-change-2x {
+  /*0% {
+    color: #eee;
+  }*/
+  100% {
+    color: #ebebeb;
+  }
+}
+
+.post-date-center{
+  border-left: 1px solid #e6ecf5;
+  border-right: 1px solid #e6ecf5;
+}
+
+.post-comments-count{
+  border-left: none!important;
+}
+
+.comment-show{
+  font-size: .9rem;
+  padding: 15px!important;
+  padding-bottom: 25px!important;
+}
+
+.comment-show img{
+  float: none!important;
+  transform:scale(.8);
+  margin-right: 2px!important;
 }
