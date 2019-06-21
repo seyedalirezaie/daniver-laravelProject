@@ -46,7 +46,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function posts()
     {
         return $this->hasMany(Post::class)
-            ->where('active' , 1);
+            ->where('active' , 1)->withCount(['likes' , 'comments'])->orderBy('created_at' , 'DESC');
             /*whereHas('category' , function ($q){
                 $q->where('categories.sort' , '!=' , 'blog');
             });*/
@@ -126,6 +126,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Seen::class);
     }
 
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class);
+    }
+
     public function places()
     {
         return $this->hasMany(Place::class)->with('province' , 'city' , 'subcity');
@@ -151,6 +156,23 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(Setting::class);
     }
 
+    public function supports()
+    {
+        return $this->hasMany(Support::class);
+    }
+
+    public function Galleries()
+    {
+        return $this->hasMany(Gallery::class)->where('is_header' , null);
+    }
+
+    public function header()
+    {
+        return $this->hasMany(Gallery::class)->where('is_header' , 1);
+    }
+
+    /* messages */
+
     public function sentMessages()
     {
         return $this->hasMany(Message::class, 'sender_id');
@@ -160,6 +182,8 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Message::class, 'receiver_id');
     }
+
+    /* end messages */
 
     public function sentRequests()
     {
@@ -171,7 +195,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Friend::class, 'receiver_id');
     }
 
-    /*//*/
+    /* friendShip */
 
     // friendship that user requested
     function friendsOfMine()
@@ -213,7 +237,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
 
 
-    /*//*/
+    /* end friendShip */
 
 
     public function getBirthdayJalaliAttribute()

@@ -34,7 +34,7 @@ class Post extends Model
         return $this->morphMany(Comment::class , 'commentable')->withCount('likes');
     }
 
-    protected $appends = ['date' , 'liked' , 'photo_preview' , 'full_date' , 'path_sm' , 'path_md' , 'path_lg'];
+    protected $appends = ['date' , 'liked' , 'photo_preview' , 'full_date' , 'path_sm' , 'path_md' , 'path_lg' , 'bookmarked'];
 
     public function getDateAttribute()
     {
@@ -46,9 +46,19 @@ class Post extends Model
         return 0;
     }
 
+    public function getBookmarkedAttribute()
+    {
+        return 0;
+    }
+
     public function likes()
     {
         return $this->morphMany(Like::class , 'likeable');
+    }
+
+    public function bookmarks()
+    {
+        return $this->morphMany(Bookmark::class , 'bookmarkable');
     }
 
     public function mentions()
@@ -68,6 +78,15 @@ class Post extends Model
     public function getFullDateAttribute()
     {
         $v = verta($this->created_at);
+        return $v->format('Y-n-j ساعت H:i');
+    }
+
+    public function getDisplayedAtAttribute($value)
+    {
+        if (empty($value)){
+            return '';
+        }
+        $v = verta($value);
         return $v->format('Y-n-j ساعت H:i');
     }
 

@@ -94,50 +94,6 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function initialize()
-    {
-        $verta = \verta();
-        $month = $verta->month;
-        $year = $verta->year;
-        if ($month < 6){
-            $year--;
-        }
-
-        $majors = Category::with('childrenRecursive')->where('parent_id' , 1)->get();
-
-        $provinces = Province::all('title as label' , 'id as value');
-
-        $dorms = Category::where('parent_id' , 2)->get();
-
-        $response = [
-            'year' => $year,
-            'majors' => $majors,
-            'provinces' => $provinces,
-            'dorms' => $dorms
-        ];
-        return response()->json($response , 200);
-    }
-
-    public function getCities($provinceId)
-    {
-        $cities = City::where('province_id' , $provinceId)->select('title as label', 'id as value')->get();
-
-        $response = [
-            'cities' => $cities
-        ];
-        return response()->json($response , 200);
-    }
-
-    public function getSubCities($cityId)
-    {
-        $subCities = Subcity::where('city_id' , $cityId)->select('title as label', 'id as value')->get();
-
-        $response = [
-            'subCities' => $subCities
-        ];
-        return response()->json($response , 200);
-    }
-
     /**
      * Create a new user instance after a valid registration.
      *

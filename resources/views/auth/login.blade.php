@@ -109,14 +109,14 @@
                                 </button>
 
                                 @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
+                                    <a class="btn btn-link text-danger" href="{{ route('password.request') }}">
                                         {{ __('رمز عبور خود را فراموش کرده اید؟') }}
                                     </a>
                                 @endif
 
                                 <div class="or"></div>
 
-                                <a href="#" class="btn btn-lg bg-facebook full-width btn-icon-left">ثبت نام کنید</a>
+                                <a href="/register" class="btn btn-lg bg-facebook full-width btn-icon-left">ثبت نام کنید</a>
 
 
 

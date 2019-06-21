@@ -809,7 +809,7 @@
         methods: {
 
             getInitializeData: function(){
-                axios.get('/api/register/initial').then(res=>{
+                axios.get('/api/panel/initial').then(res=>{
                     this.createYearsLoop(res.data.year);
                     this.majors = res.data.majors;
                     this.provinces = res.data.provinces;
@@ -844,7 +844,7 @@
                     this.v_city = ''
                     this.v_subCity = ''
                 }
-                axios.get('/api/register/getCities/' + provinceId).then(res=>{
+                axios.get('/api/panel/getCities/' + provinceId).then(res=>{
                     if (type === 'born'){
                         this.citiesBorn = res.data.cities;
                     } else {
@@ -865,7 +865,7 @@
                     cityId = this.v_city.value
                 }
 
-                axios.get('/api/register/getSubCities/' + cityId).then(res=>{
+                axios.get('/api/panel/getSubCities/' + cityId).then(res=>{
                     if (type === 'born'){
                         this.subCitiesBorn = res.data.subCities;
                     } else {
@@ -900,19 +900,19 @@
             submitForm: function () {
 
                 if (this.reg_email === '') {
-                    this.reg_email = '%'
+                    this.reg_email = ''
                 }
                 if (this.reg_name === '') {
-                    this.reg_name = '%'
+                    this.reg_name = ''
                 }
                 if (this.reg_lastName === '') {
-                    this.reg_lastName = '%'
+                    this.reg_lastName = ''
                 }
                 if (this.reg_password === '') {
-                    this.reg_password = '%'
+                    this.reg_password = ''
                 }
                 if (this.reg_cPassword === '') {
-                    this.reg_cPassword = '%'
+                    this.reg_cPassword = ''
                 }
 
 
@@ -1022,7 +1022,7 @@
                         text: 'پر کردن تمام موارد ستاره دار برای ثبت نام الزامی است'
                     })*/
 
-                    if (this.reg_email === '%') {
+                    if (this.reg_email === '') {
                         this.reg_email = ''
                         this.$notify({
                             group: 'reg',
@@ -1031,7 +1031,7 @@
                             text: 'ایمیل خود را وارد کنید'
                         })
                     }
-                    if (this.reg_name === '%') {
+                    if (this.reg_name === '') {
                         this.reg_name = ''
                         this.$notify({
                             group: 'reg',
@@ -1040,7 +1040,7 @@
                             text: 'نام خود را وارد کنید'
                         })
                     }
-                    if (this.reg_lastName === '%') {
+                    if (this.reg_lastName === '') {
                         this.reg_lastName = ''
                         this.$notify({
                             group: 'reg',
@@ -1049,7 +1049,7 @@
                             text: 'نام خانوادگی خود را وارد کنید'
                         })
                     }
-                    if (this.reg_password === '%') {
+                    if (this.reg_password === '') {
                         this.reg_password = ''
                         this.$notify({
                             group: 'reg',
@@ -1058,7 +1058,7 @@
                             text: 'رمز عبور خود را وارد کنید'
                         })
                     }
-                    if (this.reg_cPassword === '%') {
+                    if (this.reg_cPassword === '') {
                         this.reg_cPassword = ''
                         this.$notify({
                             group: 'reg',

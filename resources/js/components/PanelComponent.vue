@@ -2,28 +2,159 @@
 
     <div>
 
-        <div class="main-header dashboard-header" dir="rtl">
-            <div class="content-bg-wrap bg-account"></div>
-            <div class="container">
-                <div class="row">
-                    <div class="col col-lg-8 m-auto col-md-8 col-sm-12 col-12">
-                        <div class="main-header-content">
-                            <h1>Your Account Dashboard</h1>
-                            <p>Welcome to your account dashboard! Here you’ll find everything you need to change your profile
-                                information, settings, read notifications and requests, view your latest messages, change your pasword and much
-                                more! Also you can create or manage your own favourite page, have fun!</p>
+        <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 px-0">
+
+
+            <div class="ui-block">
+                <div class="top-header">
+                    <div class="top-header-thumb">
+                        <img :src="userHeaderPath" alt="تصویر زمینه پروفایل" title="تصویر زمینه پروفایل">
+                        <div v-if="flag_headerUploading" class="dark-on-header">
                         </div>
+                        <div v-if="flag_headerUploading" class="hollow-dots-spinner loader-panel" :style="spinnerStyle">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+
+                    </div>
+                    <div class="profile-section">
+                        <div class="row justify-content-end pr-5">
+                            <span class="fs1 fw-700">{{user.family}} <span class="fs1 fw-400">({{user.alias_original}})</span></span>
+                        </div>
+
+                        <div class="control-block-button" @click="changeHeaderImage()" data-toggle="modal" data-target="#edit-widget-pool">
+                            <div class="btn btn-control bg-blue more">
+                                <i class="fas fa-images text-white"></i>
+                                <ul class="more-dropdown more-with-triangle triangle-bottom-right bg-white">
+                                    <li>
+                                        <span class="text-grey">تغییر تصویر زمینه</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+                        <div v-if="flag_hasHeaderImage" class="control-block-button btn-delete-header" @click="deleteHeaderImage()">
+                            <div class="btn btn-control bg-primary more">
+                                <i class="fas fa-eraser text-white"></i>
+                                <ul class="more-dropdown more-with-triangle triangle-bottom-right bg-white">
+                                    <li>
+                                        <span class="text-grey">حذف تصویر زمینه</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="top-header-author profile-header-info">
+                        <div class="control-block-button btn-change-avatar" @click="changeProfileImage()" data-toggle="modal" data-target="#edit-widget-pool">
+                            <div class="btn btn-control bg-blue more">
+                                <i class="fas fa-image text-white"></i>
+                                <ul class="more-dropdown more-with-triangle triangle-bottom-right bg-white">
+                                    <li>
+                                        <span class="text-grey">تغییر تصویر پروفایل</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div v-if="flag_hasProfileImage" class="control-block-button btn-delete-profile" @click="deleteProfileImage()">
+                            <div class="btn btn-control bg-primary more">
+                                <i class="fas fa-eraser text-white"></i>
+                                <ul class="more-dropdown more-with-triangle triangle-bottom-right bg-white">
+                                    <li>
+                                        <span class="text-grey">حذف تصویر پروفایل</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+                        <a href="02-ProfilePage.html" class="author-thumb">
+                            <img v-if="!flag_profileChanged" :src="user.path_md" :alt="user.family" :title="user.family">
+                            <img v-else :src="userProfilePath" :alt="user.family" :title="user.family">
+                            <div v-if="flag_ProfileUploading" class="dark-on-header">
+                            </div>
+                            <div v-if="flag_ProfileUploading" class="hollow-dots-spinner loader-panel profile-panel" :style="spinnerStyle">
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                            </div>
+                        </a>
+
+
+
+
                     </div>
                 </div>
             </div>
-            <img class="img-bottom" src="/frontend/img/account-bottom.png" alt="friends">
         </div>
+
+
+
+        <div dir="rtl" class="modal fade" id="edit-widget-pool" tabindex="-1" role="dialog" aria-labelledby="edit-widget-pool" aria-hidden="true">
+            <div class="modal-dialog window-popup edit-widget edit-widget-pool modal-change-avatar" role="document">
+                <div class="modal-content">
+                    <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Close">
+                        <svg class="olymp-close-icon"><use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
+                    </a>
+
+                    <div class="modal-header">
+                        <h6 v-if="flag_changeProfileImage" class="title">تعیین تصویر پروفایل</h6>
+                        <h6 v-if="flag_changeHeaderImage" class="title">تعیین تصویر زمینه</h6>
+                    </div>
+
+                    <div class="modal-body">
+
+
+                        <div class="text-center">
+
+                            <input type="range" @input="onSliderChange" :min="sliderMin" :max="sliderMax" step=".001" v-model="sliderVal">
+
+                            <croppa v-if="flag_changeProfileImage" @file-choose="handleFileChoose" @zoom="onZoom"  v-model="croppa" @new-image-drawn="onNewImage"
+                                    :placeholder="'تصویر را انتخاب کنید'"
+                                    :placeholder-font-size="14"
+                                    :accept="'image/*'"
+                                    :file-size-limit="0"
+                                    :prevent-white-space="true"
+                                    :width="180"
+                                    :height="180"
+                                    :quality="1.2">
+                                ></croppa>
+
+                            <croppa v-if="flag_changeHeaderImage" @file-choose="handleFileChoose" @zoom="onZoom"  v-model="croppa" @new-image-drawn="onNewImage"
+                                    :placeholder="'تصویر را انتخاب کنید'"
+                                    :placeholder-font-size="14"
+                                    :accept="'image/*'"
+                                    :file-size-limit="0"
+                                    :prevent-white-space="true"
+                                    :width="768"
+                                    :height="256"
+                                    :quality="1.2">
+                                ></croppa>
+
+                        </div>
+
+
+
+                        <div class="text-center mt-3">
+                            <span v-if="flag_changeHeaderImage" data-dismiss="modal" aria-label="Close" class="btn btn-sm btn-green full-width d-inline-block w-25" @click="setHeaderImage()">ثبت تصویر</span>
+                            <span v-if="flag_changeProfileImage" data-dismiss="modal" aria-label="Close" class="btn btn-sm btn-green full-width d-inline-block w-25" @click="setProfileImage()">ثبت تصویر</span>
+                            <span data-dismiss="modal" aria-label="Close" class="btn btn-sm btn-secondary full-width d-inline-block w-25">لغو</span>
+                        </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
 
 
         <div class="container-fluid px-0" dir="rtl">
             <div class="row">
                 <div class="col col-xl-9 order-xl-2 col-lg-9 order-lg-2 col-md-12 order-md-1 col-sm-12 col-12">
-                    <div v-show="flag_tabs['personalInfo']" class="ui-block">
+                    <div v-show="flag_tabs['personal']" class="ui-block">
                         <div class="ui-block-title">
                             <div class="col col-lg-12 col-md-12 col-sm-12 col-12 bg-grey-title rounded p-3 mb-3">
                                 اطلاعات شخصی
@@ -97,35 +228,35 @@
                             </div>
 
                             <div class="col col-lg-12 col-md-12 col-sm-12 col-12">
-                                <span v-if="oldProvince !== null">{{oldProvince}}</span>
-                                <span v-if="oldCity !== null">، {{oldCity}}</span>
-                                <span v-if="oldSubCity !== null">، {{oldSubCity}}</span>
-                                <span v-if="oldCountry !== null">{{oldCountry}}</span>
-                                <span @click="changeCity()" class="btn btn-sm btn-gold mt-3 mr-2">ویرایش</span>
-                                <span class="btn btn-sm btn-primary mt-3 mr-3">حذف</span>
+                                <span v-bind:class="{'line-deleted-item' : flag_liveChanged}" v-if="oldProvince !== null">{{oldProvince}}</span>
+                                <span v-bind:class="{'line-deleted-item' : flag_liveChanged}" v-if="oldCity !== null" class="mr-2"> {{oldCity}}</span>
+                                <span v-bind:class="{'line-deleted-item' : flag_liveChanged}" v-if="oldSubCity !== null" class="mr-2"> {{oldSubCity}}</span>
+                                <span v-bind:class="{'line-deleted-item' : flag_liveChanged}" v-if="oldCountry !== null">{{oldCountry}}</span>
+                                <span @click="changeCity()" class="btn btn-sm btn-gold mt-3 mr-2">جدید</span>
+                                <span @click="deleteCity('live')" class="btn btn-sm btn-primary mt-3 mr-3">حذف</span>
                             </div>
 
-                            <div v-show="flag_changeCity" class="col col-lg-4 col-md-4 col-sm-12 col-12 select-edit state-select">
+                            <div v-if="flag_changeCity" class="col col-lg-4 col-md-4 col-sm-12 col-12 select-edit state-select">
                                 <div class="form-group label-floating is-select">
                                     <label v-if="flag_titleShow !== 1" class="control-label">استان محل زندگی</label>
                                     <v-select v-bind:disabled="v_liveForeign" @input="showCities()" v-model="v_province" dir="rtl" :searchable=true :value.sync="selected" :options=provinces @search:blur="selectUnFocus()" @search:focus="selectFocus(1)"></v-select>
                                     <span class="material-input"></span></div>
                             </div>
-                            <div v-show="flag_changeCity" class="col col-lg-4 col-md-4 col-sm-12 col-12">
+                            <div v-if="flag_changeCity" class="col col-lg-4 col-md-4 col-sm-12 col-12">
                                 <div class="form-group label-floating is-select">
                                     <label v-if="flag_titleShow !== 2" class="control-label">شهرستان محل زندگی</label>
                                     <v-select v-bind:label="label" v-bind:disabled="v_liveForeign" @input="showSubCities()" v-model="v_city" dir="rtl" :searchable=true :value.sync="selected" :options=cities @search:blur="selectUnFocus()" @search:focus="selectFocus(2)"><span slot="no-options">ابتدا استان را انتخاب کنید.</span></v-select>
                                     <span class="material-input"></span></div>
                             </div>
 
-                            <div v-show="flag_changeCity" class="col col-lg-4 col-md-4 col-sm-12 col-12">
+                            <div v-if="flag_changeCity" class="col col-lg-4 col-md-4 col-sm-12 col-12">
                                 <div class="form-group label-floating is-select">
                                     <label v-if="flag_titleShow !== 3" class="control-label">شهر/بخش</label>
                                     <v-select v-bind:label="label" v-bind:disabled="v_liveForeign" v-model="v_subCity" dir="rtl" :searchable=true :value.sync="selected" :options=subCities @search:blur="selectUnFocus()" @search:focus="selectFocus(3)"><span slot="no-options">ابتدا شهرستان را انتخاب کنید.</span></v-select>
                                     <span class="material-input"></span></div>
                             </div>
 
-                            <div v-show="flag_changeCity" class="col col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+                            <div v-if="flag_changeCity" class="col col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
                                 <input v-model="v_liveForeign" class="d-inline-block input-width-unset" type="checkbox">
                                 <span class="mb-3">خارج از کشور</span>
 
@@ -144,35 +275,35 @@
                             </div>
 
                             <div class="col col-lg-12 col-md-12 col-sm-12 col-12">
-                                <span v-if="oldBirthProvince !== null">{{oldBirthProvince}}</span>
-                                <span v-if="oldBirthProvince !== null">، {{oldBirthProvince}}</span>
-                                <span v-if="oldBirthSubCity !== null">، {{oldBirthSubCity}}</span>
-                                <span v-if="oldBirthCountry !== null">{{oldBirthCountry}}</span>
-                                <span @click="changeBirthCity()" class="btn btn-sm btn-gold mt-3 mr-2">ویرایش</span>
-                                <span class="btn btn-sm btn-primary mt-3 mr-3">حذف</span>
+                                <span v-bind:class="{'line-deleted-item' : flag_birthChanged}" v-if="oldBirthProvince !== null">{{oldBirthProvince}}</span>
+                                <span v-bind:class="{'line-deleted-item' : flag_birthChanged}" v-if="oldBirthCity !== null" class="mr-2"> {{oldBirthCity}} </span>
+                                <span v-bind:class="{'line-deleted-item' : flag_birthChanged}" v-if="oldBirthSubCity !== null" class="mr-2"> {{oldBirthSubCity}} </span>
+                                <span v-bind:class="{'line-deleted-item' : flag_birthChanged}" v-if="oldBirthCountry !== null">{{oldBirthCountry}} </span>
+                                <span @click="changeBirthCity()" class="btn btn-sm btn-gold mt-3 mr-2">جدید</span>
+                                <span @click="deleteCity('birth')" class="btn btn-sm btn-primary mt-3 mr-3">حذف</span>
                             </div>
 
-                            <div v-show="flag_changeBirthCity" class="col col-lg-4 col-md-4 col-sm-12 col-12 select-edit state-select">
+                            <div v-if="flag_changeBirthCity" class="col col-lg-4 col-md-4 col-sm-12 col-12 select-edit state-select">
                                 <div class="form-group label-floating is-select">
                                     <label v-if="flag_titleShow !==17" class="control-label">استان</label>
                                     <v-select v-bind:disabled="v_fromForeign" @input="showCities('born')" v-model="v_provinceBorn" dir="rtl" :searchable=true :value.sync="selected" :options=provinces @search:blur="selectUnFocus()" @search:focus="selectFocus(17)"></v-select>
                                     <span class="material-input"></span></div>
                             </div>
-                            <div v-show="flag_changeBirthCity" class="col col-lg-4 col-md-4 col-sm-12 col-12">
+                            <div v-if="flag_changeBirthCity" class="col col-lg-4 col-md-4 col-sm-12 col-12">
                                 <div class="form-group label-floating is-select">
                                     <label v-if="flag_titleShow !==18" class="control-label">شهرستان</label>
                                     <v-select v-bind:disabled="v_fromForeign" v-bind:label="label" @input="showSubCities('born')" v-model="v_cityBorn" dir="rtl" :searchable=true :value.sync="selected" :options=citiesBorn @search:blur="selectUnFocus()" @search:focus="selectFocus(18)"><span slot="no-options">ابتدا استان را انتخاب کنید.</span></v-select>
                                     <span class="material-input"></span></div>
                             </div>
 
-                            <div v-show="flag_changeBirthCity" class="col col-lg-4 col-md-4 col-sm-12 col-12">
+                            <div v-if="flag_changeBirthCity" class="col col-lg-4 col-md-4 col-sm-12 col-12">
                                 <div class="form-group label-floating is-select">
                                     <label v-if="flag_titleShow !== 19" class="control-label">شهر/بخش</label>
                                     <v-select v-bind:disabled="v_fromForeign" v-bind:label="label" v-model="v_subCityBorn" dir="rtl" :searchable=true :value.sync="selected" :options=subCitiesBorn @search:blur="selectUnFocus()" @search:focus="selectFocus(19)"><span slot="no-options">ابتدا شهرستان را انتخاب کنید را انتخاب کنید.</span></v-select>
                                     <span class="material-input"></span></div>
                             </div>
 
-                            <div v-show="flag_changeBirthCity" class="col col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+                            <div v-if="flag_changeBirthCity" class="col col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
                                 <input v-model="v_fromForeign" class="d-inline-block input-width-unset" type="checkbox">
                                 <span class="mb-3">خارج از کشور</span>
 
@@ -183,7 +314,7 @@
 
                             </div>
 
-                            <div class="col col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+                            <div class="col col-lg-12 col-md-12 col-sm-12 col-12 mb-3 mt-4 bg-grey-title rounded p-3">
                                 مدارس دوران تحصیل
                             </div>
 
@@ -195,64 +326,35 @@
                             </div>
 
                             <div class="col col-lg-4 col-md-4 col-sm-12 col-12 select-edit state-select">
-                                <div class="form-group label-floating is-empty">
+                                <div class="form-group label-floating">
                                     <label class="control-label">راهنمایی</label>
                                     <input class="form-control" placeholder="" type="text" v-model="v_school2">
                                     <span class="material-input"></span></div>
                             </div>
 
                             <div class="col col-lg-4 col-md-4 col-sm-12 col-12 select-edit state-select">
-                                <div class="form-group label-floating is-empty">
+                                <div class="form-group label-floating">
                                     <label class="control-label">دبیرستان</label>
                                     <input class="form-control" placeholder="" type="text" v-model="v_school3">
                                     <span class="material-input"></span></div>
                             </div>
 
-
-                            <div class="col col-lg-12 col-md-12 col-sm-12 col-12 bg-grey-title rounded p-3 mb-3">
-                                تصویر پروفایل
-                            </div>
-
-                            <div class="col col-lg-12 col-md-12 col-sm-12 col-12">
-
-                                <img v-if="user.photo" :src="'/images/md/'+user.photo.path">
-                                <span @click="changeAvatar()" v-if="user.photo" class="btn btn-sm btn-gold mr-3">ویرایش</span>
-                                <span v-if="user.photo" class="btn btn-sm btn-primary mr-3">حذف</span>
-                                <span  @click="changeAvatar()" v-else class="btn btn-sm btn-primary mr-3">افزودن</span>
-
-                                <input v-show="flag_changeAvatar" type="range" @input="onSliderChange" :min="sliderMin" :max="sliderMax" step=".001" v-model="sliderVal">
-
-                                <croppa v-show="flag_changeAvatar" @file-choose="handleFileChoose" @zoom="onZoom"  v-model="croppa" @new-image-drawn="onNewImage"
-                                        :placeholder="'تصویر را انتخاب کنید'"
-                                        :placeholder-font-size="14"
-                                        :accept="'image/*'"
-                                        :file-size-limit="0"
-                                        :prevent-white-space="true"
-                                        :width="180"
-                                        :height="180"
-                                        :quality="1.2">
-                                    ></croppa>
-
-                                <!--<span v-if="" class="btn btn-blue mb-4" @click="croppa.chooseFile()">تغییر تصویر...</span>-->
-
-                            </div>
-
                         </div>
 
                         <div class="col-12 p-5 text-center">
-                            <span class="btn btn-green">اعمال تغییرات</span>
-                            <span class="btn btn-red mr-2">لغو تغییرات</span>
+                            <span class="btn btn-green" @click="submitPersonalInformation()">اعمال تغییرات</span>
+                            <span class="btn btn-primary mr-2">لغو تغییرات</span>
                         </div>
 
                     </div>
 
-                    <div v-show="flag_tabs['educationInfo']" class="ui-block">
+                    <div v-show="flag_tabs['educational']" class="ui-block">
                         <div class="ui-block-title">
                             <h6 class="title">اطلاعات دانشجویی</h6>
                         </div>
                         <div class="ui-block-content">
 
-                            <div v-if="flag_userStatus === 'now'" class="col col-lg-12 col-md-12 col-sm-12 col-12 p-3 mb-3">
+                            <div class="col col-lg-12 col-md-12 col-sm-12 col-12 p-3 mb-3">
 
                                 <h6 class="bg-grey-title p-3 rounded">وضعیت تحصیلی</h6>
                                 <br/>
@@ -262,7 +364,7 @@
                                 <br/>
                                 <div class="form-group label-floating">
                                     <label class="control-label">مثال:دانشکده فنی و مهندسی، رشته مهندسی برق - کارشناسی - ورودی 1397 - در حال تحصیل</label>
-                                    <textarea class="form-control"></textarea>
+                                    <textarea class="form-control" v-model="v_editEducationRequest"></textarea>
                                     <span class="material-input"></span>
 
                                 </div>
@@ -307,15 +409,15 @@
                         </div>
 
                         <div class="col-12 p-5 text-center">
-                            <span class="btn btn-green">اعمال تغییرات</span>
-                            <span class="btn btn-red mr-2">لغو تغییرات</span>
+                            <span class="btn btn-green" @click="submitEducationInformation()">اعمال تغییرات</span>
+                            <span class="btn btn-primary mr-2" @click="cancelEducationInformation()">لغو تغییرات</span>
                         </div>
 
                     </div>
 
 
 
-                    <div v-show="flag_tabs['hobbiesInfo']" class="ui-block">
+                    <div v-show="flag_tabs['hobbies']" class="ui-block">
                         <div class="ui-block-title">
                             <h6 class="title bg-grey-title p-3 rounded">علایق و مهارت ها</h6>
                         </div>
@@ -327,22 +429,22 @@
 
                                 <div>
                                     <label class="control-label">توضیح کوتاهی در مورد خودتان بنویسید</label>
-                                    <div v-html="v_selfDescription" contenteditable="true" class="div-textarea rounded"></div>
+                                    <div v-html="v_selfDescription" contenteditable="true" class="div-textarea rounded self-description"></div>
                                 </div>
 
                                 <div class="mt-5">
                                     <label class="control-label">کتاب های مورد علاقه؟</label>
-                                    <div v-html="v_favorites_book" contenteditable="true" class="div-textarea rounded"></div>
+                                    <div v-html="v_favorites_book" contenteditable="true" class="div-textarea rounded favorite-books"></div>
                                 </div>
 
                                 <div class="mt-5">
                                     <label class="control-label">سایر چیزها و کارهای مورد علاقه؟</label>
-                                    <div v-html="v_favorites" contenteditable="true" class="div-textarea rounded"></div>
+                                    <div v-html="v_favorites" contenteditable="true" class="div-textarea rounded favorites"></div>
                                 </div>
 
                                 <div class="mt-5">
                                     <label class="control-label">رزومه، سوابق، شغل و ...</label>
-                                    <div v-html="cv" contenteditable="true" class="div-textarea rounded"></div>
+                                    <div v-html="cv" contenteditable="true" class="div-textarea rounded user-cv"></div>
                                 </div>
 
 
@@ -351,19 +453,19 @@
 
                                 <div class="mt-5">
                                     <label class="control-label">موسیقی، آهنگ و خواننده مورد علاقه؟</label>
-                                    <div v-html="v_favorites_music" contenteditable="true" class="div-textarea rounded"></div>
+                                    <div v-html="v_favorites_music" contenteditable="true" class="div-textarea rounded favorite-musics"></div>
                                 </div>
 
 
                                 <div class="mt-5">
                                     <label class="control-label">فیلم سینمایی و سریال مورد علاقه؟</label>
-                                    <div v-html="v_favorites_movie" contenteditable="true" class="div-textarea rounded"></div>
+                                    <div v-html="v_favorites_movie" contenteditable="true" class="div-textarea rounded favorite-movies"></div>
                                 </div>
 
 
                                 <div class="mt-5">
                                     <label class="control-label">مهارت های فنی، هنری، علمی و ...</label>
-                                    <div v-html="v_skills" contenteditable="true" class="div-textarea rounded"></div>
+                                    <div v-html="v_skills" contenteditable="true" class="div-textarea rounded favorite-skills"></div>
                                 </div>
 
                             </div>
@@ -371,14 +473,14 @@
                         </div>
 
                         <div class="col-12 p-5 text-center">
-                            <span class="btn btn-green">اعمال تغییرات</span>
-                            <span class="btn btn-red mr-2">لغو تغییرات</span>
+                            <span class="btn btn-green" @click="submitHobbiesInformation()">اعمال تغییرات</span>
+                            <span class="btn btn-primary mr-2" @click="cancelHobbiesInformation()">لغو تغییرات</span>
                         </div>
 
                     </div>
 
 
-                    <div v-show="flag_tabs['socialNetworks']" class="ui-block">
+                    <div v-show="flag_tabs['social_networks']" class="ui-block">
                         <div class="ui-block-title">
                             <h6 class="title bg-grey-title p-3 rounded">شبکه های اجتماعی</h6>
                         </div>
@@ -424,8 +526,39 @@
                         </div>
 
                         <div class="col-12 p-5 text-center">
-                            <span class="btn btn-green">اعمال تغییرات</span>
-                            <span class="btn btn-red mr-2">لغو تغییرات</span>
+                            <span class="btn btn-green" @click="submitAccountsEdit()">اعمال تغییرات</span>
+                            <span class="btn btn-primary mr-2"  @click="cancelAccountsEdit()">لغو تغییرات</span>
+                        </div>
+
+                    </div>
+
+                    <div v-show="flag_tabs['change_password']" class="ui-block">
+                        <div class="ui-block-title">
+                            <h6 class="title bg-grey-title p-3 rounded">تغییر رمز عبور</h6>
+                        </div>
+                        <div class="ui-block-content">
+
+                                <div class="form-group label-floating">
+                                    <label class="control-label"> رمز عبور جدید
+                                        <span v-show="errors.has('password')" class="help is-danger text-primary">{{ errors.first('password') }}</span>
+                                    </label>
+                                    <input :class="{'bg-required-field' : flag_justRequiredFields}" ref="password" v-validate="'required|min:6'" name="password" class="form-control" placeholder="" type="password" v-model="reg_password">
+                                    <span class="material-input"></span></div>
+
+                            <div class="form-group label-floating">
+                                <label class="control-label">* تکرار رمز عبور
+                                    <span v-show="errors.has('password_confirmation')" class="help is-danger text-primary">{{ errors.first('password_confirmation') }}</span>
+                                </label>
+                                <input :class="{'bg-required-field' : flag_justRequiredFields}" data-vv-as="password" v-validate="'required|confirmed:password'" name="password_confirmation" v-model="reg_cPassword" class="form-control" placeholder="" type="password">
+                                <span class="material-input"></span></div>
+
+                            </div>
+
+
+
+                        <div class="col-12 p-5 text-center">
+                            <span class="btn btn-green" @click="submitPasswordEdit()">اعمال تغییرات</span>
+                            <span class="btn btn-primary mr-2" @click="cancelPasswordEdit()">لغو تغییرات</span>
                         </div>
 
                     </div>
@@ -517,26 +650,18 @@
 
                                                         <div class="post-additional-info inline-items">
 
-                                                            <ul class="friends-harmonic">
-                                                                <li>
-                                                                    <a href="#">
-                                                                        <img src="/frontend/img/icon-chat27.png" alt="icon">
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">
-                                                                        <img src="/frontend/img/icon-chat2.png" alt="icon">
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                            <div class="names-people-likes">
-                                                                26
+
+                                                            <div class="comments-shared">
+                                                                <a href="#" class="post-add-icon inline-items">
+                                                                    <i class="far fa-comments fs1-3"></i>
+                                                                    <span>{{post.comments_count}}</span>
+                                                                </a>
                                                             </div>
 
                                                             <div class="comments-shared">
                                                                 <a href="#" class="post-add-icon inline-items">
-                                                                    <svg class="olymp-speech-balloon-icon"><use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-speech-balloon-icon"></use></svg>
-                                                                    <span>0</span>
+                                                                    <i class="far fa-heart fs1-3"></i>
+                                                                    <span>{{post.likes_count}}</span>
                                                                 </a>
                                                             </div>
 
@@ -585,6 +710,182 @@
 
                 </div>
 
+                    <div v-show="flag_tabs['notifications']" class="ui-block">
+                        <div class="ui-block-title">
+                            <h6 class="title bg-grey-title p-3 rounded">اعلان ها</h6>
+                        </div>
+                        <div class="ui-block-content">
+
+
+                            <div class="more-with-triangle triangle-top-center" dir="rtl">
+
+                                <div class="ps ps--theme_default ps--active-y" data-mcs-theme="dark" data-ps-id="50eac76a-25e9-1ba0-4544-43ce8da59774">
+                                    <ul class="notification-list" v-if="notifications2.length > 0">
+
+                                        <li v-for="(notification , index) in notifications2" v-if="notification.commentable_id && index<notificationItems" class="with-comment-photo">
+                                            <div class="author-thumb img-alerts-container">
+                                                <img class="img-circle-60 p-2 pt-0" :src="notification.user.path_sm" :alt="notification.user.family" :title="notification.user.family">
+                                            </div>
+                                            <div class="notification-event">
+                                                <div v-if="notification.is_answer"><a :href="'/profile/'+notification.user.url" class="notification-friend fs0-75">{{notification.user.family}}</a> یک پاسخ برای نظر شما در <a :href="notification.commentable.category.url+'/posts/'+notification.commentable.category.slug+'/'+notification.commentable.slug" class="notification-link mx-1">پست {{notification.commentable.title}}</a>ارسال کرد.</div>
+                                                <div v-else><a :href="'/profile/'+notification.user.url" class="notification-friend fs0-75">{{notification.user.family}}</a> یک نظر تازه برای <a :href="notification.commentable.category.url+'/posts/'+notification.commentable.category.slug+'/'+notification.commentable.slug" class="notification-link"> پست {{notification.commentable.title}}</a> شما ارسال کرد.</div>
+                                                <span class="notification-date ml-1"><time class="entry-date updated">{{notification.full_date}}</time></span>
+                                            </div>
+                                            <span class="notification-icon">
+                                            <i class="far fa-comments fs1-3"></i>
+									</span>
+
+                                            <div class="comment-photo alert-description">
+                                                <div class="fs0-8 p-1 comment-preview" v-html="notification.description"></div>
+                                            </div>
+
+                                            <span v-if="notification.seens.length === 0" class="unseen-notify text-danger" v-bind:class="{'alert-light-border unread-notification' : notification.seens.length === 0}">
+                                                جدید
+                                            </span>
+
+                                        </li>
+
+                                        <li v-else-if="notification.mentionable_id && index<notificationItems" class="with-comment-photo">
+                                            <div class="author-thumb img-alerts-container">
+                                                <img class="img-circle-60 p-2 pt-0" :src="notification.mentionable.user.path_sm" :alt="notification.mentionable.user.family" :title="notification.mentionable.user.family">
+                                            </div>
+                                            <div class="notification-event">
+                                                <div v-if="notification.mentionable_type === 'App\\Post'"><a :href="'/profile/'+notification.mentionable.user.url" class="notification-friend fs0-75">{{notification.mentionable.user.family}}</a> شما را در <a :href="notification.mentionable.category.url+'/posts/'+notification.mentionable.category.slug+'/'+notification.mentionable.slug" class="notification-link mx-1">پست {{notification.mentionable.title}}</a>خود تگ کرد.</div>
+                                                <div v-if="notification.mentionable_type === 'App\\Comment'"><a :href="'/profile/'+notification.mentionable.user.url" class="notification-friend fs0-75">{{notification.mentionable.user.family}}</a> شما را در یک نظر در <a :href="notification.mentionable.commentable.category.url+'/posts/'+notification.mentionable.commentable.category.slug+'/'+notification.mentionable.commentable.slug" class="notification-link mx-1">پست {{notification.mentionable.commentable.title}}</a>تگ کرد.</div>
+                                                <span class="notification-date"><time class="entry-date updated">{{notification.full_date}}</time></span>
+                                            </div>
+                                            <span class="notification-icon">
+										<i class="fas fa-tag ml-1"></i>
+									</span>
+
+                                            <span v-if="notification.seens.length === 0" class="unseen-notify text-danger" v-bind:class="{'alert-light-border unread-notification' : notification.seens.length === 0}">
+                                                جدید
+                                            </span>
+
+                                        </li>
+
+                                        <li v-else-if="notification.accepted && index<notificationItems" class="with-comment-photo">
+                                            <div class="author-thumb img-alerts-container">
+                                                <img class="img-circle-60 p-2 pt-0" :src="notification.receiver.path_sm" :alt="notification.receiver.family" :title="notification.receiver.family">
+                                            </div>
+                                            <div class="notification-event">
+                                                <div><a :href="'/profile/'+notification.receiver.url" class="notification-friend fs0-75">{{notification.receiver.family}}</a> درخواست دوستی شما پذیرفت.</div>
+                                                <span class="notification-date"><time class="entry-date updated">{{notification.full_date}}</time></span>
+                                            </div>
+                                            <span class="notification-icon">
+										<i class="fas fa-check-circle ml-1 text-green"></i>
+									</span>
+
+                                            <span class="unseen-notify text-danger" v-bind:class="{'alert-light-border unread-notification' : notification.seens.length === 0}">
+                                                جدید
+                                            </span>
+
+                                        </li>
+
+                                    </ul>
+                                    <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__scrollbar-y-rail" style="top: 0px; height: 300px; right: 0px; opacity: 0;"><div class="ps__scrollbar-y" tabindex="0" style="top: 0px; height: 148px;"></div></div></div>
+
+                                <span v-show="flag_showMoreNotifications" @click="moreNotifications()" class="view-all bg-purple cursor-pointer">نمایش موارد بیشتر</span>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                    <div v-show="flag_tabs['messages']" class="ui-block">
+                        <div class="ui-block-title">
+                            <h6 class="title bg-grey-title p-3 rounded">پیام ها</h6>
+                        </div>
+                        <div class="ui-block-content">
+
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12">
+
+                                        <div @click="selectChat(audience.audience_id)" v-for="audience in audienceMessages" class="ui-block cursor-pointer mb-2 audience-container" dir="rtl">
+                                            <div class="birthday-item inline-items badges messages-items">
+                                                <div class="author-thumb">
+                                                    <img class="img-circle-35" :src="audience[0].audience.path_sm" alt="author">
+                                                    <div v-if="audience.unseen_items !== 0" class="label-avatar bg-primary">{{audience.unseen_items}}</div>
+                                                </div>
+                                                <div class="birthday-author-name">
+                                                    <span class="author-name">{{audience[0].audience.family}}</span>
+                                                    <div class="birthday-date fs0-7 text-grey-custom">{{audience.last_action}}</div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
+
+                                        <div class="ui-block popup-chat w-100">
+                                            <div class="ui-block-title" v-if="selectedChatArray.audience_id">
+                                                <span class="icon-status online"></span>
+                                                <img class="img-circle-30" :src="selectedChatArray[0].audience.path_sm" :alt="selectedChatArray[0].audience.family" :title="selectedChatArray[0].audience.family">
+                                                <h6 class="title">{{selectedChatArray[0].audience.family}}</h6>
+                                                <div class="more">
+                                                    <svg class="olymp-three-dots-icon"><use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>
+                                                    <svg class="olymp-little-delete"><use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-little-delete"></use></svg>
+                                                </div>
+                                            </div>
+                                            <div class="messages-scroll mCustomScrollbar ps ps--theme_default ps--active-y" data-mcs-theme="dark" data-ps-id="e85eb408-3ff5-526d-87ab-1b87b470467b">
+                                                <ul class="notification-list chat-message chat-message-field" v-if="selectedChatArray.audience_id">
+                                                    <li v-for="message in selectedChatArray" v-if="selectedChatArray.audience_id === message.sender_id">
+                                                        <div class="author-thumb float-right">
+                                                            <img class="img-circle-30" :src="message.sender.path_sm" :alt="message.sender.family" :title="message.sender.family">
+                                                        </div>
+                                                        <div class="notification-event pl-0 pr-2">
+                                                            <div class="w-100 float-right">
+                                                            <div v-html="message.description" class="chat-message-item float-right bg-secondary text-white"></div>
+                                                            </div>
+                                                            <span class="notification-date float-right w-100"><time class="entry-date updated">{{message.full_date}}</time></span>
+                                                        </div>
+                                                    </li>
+
+                                                    <li v-else-if="selectedChatArray.audience_id === message.receiver_id">
+                                                        <div class="author-thumb float-left">
+                                                            <img class="img-circle-30" :src="user.path_sm" :alt="user.family" :title="user.family">
+                                                        </div>
+                                                        <div class="notification-event pr-2 pl-0 w-100">
+                                                            <div class="w-100 float-left">
+                                                                <div v-html="message.description" class="chat-message-item float-left"></div>
+                                                            </div>
+                                                            <span class="notification-date float-left w-100 text-left"><time class="entry-date updated">{{message.full_date}}</time></span>
+                                                        </div>
+                                                    </li>
+
+                                                </ul>
+                                                <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: -30px;"><div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__scrollbar-y-rail" style="top: 30px; height: 350px; right: 0px;"><div class="ps__scrollbar-y" tabindex="0" style="top: 22px; height: 255px;"></div></div></div>
+
+                                            <form>
+
+                                                <div  class="form-group label-floating is-empty" v-if="selectedChatArray.audience_id">
+                                                    <label class="control-label" style="right: 65px!important;">متن پیام ...</label>
+                                                    <textarea class="form-control" placeholder="" v-model="v_message"></textarea>
+
+                                                    <div class="add-options-message">
+                                                        <span class="options-message btn-send-chat-box" @click="sendMessage(selectedChatArray.audience_id)">
+                                                            <i class="fas fa-paper-plane"></i>
+                                                        </span>
+                                                    </div>
+
+                                                    <span class="material-input"></span></div>
+
+                                            </form>
+
+
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
 
 
 
@@ -599,72 +900,84 @@
                         <!-- Your Profile  -->
 
                         <div class="your-profile">
-                            <div class="ui-block-title ui-block-title-small">
-                                <h6 class="title">Your PROFILE</h6>
-                            </div>
 
                             <div id="accordion" role="tablist" aria-multiselectable="true">
                                 <div class="card">
                                     <div class="card-header" role="tab" id="headingOne">
                                         <h6 class="mb-0">
-                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                Profile Settings
+                                            <a>
+                                                حساب کاربری
                                                 <svg class="olymp-dropdown-arrow-icon"><use xlink:href=/frontend/svg-icons/sprites/icons.svg#olymp-dropdown-arrow-icon"></use></svg>
                                             </a>
                                         </h6>
                                     </div>
 
                                     <div id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne">
-                                        <ul class="your-profile-menu">
+                                        <ul class="your-profile-menu panel-menu-items">
                                             <li class="p-2 cursor-pointer">
-                                                <span v-bind:class="{'active': flag_tabs['personalInfo']}" @click="changeTab('personalInfo')">اطلاعات شخصی</span>
+                                                <router-link :to="{name:'panel' , params:{section:'personal'}}">
+                                                <span v-bind:class="{'active': flag_tabs['personal']}">اطلاعات شخصی</span>
+                                                </router-link>
                                             </li>
                                             <li class="p-2 cursor-pointer">
-                                                <span v-bind:class="{'active': flag_tabs['educationInfo']}" @click="changeTab('educationInfo')">اطلاعات دانشجویی</span>
+                                                <router-link :to="{name:'panel' , params:{section:'educational'}}">
+                                                <span v-bind:class="{'active': flag_tabs['educational']}">اطلاعات دانشجویی</span>
+                                                </router-link>
                                             </li>
                                             <li class="p-2 cursor-pointer">
-                                                <span v-bind:class="{'active': flag_tabs['hobbiesInfo']}" @click="changeTab('hobbiesInfo')">علایق و مهارت ها</span>
+                                                <router-link :to="{name:'panel' , params:{section:'hobbies'}}">
+                                                <span v-bind:class="{'active': flag_tabs['hobbies']}">علایق و مهارت ها</span>
+                                                </router-link>
                                             </li>
                                             <li class="p-2 cursor-pointer">
-                                                <span v-bind:class="{'active': flag_tabs['socialNetworks']}" @click="changeTab('socialNetworks')">شبکه های اجتماعی</span>
+                                                <router-link :to="{name:'panel' , params:{section:'social-networks'}}">
+                                                <span v-bind:class="{'active': flag_tabs['social_networks']}">شبکه های اجتماعی</span>
+                                                </router-link>
                                             </li>
                                             <li class="p-2 cursor-pointer">
-                                                <a class="change-password py-0">تغییر رمز عبور</a>
+                                                <router-link :to="{name:'panel' , params:{section:'change-password'}}">
+                                                <span v-bind:class="{'active': flag_tabs['change_password']}" class="change-password py-0">تغییر رمز عبور</span>
+                                                </router-link>
                                             </li>
                                             <li class="p-2 cursor-pointer">
-                                                <span v-bind:class="{'active': flag_tabs['settings']}" @click="changeTab('settings')">تنظیمات حساب کاربری</span>
+                                                <router-link :to="{name:'panel' , params:{section:'settings'}}">
+                                                <span v-bind:class="{'active': flag_tabs['settings']}" >تنظیمات حساب کاربری</span>
+                                                </router-link>
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="ui-block-title">
-                                <span v-bind:class="{'active': flag_tabs['posts']}" @click="changeTab('posts')" class="h6 title">پست ها</span>
-                                <span class="items-round-little bg-primary">8</span>
-                            </div>
+                                <router-link :to="{name:'panel' , params:{section:'posts'}}" class="ui-block-title">
+                                    <span v-bind:class="{'text-primary': flag_tabs['posts']}" class="title cursor-pointer text-dark">پست ها</span>
+                                    <span class="items-round-little bg-dark">{{user.posts_count}}</span>
+                                </router-link>
 
-                            <div class="ui-block-title">
-                                <span v-bind:class="{'active': flag_tabs['friends']}" @click="changeTab('friends')" class="h6 title">دوستان</span>
-                                <span class="items-round-little bg-primary">8</span>
-                            </div>
+                                <router-link :to="{name:'panel' , params:{section:'friends'}}" class="ui-block-title">
+                                    <span v-bind:class="{'text-primary': flag_tabs['friends']}" class="title cursor-pointer text-dark">دوستان</span>
+                                    <span class="items-round-little bg-dark">{{friends_number}}</span>
+                                </router-link>
 
-                            <div class="ui-block-title">
-                                <span v-bind:class="{'active': flag_tabs['notifications']}" @click="changeTab('notifications')" class="h6 title">اعلان ها</span>
-                                <span class="items-round-little bg-primary">8</span>
-                            </div>
-                            <div class="ui-block-title">
-                                <span v-bind:class="{'active': flag_tabs['messages']}" @click="changeTab('messages')" class="h6 title">پیام ها</span>
-                                <span class="items-round-little bg-primary">8</span>
-                            </div>
-                            <div class="ui-block-title">
-                                <span v-bind:class="{'active': flag_tabs['friendRequests']}" @click="changeTab('friendRequests')" class="h6 title">درخواست های دوستی</span>
-                                <span class="items-round-little bg-blue">4</span>
-                            </div>
-                            <div class="ui-block-title ui-block-title-small">
-                                <span v-bind:class="{'active': flag_tabs['favorites']}" @click="changeTab('favorites')" class="h6 title">صفحات مورد علاقه</span>
-                                <span class="items-round-little bg-blue">4</span>
-                            </div>
+                                <router-link :to="{name:'panel' , params:{section:'notifications'}}" class="ui-block-title">
+                                    <span v-bind:class="{'text-primary': flag_tabs['notifications']}" class="title cursor-pointer text-dark">اعلان ها</span>
+                                    <span class="items-round-little bg-primary">{{unreadNotifications}}</span>
+                                </router-link>
+
+                                <router-link :to="{name:'panel' , params:{section:'messages'}}" class="ui-block-title">
+                                    <span v-bind:class="{'text-primary': flag_tabs['messages']}" class="title cursor-pointer text-dark">پیام ها</span>
+                                    <span class="items-round-little bg-primary">8</span>
+                                </router-link>
+
+                                <router-link :to="{name:'panel' , params:{section:'friend-requests'}}" class="ui-block-title">
+                                    <span v-bind:class="{'text-primary': flag_tabs['friend_requests']}" class="title cursor-pointer text-dark">درخواست های دوستی</span>
+                                    <span class="items-round-little bg-blue">4</span>
+                                </router-link>
+
+                                <router-link :to="{name:'panel' , params:{section:'favorites'}}" class="ui-block-title">
+                                    <span v-bind:class="{'text-primary': flag_tabs['favorites']}" class="title cursor-pointer text-dark">صفحات مورد علاقه</span>
+                                    <span class="items-round-little bg-blue">4</span>
+                                </router-link>
                         </div>
 
                         <!-- ... end Your Profile  -->
@@ -680,6 +993,27 @@
 </template>
 
 <script>
+
+
+    import {scroller} from 'vue-scrollto/src/scrollTo'
+
+    var options = {
+        container: '#messages',
+        easing: 'ease-in',
+        offset: -60,
+        force: true,
+        cancelable: true,
+        onStart: function(element) {
+        },
+        onDone: function(element) {
+            // scrolling is done
+        },
+        onCancel: function() {
+            // scrolling has been interrupted
+        },
+        x: false,
+        y: true
+    };
 
 
     /*loader*/
@@ -703,6 +1037,16 @@
             'last_name': {
                 required: ' (وارد کردن نام خانوادگی الزامی است) ',
             },
+
+            'password': {
+                required: ' (رمز عبور نمی تواند خالی باشد) ',
+                min: ' (رمز عبور باید حداقل 6 کاراکتر باشد) '
+            },
+
+            'password_confirmation': {
+                confirmed: ' (رمز عبور با تکرار آن مطابقت ندارد) ',
+                required: ' (تکرار رمز عبور نمی تواند خالی باشد) '
+            },
         }
     };
 
@@ -710,426 +1054,970 @@
     import VuePersianDatetimePicker from 'vue-persian-datetime-picker'
 
 
+    /*document.addEventListener("DOMContentLoaded", () => {*/
+        export default {
+            data() {
+                return {
+                    books: '',
+                    flag_tabs: {
+                        dashboard: true,
+                        personal: false,
+                        educational: false,
+                        hobbies: false,
+                        social_networks: false,
+                        change_password: false,
+                        settings: false,
+                        posts: false,
+                        notifications: false,
+                        messages: false,
+                        friend_requests: false,
+                        favorites: false,
+                    },
+                    flag_loader: false,
 
-    export default {
-        data(){
-            return{
-                flag_tabs:{
-                    dashboard: true,
-                    personalInfo: false,
-                    educationInfo: false,
-                    hobbiesInfo: false,
-                    socialNetworks: false,
-                    settings: false,
-                    posts: false,
-                    notifications: false,
-                    messages: false,
-                    friendRequests: false,
-                    favorites: false,
+                    /*from register component*/
+
+                    yearsLoop: [],
+                    majors: [],
+                    birthday: this.user.birthday,
+                    provinces: [],
+                    v_province: '',
+                    cities: [],
+                    v_city: '',
+                    subCities: [],
+                    v_subCity: '',
+                    v_college: '',
+                    v_major: '',
+                    targetMajors: [],
+                    v_yearNow: '',
+                    flag_userStatus: '',
+                    v_college_end1: '',
+                    v_yearEnd1: '',
+                    v_majorEnd1: '',
+                    flag_addMajor1: false,
+                    flag_addMajor2: false,
+                    v_college_end2: '',
+                    v_yearEnd2: '',
+                    v_majorEnd2: '',
+                    v_college_end3: '',
+                    v_yearEnd3: '',
+                    v_majorEnd3: '',
+                    dorms: [],
+                    dormStatus: 'dorm-vru',
+                    v_dorm: '',
+                    v_provinceBorn: '',
+                    v_cityBorn: '',
+                    v_subCityBorn: '',
+                    citiesBorn: [],
+                    subCitiesBorn: [],
+                    flag_gender: true,
+                    v_gender: '',
+                    genderArray: ['مرد', 'زن'],
+                    v_fromForeign: false,
+                    v_school1: '',
+                    v_school2: '',
+                    v_school3: '',
+                    flag_titleShow: '',
+                    v_liveForeign: false,
+                    reg_name: this.user.name,
+                    reg_lastName: this.user.last_name,
+                    reg_alias: this.user.alias_original,
+                    reg_phone: this.user.phone,
+
+                    createForm: {
+                        email: ''
+                    },
+                    /*croppa*/
+                    croppa: {},
+                    sliderVal: 0,
+                    sliderMin: 0,
+                    sliderMax: 0,
+                    /*end croppa*/
+                    emailUniqueError: false,
+                    aliasUniqueError: false,
+                    majorNowRequiredError: false,
+                    yearNowRequiredError: false,
+                    majorEnd1RequiredError: false,
+                    yearEnd1RequiredError: false,
+                    schools: [],
+                    accounts: [],
+                    fileName: '',
+                    flag_justRequiredFields: false,
+                    flag_isRequired: false,
+                    changeImage: false,
+
+                    /*end register component*/
+                    oldProvince: null,
+                    oldCity: null,
+                    oldSubCity: null,
+                    oldCountry: null,
+                    flag_changeCity: false,
+                    flag_changeBirthCity: false,
+                    flag_changeAvatar: false,
+                    postItems: 15,
+                    flag_hasMore: false,
+                    flag_changeProfileImage: '',
+                    flag_changeHeaderImage: '',
+                    userHeaderPath: '/frontend/img/top-header1.jpg',
+                    flag_profileChanged: false,
+                    userProfilePath: '',
+                    flag_hasProfileImage: '',
+                    oldLivePlaceId: '',
+                    oldBirthPlaceId: '',
+                    oldSchoolId1: '',
+                    oldSchoolId2: '',
+                    oldSchoolId3: '',
+                    flag_liveChanged: '',
+                    flag_birthChanged: '',
+                    v_editEducationRequest: '',
+                    reg_password: '',
+                    reg_cPassword: '',
+                    notifications2: [],
+                    notificationItems: 10,
+                    flag_showMoreNotifications: true,
+                    unreadNotifications: 0,
+                    messagesPage: 1,
+                    unreadMessages: '',
+                    audienceMessages: [],
+                    selectedChatArray: [],
+                    flag_headerUploading: false,
+                    flag_profileUploading: false,
+                    profileInterval: '',
+                    headerInterval: '',
+                    v_message: ''
+                }
+            },
+            components: {
+                AtomSpinner,
+                datePicker: VuePersianDatetimePicker,
+            },
+            props: [
+                'avatars', 'user', 'friends_number'
+            ],
+            updated() {
+
+            },
+
+            mounted() {
+
+                if (this.$route.params.section) {
+                    var tab = this.$route.params.section;
+
+                    if (tab === 'social-networks') {
+                        tab = 'social_networks';
+                    }
+                    if (tab === 'friend-requests') {
+                        tab = 'friend_requests';
+                    }
+                    if (tab === 'change-password') {
+                        tab = 'change_password';
+                    }
+
+                    this.$Progress.start();
+                    setTimeout(() => {
+                        this.$Progress.finish()
+                    }, 1500);
+                    Object.keys(this.flag_tabs).forEach(key => this.flag_tabs[key] = false);
+                    this.flag_tabs[tab] = true;
+                    sessionStorage.setItem('tab_panel', tab);
+                }
+
+                this.initNotifications();
+                this.initMessages();
+
+
+                this.getInitializeData();
+                this.initializeForMounted();
+
+                this.initFriendRequests();
+
+                setTimeout(() => {
+                    this.checkHasMoreNotifications();
+                } , 2000);
+
+
+
+                this.croppa.addClipPlugin(function (ctx, x, y, w, h) {
+                    ctx.beginPath();
+                    ctx.arc(x + w / 2, y + h / 2, w / 2, 0, 2 * Math.PI, true);
+                    ctx.closePath();
+                })
+
+            },
+
+            watch: {
+
+                reg_alias: function (val) {
+                    if (val === sessionStorage.getItem('uniqueAlias')) {
+                        this.aliasUniqueError = true;
+                    } else {
+                        this.aliasUniqueError = false;
+                    }
                 },
-                flag_loader: false,
+
+
+                flag_userStatus: function (val) {
+                    if (val !== 'now' && this.flag_justRequiredFields === true) {
+                        this.flag_isRequired = true;
+                    } else {
+                        this.flag_isRequired = false;
+                    }
+                },
+
+                '$route'(to, from) {
+                    var tab = to.params.section;
+
+                    if (tab === 'social-networks') {
+                        tab = 'social_networks';
+                    }
+                    if (tab === 'friend-requests') {
+                        tab = 'friend_requests';
+                    }
+                    if (tab === 'change-password') {
+                        tab = 'change_password';
+                    }
+
+                    this.$Progress.start();
+                    setTimeout(() => {
+                        this.$Progress.finish()
+                    }, 1500);
+                    Object.keys(this.flag_tabs).forEach(key => this.flag_tabs[key] = false);
+                    this.flag_tabs[tab] = true;
+                    sessionStorage.setItem('tab_panel', tab);
+
+                    if (tab === 'notifications') {
+                        this.readNotifications('notifications');
+                    }
+
+                }
+
+            },
+            methods: {
+
+                initializeForMounted: function () {
+
+                    if (this.user.header.length > 0) {
+                        this.userHeaderPath = '/images/lg/' + this.user.header[0].path;
+                        this.flag_hasHeaderImage = true;
+                    }
+
+                    if (this.user.photo !== null) {
+                        this.flag_hasProfileImage = true;
+                    }
+
+                    if (this.postItems >= this.user.posts.length) {
+                        this.flag_hasMore = false;
+                    } else {
+                        this.flag_hasMore = true;
+                    }
+
+
+                    if (this.user.gender === 1) {
+                        this.v_gender = 'مرد'
+                    } else if (this.user.gender === 0) {
+                        this.v_gender = 'زن'
+                    }
+
+                    for (var i = 0; i < this.user.places.length; i++) {
+                        if (this.user.places[i].type === 'live') {
+                            if (this.user.places[i].country) {
+                                this.oldCountry = this.user.places[i].country;
+                            } else {
+                                this.oldProvince = this.user.places[i].province.title;
+                                this.oldCity = this.user.places[i].city.title;
+                                this.oldSubCity = this.user.places[i].subcity.title;
+                            }
+                            this.oldLivePlaceId = this.user.places[i].id;
+                        } else if (this.user.places[i].type === 'birth') {
+                            if (this.user.places[i].country) {
+                                this.oldCountry = this.user.places[i].country;
+                            } else {
+                                this.oldBirthProvince = this.user.places[i].province.title;
+                                this.oldBirthCity = this.user.places[i].city.title;
+                                this.oldBirthSubCity = this.user.places[i].subcity.title;
+                            }
+                            this.oldBirthPlaceId = this.user.places[i].id;
+                        }
+
+                    }
+
+                    if (this.user.status === 'now') {
+                        this.flag_userStatus = 'now';
+                    }
+
+                    this.dormStatus = this.user.location;
+
+                    for (var i = 0; i < this.user.categories.length; i++) {
+                        if (this.user.categories[i].sort === 'dorm') {
+                            this.v_dorm = this.user.categories[i].titles;
+                        }
+                    }
+
+                    this.v_selfDescription = this.user.description;
+                    this.v_favorites_book = this.user.favorites_book;
+                    this.v_favorites = this.user.favorites;
+                    this.cv = this.user.cv;
+                    this.v_favorites_music = this.user.favorites_music;
+                    this.v_favorites_movie = this.user.favorites_movie;
+                    this.v_skills = this.user.skills;
+
+                    for (var i = 0; i < this.user.accounts.length; i++) {
+                        if (this.user.accounts[i].type === 'telegram') {
+                            this.account_telegram = this.user.accounts[i].address;
+                        }
+                        if (this.user.accounts[i].type === 'instagram') {
+                            this.account_instagram = this.user.accounts[i].address;
+                        }
+                        if (this.user.accounts[i].type === 'linkedin') {
+                            this.account_linkedin = this.user.accounts[i].address;
+                        }
+                        if (this.user.accounts[i].type === 'accountEmail') {
+                            this.account_email = this.user.accounts[i].address;
+                        }
+                        if (this.user.accounts[i].type === 'facebook') {
+                            this.account_facebook = this.user.accounts[i].address;
+                        }
+                        if (this.user.accounts[i].type === 'twitter') {
+                            this.account_twitter = this.user.accounts[i].address;
+                        }
+                    }
+
+                    for (var i = 0; i < this.user.schools.length; i++) {
+                        if (this.user.schools[i].type === 1) {
+                            this.v_school1 = this.user.schools[i].title;
+                            this.oldSchoolId1 = this.user.schools[i].id;
+                        }
+                        if (this.user.schools[i].type === 2) {
+                            this.v_school2 = this.user.schools[i].title;
+                            this.oldSchoolId2 = this.user.schools[i].id;
+                        }
+                        if (this.user.schools[i].type === 3) {
+                            this.v_school3 = this.user.schools[i].title;
+                            this.oldSchoolId3 = this.user.schools[i].id;
+                        }
+                    }
+
+                    /**vue validate**/
+                    this.$validator.localize('en', customMessages);
+
+
+                    this.croppa.addClipPlugin(function (ctx, x, y, w, h) {
+                        ctx.beginPath();
+                        ctx.arc(x + w / 2, y + h / 2, w / 2, 0, 2 * Math.PI, true);
+                        ctx.closePath()
+                    });
+
+                },
 
                 /*from register component*/
 
-                yearsLoop: [],
-                majors: [],
-                birthday: this.user.birthday,
-                provinces: [],
-                v_province: '',
-                cities: [],
-                v_city: '',
-                subCities: [],
-                v_subCity: '',
-                v_college: '',
-                v_major: '',
-                targetMajors: [],
-                v_yearNow: '',
-                flag_userStatus: '',
-                v_college_end1 : '',
-                v_yearEnd1: '',
-                v_majorEnd1: '',
-                flag_addMajor1: false,
-                flag_addMajor2: false,
-                v_college_end2 : '',
-                v_yearEnd2: '',
-                v_majorEnd2: '',
-                v_college_end3 : '',
-                v_yearEnd3: '',
-                v_majorEnd3: '',
-                dorms : [],
-                dormStatus: 'dorm-vru',
-                v_dorm: '',
-                v_provinceBorn: '',
-                v_cityBorn: '',
-                v_subCityBorn: '',
-                citiesBorn: [],
-                subCitiesBorn: [],
-                flag_gender: true,
-                v_gender : '',
-                genderArray: ['مرد' , 'زن'],
-                v_fromForeign : false,
-                v_school1: '',
-                v_school2: '',
-                v_school3: '',
-                flag_titleShow: '',
-                v_liveForeign: false,
-                reg_name: this.user.name,
-                reg_lastName: this.user.last_name,
-                reg_alias: this.user.alias_original,
-                reg_phone: this.user.phone,
-
-                createForm: {
-                    email: ''
+                getInitializeData: function () {
+                    axios.get('/api/panel/initial').then(res => {
+                        this.createYearsLoop(res.data.year);
+                        this.majors = res.data.majors;
+                        this.provinces = res.data.provinces;
+                        this.dorms = res.data.dorms;
+                    }).catch(err => {
+                        console.log(err);
+                    })
                 },
-                /*croppa*/
-                croppa: {},
-                sliderVal: 0,
-                sliderMin: 0,
-                sliderMax: 0,
-                /*end croppa*/
-                emailUniqueError: false,
-                aliasUniqueError: false,
-                majorNowRequiredError: false,
-                yearNowRequiredError: false,
-                majorEnd1RequiredError: false,
-                yearEnd1RequiredError: false,
-                schools: [],
-                accounts: [],
-                fileName: '',
-                flag_justRequiredFields: false,
-                flag_isRequired: false,
-                changeImage: false,
+
+                createYearsLoop: function (year) {
+                    for (var i = year; i >= 1370; i--) {
+                        this.yearsLoop.push(i);
+                    }
+                },
+
+                selectFocus: function (number) {
+                    this.flag_titleShow = number;
+                },
+
+                selectUnFocus: function () {
+                    this.flag_titleShow = '';
+                },
+
+                showCities: function (type = null) {
+                    var provinceId = '';
+                    if (type === 'born') {
+                        provinceId = this.v_provinceBorn.value
+                        this.v_cityBorn = ''
+                        this.v_subCityBorn = ''
+                    } else {
+                        provinceId = this.v_province.value
+                        this.v_city = ''
+                        this.v_subCity = ''
+                    }
+                    axios.get('/api/panel/getCities/' + provinceId).then(res => {
+                        if (type === 'born') {
+                            this.citiesBorn = res.data.cities;
+                        } else {
+                            this.cities = res.data.cities;
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                },
+
+                showSubCities: function (type = null) {
+                    var cityId = '';
+                    if (type === 'born') {
+                        this.v_subCityBorn = ''
+                        cityId = this.v_cityBorn.value
+                    } else {
+                        this.v_subCity = ''
+                        cityId = this.v_city.value
+                    }
+
+                    axios.get('/api/panel/getSubCities/' + cityId).then(res => {
+                        if (type === 'born') {
+                            this.subCitiesBorn = res.data.subCities;
+                        } else {
+                            this.subCities = res.data.subCities;
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                },
+
+                showMajors: function (type = null) {
+                    if (type === 'now') {
+                        this.v_major = '';
+                    } else if (type === 'end1') {
+                        this.v_majorEnd1 = '';
+                    } else if (type === 'end2') {
+                        this.v_majorEnd2 = '';
+                    } else if (type === 'end3') {
+                        this.v_majorEnd3 = '';
+                    }
+
+                },
+
+                addMajor: function (number) {
+                    if (number === 1) {
+                        this.flag_addMajor1 = true;
+                    } else if (number === 2) {
+                        this.flag_addMajor2 = true;
+                    }
+                },
+
+                /**vue validate**/
+                validateBeforeSubmit() {
+                    this.$validator.validateAll();
+                },
+
+                /**image croppa**/
+                upload(type) {
+                    var url = '';
+                    if (type === 'header') {
+                        url = 'http://localhost:8000/api/upload/header';
+                    } else if (type === 'profile') {
+                        url = 'http://localhost:8000/api/upload';
+                    }
+
+                    if (!this.croppa.hasImage()) {
+                        alert('تصویری برای بارگذاری وجود ندارد');
+                        return
+                    }
+
+                    this.croppa.generateBlob((blob) => {
+                        var fd = new FormData();
+
+                        fd.append('file', blob, this.fileName);
+                        fd.append('registering', 'no');
+                        $.ajax({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            url: url,
+                            data: fd,
+                            type: 'POST',
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                if (type === 'header') {
+                                    sessionStorage.setItem('header-image', data.path);
+                                } else if (type === 'profile') {
+                                    sessionStorage.setItem('profile-image', data.path);
+                                }
+
+                            }
+                        })
+                    })
+
+                },
+
+
+                handleFileChoose(file) {
+                    this.fileName = file.name;
+                },
+
+                showRequired: function () {
+                    this.flag_justRequiredFields = !this.flag_justRequiredFields
+                },
+
+                onNewImage() {
+                    this.sliderVal = this.croppa.scaleRatio
+                    this.sliderMin = this.croppa.scaleRatio / 2
+                    this.sliderMax = this.croppa.scaleRatio * 2
+                },
+
+                onSliderChange(evt) {
+                    var increment = evt.target.value
+                    this.croppa.scaleRatio = +increment
+                },
+
+                onZoom() {
+                    // To prevent zooming out of range when using scrolling to zoom
+                    // if (this.sliderMax && this.croppa.scaleRatio >= this.sliderMax) {
+                    //   this.croppa.scaleRatio = this.sliderMax
+                    // } else if (this.sliderMin && this.croppa.scaleRatio <= this.sliderMin) {
+                    //   this.croppa.scaleRatio = this.sliderMin
+                    // }
+
+                    this.sliderVal = this.croppa.scaleRatio
+                },
 
                 /*end register component*/
-                oldProvince: null,
-                oldCity: null,
-                oldSubCity: null,
-                oldCountry: null,
-                flag_changeCity: false,
-                flag_changeBirthCity: false,
-                flag_changeAvatar: false,
-                postItems: 15,
-                flag_hasMore: false,
-            }
-        },
-        components: {
-            AtomSpinner,
-            datePicker: VuePersianDatetimePicker,
-        },
-        props: [
-            'user' , 'avatars'
-        ],
-        mounted() {
-            if (sessionStorage.getItem('tab_panel')){
-                this.changeTab(sessionStorage.getItem('tab_panel'));
-            }
 
-            if (this.postItems >= this.user.posts.length){
-                this.flag_hasMore = false;
-            } else {
-                this.flag_hasMore = true;
-            }
+                changeCity: function () {
+                    this.flag_changeCity = true;
+                },
 
-            this.getInitializeData();
+                changeAvatar: function () {
+                    this.flag_changeAvatar = true;
+                },
 
-            /**vue validate**/
-            this.$validator.localize('en', customMessages);
+                changeBirthCity: function () {
+                    this.flag_changeBirthCity = true;
+                },
 
+                showMorePosts: function () {
 
-            this.croppa.addClipPlugin(function (ctx, x, y, w, h) {
-                ctx.beginPath();
-                ctx.arc(x + w / 2, y + h / 2, w / 2, 0, 2 * Math.PI, true)
-                ctx.closePath()
-            });
-
-            if(this.user.gender === 1){
-                this.v_gender = 'مرد'
-            } else if(this.user.gender === 0){
-                this.v_gender = 'زن'
-            }
-
-            for (var i=0; i<this.user.places.length; i++){
-                if (this.user.places[i].type === 'live'){
-                    if (this.user.places[i].country){
-                        this.oldCountry = this.user.places[i].country;
-                    } else {
-                        this.oldProvince = this.user.places[i].province.title;
-                        this.oldCity = this.user.places[i].city.title;
-                        this.oldSubCity = this.user.places[i].subcity.title;
-                    }
-                } else if (this.user.places[i].type === 'birth') {
-                    if (this.user.places[i].country){
-                        this.oldCountry = this.user.places[i].country;
-                    } else {
-                        this.oldBirthProvince = this.user.places[i].province.title;
-                        this.oldBirthCity = this.user.places[i].city.title;
-                        this.oldBirthSubCity = this.user.places[i].subcity.title;
-                    }
-                }
-               
-            }
-
-            if(this.user.status === 'now'){
-                this.flag_userStatus = 'now';
-            }
-
-            this.dormStatus = this.user.location;
-
-            for (var i=0; i<this.user.categories.length; i++){
-                if (this.user.categories[i].sort === 'dorm'){
-                    this.v_dorm = this.user.categories[i].titles;
-                }
-            }
-
-            this.v_selfDescription = this.user.description;
-            this.v_favorites_book = this.user.favorites_book;
-            this.v_favorites = this.user.favorites;
-            this.cv = this.user.cv;
-            this.v_favorites_music = this.user.favorites_music;
-            this.v_favorites_movie = this.user.favorites_movie;
-            this.v_skills = this.user.skills;
-
-            for (var i=0; i<this.user.accounts.length; i++){
-                if (this.user.accounts[i].type === 'telegram'){
-                    this.account_telegram = this.user.accounts[i].address;
-                }
-                if (this.user.accounts[i].type === 'instagram'){
-                    this.account_instagram = this.user.accounts[i].address;
-                }
-                if (this.user.accounts[i].type === 'linkedin'){
-                    this.account_linkedin = this.user.accounts[i].address;
-                }
-                if (this.user.accounts[i].type === 'accountEmail'){
-                    this.account_email = this.user.accounts[i].address;
-                }
-                if (this.user.accounts[i].type === 'facebook'){
-                    this.account_facebook = this.user.accounts[i].address;
-                }
-                if (this.user.accounts[i].type === 'twitter'){
-                    this.account_twitter = this.user.accounts[i].address;
-                }
-            }
-
-
-
-        },
-
-
-
-        watch : {
-
-            reg_alias:function(val) {
-                if (val === sessionStorage.getItem('uniqueAlias')) {
-                    this.aliasUniqueError = true;
-                } else {
-                    this.aliasUniqueError = false;
-                }
-            },
-
-
-            flag_userStatus:function (val) {
-                if (val !== 'now' && this.flag_justRequiredFields === true){
-                    this.flag_isRequired = true;
-                } else {
-                    this.flag_isRequired = false;
-                }
-            },
-
-        },
-        methods: {
-
-            changeTab:function(tab){
-                this.$Progress.start();
-                setTimeout(() => {
-                    this.$Progress.finish()
-                },1500);
-                Object.keys(this.flag_tabs).forEach(key => this.flag_tabs[key] = false);
-                this.flag_tabs[tab] = true;
-                sessionStorage.setItem('tab_panel' , tab);
-
-            },
-
-            /*from register component*/
-
-            getInitializeData: function(){
-                axios.get('/api/register/initial').then(res=>{
-                    this.createYearsLoop(res.data.year);
-                    this.majors = res.data.majors;
-                    this.provinces = res.data.provinces;
-                    this.dorms = res.data.dorms;
-                }).catch(err=>{
-                    console.log(err);
-                })
-            },
-
-            createYearsLoop: function (year) {
-                for (var i=year; i>=1370; i--){
-                    this.yearsLoop.push(i);
-                }
-            },
-
-            selectFocus: function (number) {
-                this.flag_titleShow = number;
-            },
-
-            selectUnFocus: function () {
-                this.flag_titleShow = '';
-            },
-
-            showCities: function (type=null) {
-                var provinceId = '';
-                if (type === 'born'){
-                    provinceId = this.v_provinceBorn.value
-                    this.v_cityBorn = ''
-                    this.v_subCityBorn = ''
-                } else {
-                    provinceId = this.v_province.value
-                    this.v_city = ''
-                    this.v_subCity = ''
-                }
-                axios.get('/api/register/getCities/' + provinceId).then(res=>{
-                    if (type === 'born'){
-                        this.citiesBorn = res.data.cities;
-                    } else {
-                        this.cities = res.data.cities;
-                    }
-                }).catch(err=>{
-                    console.log(err);
-                })
-            },
-
-            showSubCities: function (type=null) {
-                var cityId = '';
-                if (type === 'born'){
-                    this.v_subCityBorn = ''
-                    cityId = this.v_cityBorn.value
-                } else {
-                    this.v_subCity = ''
-                    cityId = this.v_city.value
-                }
-
-                axios.get('/api/register/getSubCities/' + cityId).then(res=>{
-                    if (type === 'born'){
-                        this.subCitiesBorn = res.data.subCities;
-                    } else {
-                        this.subCities = res.data.subCities;
-                    }
-                }).catch(err=>{
-                    console.log(err);
-                })
-            },
-
-            showMajors: function (type=null) {
-                if (type === 'now'){
-                    this.v_major = '';
-                } else if (type === 'end1'){
-                    this.v_majorEnd1 = '';
-                } else  if (type === 'end2'){
-                    this.v_majorEnd2 = '';
-                } else if (type === 'end3'){
-                    this.v_majorEnd3 = '';
-                }
-
-            },
-
-            addMajor: function (number) {
-                if (number === 1){
-                    this.flag_addMajor1 = true;
-                } else if (number === 2){
-                    this.flag_addMajor2 = true;
-                }
-            },
-
-            /**vue validate**/
-            validateBeforeSubmit() {
-                this.$validator.validateAll();
-            },
-
-            /**image croppa**/
-            upload() {
-                if (!this.croppa.hasImage()) {
-                    alert('no image to upload')
-                    return
-                }
-
-                this.croppa.generateBlob((blob) => {
-                    var fd = new FormData()
-
-                    fd.append('file', blob, this.fileName)
-                    fd.append('other', 'blahblahblah')
-                    $.ajax({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        url: 'http://localhost:8000/api/upload',
-                        data: fd,
-                        type: 'POST',
-                        processData: false,
-                        contentType: false,
-                        success: function(data) {
-                            alert(data)
+                    this.flag_loader = true;
+                    setTimeout(() => {
+                        this.flag_loader = false;
+                        this.postItems = this.postItems + 15;
+                        if (this.postItems >= this.user.posts.length) {
+                            this.flag_hasMore = false;
                         }
+                    }, 2500);
+                },
+
+                changeHeaderImage: function () {
+                    this.flag_changeProfileImage = false;
+                    this.flag_changeHeaderImage = true;
+                    this.croppa.refresh();
+                },
+
+                changeProfileImage: function () {
+                    this.flag_changeHeaderImage = false;
+                    this.flag_changeProfileImage = true;
+                    this.croppa.refresh();
+                },
+
+                setHeaderImage: function () {
+                    this.flag_headerUploading = true;
+                    this.upload('header');
+                            this.headerInterval = setInterval(() => {
+                        if (sessionStorage.getItem('header-image')) {
+                            this.userHeaderPath = '/images/lg/' + sessionStorage.getItem('header-image');
+                            this.$notify({
+                                group: 'alert-panel',
+                                type: 'success',
+                                duration: 15000,
+                                text: 'تصویر زمینه ثبت شد'
+                            });
+                            sessionStorage.removeItem('header-image');
+                            this.flag_headerUploading = false;
+                            this.flag_hasHeaderImage = true;
+                            clearInterval(this.headerInterval);
+                        }
+
+                    }, 100)
+                },
+
+                deleteHeaderImage: function () {
+                    axios.post('/api/userHeader/delete').then(res => {
+                        this.userHeaderPath = '/frontend/img/top-header1.jpg';
+                        this.flag_hasHeaderImage = false;
+                        this.$notify({
+                            group: 'alert-panel',
+                            type: 'success',
+                            duration: 15000,
+                            text: 'تصویر زمینه شما حذف شد'
+                        });
+                    }).catch(err => {
                     })
-                })
+                },
 
-            },
+                setProfileImage: function () {
+                    this.flag_ProfileUploading = true;
+                    this.upload('profile');
+                        this.profileInterval = setInterval(() => {
+                            if (sessionStorage.getItem('profile-image')) {
+                                this.flag_profileChanged = true;
+                                this.flag_hasProfileImage = true;
+                                this.userProfilePath = '/images/md/' + sessionStorage.getItem('profile-image');
+                                this.$notify({
+                                    group: 'alert-panel',
+                                    type: 'success',
+                                    duration: 15000,
+                                    text: 'تصویر پروفایل شما ثبت شد'
+                                });
+                                sessionStorage.removeItem('profile-image');
+                                this.flag_ProfileUploading = false;
+                                clearInterval(this.profileInterval);
+                            }
+                        } , 1000);
 
-            handleFileChoose(file) {
-                this.fileName = file.name;
-            },
 
-            showRequired: function () {
-                this.flag_justRequiredFields = !this.flag_justRequiredFields
-            },
+                },
 
-            onNewImage() {
-                this.sliderVal = this.croppa.scaleRatio
-                this.sliderMin = this.croppa.scaleRatio / 2
-                this.sliderMax = this.croppa.scaleRatio * 2
-            },
+                deleteProfileImage: function () {
+                    axios.post('/api/userProfile/delete').then(res => {
+                        this.userProfilePath = this.avatars['user_avatar_unknown'];
+                        this.flag_hasProfileImage = false;
+                        this.$notify({
+                            group: 'alert-panel',
+                            type: 'success',
+                            duration: 15000,
+                            text: 'تصویر زمینه شما حذف شد'
+                        });
+                    }).catch(err => {
+                    })
+                },
 
-            onSliderChange(evt) {
-                var increment = evt.target.value
-                this.croppa.scaleRatio = +increment
-            },
-
-            onZoom() {
-                // To prevent zooming out of range when using scrolling to zoom
-                // if (this.sliderMax && this.croppa.scaleRatio >= this.sliderMax) {
-                //   this.croppa.scaleRatio = this.sliderMax
-                // } else if (this.sliderMin && this.croppa.scaleRatio <= this.sliderMin) {
-                //   this.croppa.scaleRatio = this.sliderMin
-                // }
-
-                this.sliderVal = this.croppa.scaleRatio
-            },
-
-            /*end register component*/
-
-            changeCity:function () {
-                this.flag_changeCity = true;
-            },
-
-            changeAvatar:function () {
-                this.flag_changeAvatar = true;
-            },
-
-            changeBirthCity:function () {
-                this.flag_changeBirthCity = true;
-            },
-
-            showMorePosts:function(){
-
-                this.flag_loader = true;
-                setTimeout(() => {
-                    this.flag_loader = false;
-                    this.postItems = this.postItems + 15;
-                    if (this.postItems >= this.user.posts.length){
-                        this.flag_hasMore = false;
+                submitPersonalInformation: function () {
+                    if (this.reg_name === '') {
+                        this.reg_name = ''
                     }
-                }, 2500);
-            },
+                    if (this.reg_lastName === '') {
+                        this.reg_lastName = ''
+                    }
 
+                    var gender = '';
+                    if (this.v_gender === 'مرد') {
+                        gender = 1;
+                    } else if (this.v_gender === 'زن') {
+                        gender = 0;
+                    }
+
+                    if (this.v_liveForeign) {
+                        this.v_province = '';
+                        this.v_city = '';
+                        this.v_subCity = '';
+                    }
+
+                    if (this.dormStatus !== 'dorm-vru') {
+                        this.v_dorm = '';
+                    }
+
+                    if (this.v_fromForeign) {
+                        this.v_provinceBorn = ''
+                        this.v_cityBorn = ''
+                        this.v_subCityBorn = ''
+                    }
+
+
+                    axios.post('/panel/edit/personal', {
+                        'name': this.reg_name,
+                        'last_name': this.reg_lastName,
+                        'alias': this.reg_alias,
+                        'phone': this.reg_phone,
+                        'liveForeign': this.reg_liveForeign,
+                        'isLiveForeign': this.v_liveForeign,
+                        'birthday': this.birthday,
+                        'gender': gender,
+                        'provinceLive': this.v_province.value,
+                        'cityLive': this.v_city.value,
+                        'subCityLive': this.v_subCity.value,
+                        'birthPlaceProvince': this.v_provinceBorn.value,
+                        'birthPlaceCity': this.v_cityBorn.value,
+                        'birthPlaceSubCity': this.v_subCityBorn.value,
+                        'isBornedForeign': this.v_fromForeign,
+                        'foreignBirthPlace': this.v_foreignBirthPlace,
+                        'school1': this.v_school1,
+                        'school2': this.v_school2,
+                        'school3': this.v_school3,
+                        'birthId': this.oldBirthPlaceId,
+                        'liveId': this.oldLivePlaceId,
+                        'schoolId1': this.oldSchoolId1,
+                        'schoolId2': this.oldSchoolId2,
+                        'schoolId3': this.oldSchoolId3,
+
+                    }).then(res => {
+                        if (res.data.result === 'updated') {
+                            this.$notify({
+                                group: 'alert-panel',
+                                type: 'success',
+                                duration: 20000,
+                                text: 'اطلاعات پروفایل شما به روزرسانی شد'
+                            });
+
+                            var changes = res.data.changes;
+                            for (var i = 0; i < changes.length; i++) {
+                                if (changes[i] === 'live') {
+                                    this.flag_liveChanged = true;
+                                }
+                                if (changes[i] === 'birth') {
+                                    this.flag_birthChanged = true;
+                                }
+                            }
+
+                        }
+                    }).catch(err => {
+
+                        if (this.reg_name === '') {
+                            this.reg_name = ''
+                            this.$notify({
+                                group: 'alert-panel',
+                                type: 'error',
+                                duration: 20000,
+                                text: 'نام خود را وارد کنید'
+                            })
+                        }
+                        if (this.reg_lastName === '') {
+                            this.reg_lastName = ''
+                            this.$notify({
+                                group: 'alert-panel',
+                                type: 'error',
+                                duration: 20000,
+                                text: 'نام خانوادگی خود را وارد کنید'
+                            })
+                        }
+
+
+                        if (err.response.data.errors.alias) {
+
+                            this.$notify({
+                                group: 'reg',
+                                type: 'error',
+                                duration: 20000,
+                                text: 'نام مستعاری که وارد کرده اید قبلا توسط کاربر دیگری در سایت استفاده شده است'
+                            })
+
+                            this.aliasUniqueError = true;
+                            sessionStorage.removeItem('uniqueAlias');
+                            sessionStorage.setItem('uniqueAlias', this.reg_alias)
+                        }
+
+                    })
+
+
+                },
+
+                submitEducationInformation: function () {
+                    axios.post('/panel/edit/education', {
+                        'description': this.v_editEducationRequest,
+                        'dormStatus': this.dormStatus,
+                        'dorm': this.v_dorm.id
+                    }).then(res => {
+                        this.$notify({
+                            group: 'alert-panel',
+                            type: 'success',
+                            duration: 15000,
+                            text: 'تغییرات مورد نظر اعمال شد'
+                        });
+                    }).catch(err => {
+                    })
+                },
+
+                cancelEducationInformation: function () {
+
+                },
+
+                submitHobbiesInformation: function () {
+
+                    var description = $('.self-description').html();
+                    var books = $('.favorite-books').html();
+                    var favorites = $('.favorites').html();
+                    var cv = $('.user-cv').html();
+                    var musics = $('.favorite-musics').html();
+                    var movies = $('.favorite-movies').html();
+                    var skills = $('.favorite-skills').html();
+
+                    axios.post('/panel/edit/hobbies', {
+                        'selfDescription': description,
+                        'favorites': favorites,
+                        'cv': cv,
+                        'skills': skills,
+                        'favorites_book': books,
+                        'favorites_music': musics,
+                        'favorites_movie': movies
+                    }).then(res => {
+                        this.$notify({
+                            group: 'alert-panel',
+                            type: 'success',
+                            duration: 15000,
+                            text: 'تغییرات مورد نظر اعمال شد'
+                        });
+                    }).catch(err => {
+                    })
+                },
+
+                cancelHobbiesInformation: function () {
+
+                },
+
+                submitAccountsEdit: function () {
+
+                    this.accounts = {
+                        'telegram': this.account_telegram,
+                        'instagram': this.account_instagram,
+                        'linkedin': this.account_linkedin,
+                        'accountEmail': this.account_email,
+                        'facebook': this.account_facebook,
+                        'twitter': this.account_twitter,
+                    }
+
+                    axios.post('/panel/edit/accounts', {
+                        'accounts': this.accounts,
+                    }).then(res => {
+                        this.$notify({
+                            group: 'alert-panel',
+                            type: 'success',
+                            duration: 15000,
+                            text: 'تغییرات مورد نظر اعمال شد'
+                        });
+                    }).catch(err => {
+                    })
+                },
+
+                cancelAccountsEdit: function () {
+
+                },
+
+                submitPasswordEdit: function () {
+
+                    axios.post('/panel/edit/password', {
+                        'password': this.reg_password,
+                        'password_confirmation': this.reg_cPassword,
+                    }).then(res => {
+                        this.$notify({
+                            group: 'alert-panel',
+                            type: 'success',
+                            duration: 15000,
+                            text: 'رمز عبور شما با موفقیت تغییر یافت'
+                        });
+                    }).catch(err => {
+                    })
+                },
+
+                cancelPasswordEdit: function () {
+
+                },
+
+                initNotifications: function () {
+                    axios.post('/api/panel/notifications/alerts').then(res => {
+                        this.notifications2 = res.data;
+                        this.unreadNotifications = 0;
+                        for (var i = 0; i < res.data.length; i++) {
+                            if (!res.data[i]['has_seen']){
+                                this.unreadNotifications++;
+                            }
+                        }
+                    }).catch(err => {
+                    })
+                },
+
+                moreNotifications: function () {
+                    this.notificationItems += 10;
+                    this.checkHasMoreNotifications();
+                },
+
+                checkHasMoreNotifications: function () {
+                    this.flag_showMoreNotifications = (this.notifications2.length > this.notificationItems);
+                },
+
+                readNotifications: function (notifications, items = null) {
+                    axios.post('/api/notifications/read', {
+                        'notifications': notifications,
+                        'items': items
+                    }).then(res => {
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                },
+
+                initMessages: function () {
+                    axios.get('/api/panel/notifications/messages').then(res => {
+                        this.audienceMessages = res.data.audience;
+
+                    }).catch(err => {
+                    })
+                },
+
+                selectChat: function (audienceId) {
+                    axios.post('/api/panel/message', {'audienceId': audienceId}).then(res => {
+                        this.selectedChatArray = res.data;
+                        this.seenAudienceMessages(audienceId);
+                            setTimeout(() => {
+                                this.scrollToEnd();
+                            },1100);
+                    }).catch(err => {
+                    })
+                },
+
+                deleteCity: function (type) {
+                    axios.post('/panel/delete/city', {
+                        'type': type,
+                    }).then(res => {
+                        if (type === 'live') {
+                            this.flag_liveChanged = true;
+                        } else if (type === 'birth') {
+                            this.flag_birthChanged = true;
+                        }
+                        this.$notify({
+                            group: 'alert-panel',
+                            type: 'success',
+                            duration: 15000,
+                            text: 'تغییرات مورد نظر اعمال شد'
+                        });
+                    }).catch(err => {
+                    })
+                },
+
+                seenAudienceMessages: function (audienceId) {
+                    axios.post('/panel/messages/seen', {
+                        'audienceId': audienceId,
+                    }).then(res => {
+                        for (var i=0; i<this.audienceMessages.length; i++){
+                            if (this.audienceMessages[i].audience_id === audienceId){
+                                this.audienceMessages[i]['unseen_items'] = 0;
+                            }
+                        }
+                    }).catch(err => {
+                    })
+                },
+
+                scrollToEnd(){
+                    var container = document.querySelector(".messages-scroll");
+                    var scrollHeight = container.scrollHeight;
+                    container.scrollTop = scrollHeight;
+                },
+
+                sendMessage:function (audienceId) {
+                    axios.post('/panel/messages/send', {
+                        'audienceId': audienceId,
+                        'description': this.v_message
+                    }).then(res => {
+                        this.v_message ='';
+                        this.selectChat(audienceId);
+                        this.scrollToEnd();
+                    }).catch(err => {
+                    })
+                },
+
+                initFriendRequests:function () {
+                    axios.get('/panel/friends/requests').then(res => {
+
+                    }).catch(err => {
+                    })
+                }
+
+
+            }
         }
-    }
+
+    /*});*/
 </script>

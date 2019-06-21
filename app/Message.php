@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Message extends Model
 {
@@ -21,7 +22,7 @@ class Message extends Model
         return $this->morphMany(Seen::class , 'seenable');
     }
 
-    protected $appends=['full_date' , 'message'];
+    protected $appends=['full_date' , 'message' , 'audience' , 'date'];
 
     public function getFullDateAttribute()
     {
@@ -32,6 +33,21 @@ class Message extends Model
     public function getMessageAttribute()
     {
         return '';
+    }
+
+    public function getAudienceAttribute()
+    {
+        if ($this->sender_id == Auth::id()){
+            $audience = $this->receiver;
+        } elseif ($this->receiver_id == Auth::id()){
+            $audience = $this->sender;
+        }
+        return $audience;
+    }
+
+    public function getDateAttribute()
+    {
+        return \Hekmatinasser\Verta\Verta::instance($this->created_at)->formatDifference();
     }
 
 }

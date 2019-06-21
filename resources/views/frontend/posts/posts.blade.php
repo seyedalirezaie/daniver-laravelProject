@@ -13,7 +13,7 @@
         <notifications group="auth"
                        position="bottom left"
                        width="400"
-                       :speed="500" />
+                       :speed="500"></notifications>
     </div>
 
 
@@ -42,27 +42,6 @@
             });
             $('.photos-path').val(srcArray);
         });
-
-        $(document).ready(function () {
-            setTimeout(function () {
-                $(".emoji-editor").emojioneArea({
-                    attributes: {
-                        dir: "rtl",
-                    }
-                });
-            },4000);
-        });
-
-
-
-
-
-
-   /*     $(document).ready(function () {
-            setTimeout(function () {
-                CKEDITOR.replace( 'editor1' );
-            },4000)
-        })*/
 
 
     </script>

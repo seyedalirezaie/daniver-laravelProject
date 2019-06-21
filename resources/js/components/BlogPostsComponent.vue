@@ -9,44 +9,41 @@
 
             <article class="hentry blog-post blog-post-v3">
 
-                <div class="post-thumb">
-                    <img v-if="post.photo_preview !== null" :src="'/images/md/'+post.photo_preview.path" :alt="post.title" :title="post.title">
-                    <a href="#" class="post-category bg-blue-light fs0-8">{{post.category.title}}</a>
-                </div>
+                <a class="post-thumb img-blog-main" :href="post.category.url+'/posts/'+post.category.slug+'/'+post.slug">
+                    <img :src="post.path_md" :alt="post.title" :title="post.title">
+                    <span class="dark-on-img"></span>
+                    <a href="#" class="post-category bg-purple fs0-8">{{post.category.title}}</a>
+                </a>
 
-                <div class="post-content position-relative">
+                <div class="post-content position-relative post-blog-main">
 
-                    <div class="author-date">
+                    <div class="author-date p-1 rounded" dir="rtl">
                         نوشته
-                        <a class="h6 post__author-name fn" href="#">{{post.user.family}}</a>
+                        <a class="h6 post__author-name fn ml-3 mr-1 fw-400" :href="'/profile/'+post.user.url">{{post.user.family}}</a>
                         <div class="post__date">
+                            تاریخ انتشار
                             <time class="published" datetime="2017-03-24T18:18">
-                                {{post.date}}
+                                {{post.displayed_at}}
                             </time>
                         </div>
                     </div>
 
-                    <a href="#" class="h4 post-title">{{post.title}}</a>
+                    <a :href="post.category.url+'/posts/'+post.category.slug+'/'+post.slug" class="h4 post-title">{{post.title}}</a>
                     <p v-html="post.description_preview">
                     </p>
 
                     <div class="post-additional-info inline-items position-absolute">
 
-                        <div class="names-people-likes">
-                            26
-                        </div>
-                        <div class="names-people-likes">
-                            26
-                        </div>
-                        <div class="names-people-likes">
-                            26
-                        </div>
+                        <span class="post-add-icon inline-items">
+                                <i class="far fa-heart fs1-2"></i>
+                                <span>{{post.likes_count}}</span>
+                            </span>
 
-                        <div class="comments-shared">
-                            <a href="#" class="post-add-icon inline-items">
-                                <svg class="olymp-speech-balloon-icon"><use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-speech-balloon-icon"></use></svg>
-                                <span>0</span>
-                            </a>
+                        <div class="comments-shared mr-3 d-inline-block">
+                                <span class="post-add-icon inline-items">
+                                    <i class="far fa-comment fs1-2"></i>
+                                    <span>{{post.comments_count}}</span>
+                                </span>
                         </div>
 
                     </div>
@@ -59,10 +56,20 @@
         </div>
 
 
-        <a @click="showMorePosts()" href="#" class="btn btn-md-2 btn-border-think custom-color c-grey full-width">پست های بیشتر
+        <div v-show="flag_hasMore" @click="showMorePosts()" class="btn btn-md-2 btn-border-think custom-color c-grey full-width btn-more-posts-blog">پست های بیشتر
             <div class="ripple-container">
+                <div v-show="flag_loader" class="spring-spinner loader-wrapper">
+                    <div class="spring-spinner-part top">
+                        <div class="spring-spinner-rotator"></div>
+                    </div>
+                    <div class="spring-spinner-part bottom">
+                        <div class="spring-spinner-rotator"></div>
+                    </div>
+                </div>
+
+
         </div>
-        </a>
+        </div>
 
 
     </div>
@@ -78,13 +85,12 @@
     export default {
         data(){
             return{
-                postItems: 15,
                 flag_loader: false,
                 flag_hasMore: false,
                 postsList: [],
                 posts: [],
-                hasNextPage: '',
-                v_searchQuery: ''
+                v_searchQuery: '',
+                currentPage: 1
             }
         },
         components: {
@@ -94,13 +100,6 @@
         ],
         mounted() {
             this.getPosts();
-
-            /*if (this.postItems >= this.posts.length){
-                this.flag_hasMore = false;
-            } else {
-                this.flag_hasMore = true;
-            }*/
-
         },
 
         watch : {
@@ -109,31 +108,28 @@
         methods: {
 
             getPosts:function () {
-                var n = 1;
-                axios.get('/api/blog/posts' + this.v_searchQuery.trim() + '?page=' + n).then(res => {
+                axios.get('/api/blog/posts' + this.v_searchQuery.trim() + '?page=' + this.currentPage).then(res => {
                     this.postsList = [];
                     this.postsList = res.data.posts.data;
                     for (var i = 0; i < this.postsList.length; i++) {
                         this.posts.push(this.postsList[i])
                     }
-                    this.hasNextPage = res.data.posts.next_page_url;
+                    this.flag_hasMore = res.data.posts.next_page_url;
+                    this.flag_hasMore = (res.data.posts.next_page_url !== null);
                     this.flag_loader = false;
                 }).catch(err => {
                     console.log(err);
                 })
             },
 
-           /* showMorePosts:function(){
-
+            showMorePosts:function(){
+                this.currentPage++;
                 this.flag_loader = true;
                 setTimeout(() => {
+                    this.getPosts();
                     this.flag_loader = false;
-                    this.postItems = this.postItems + 15;
-                    if (this.postItems >= this.posts.length){
-                        this.flag_hasMore = false;
-                    }
-                }, 2500);
-            },*/
+                }, 3000);
+            },
 
         }
     }

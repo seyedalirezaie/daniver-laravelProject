@@ -239,7 +239,9 @@ class PostController extends Controller
 
 
             $posts = Post::with('user.photo', 'user.categories' , 'likes.user.photo' , 'category')->withCount(['likes' , 'comments'])->orderBy($orderFilter , 'DESC')
-                ->where('active' , 1)
+                ->when(1==1 , function ($q) use($categoryId){
+                    $q->where('category_id' , '=' , $categoryId)->where('active' , 1);
+                })
                 /*check time filters*/
                 ->when($timeFilter != 'all' , function ($q) use ($timeFilter){
                         if ($timeFilter == 'today') {
@@ -321,8 +323,6 @@ class PostController extends Controller
                         });
                     }
 
-                })->when(1==1 , function ($q) use($categoryId){
-                    $q->where('category_id' , $categoryId);
                 })
                 ->paginate($items);
 

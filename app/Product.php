@@ -20,4 +20,9 @@ class Product extends Model
     {
         return $this->hasMany(Photo::class);
     }
+
+    public function bookmarks()
+    {
+        return $this->morphMany(Bookmark::class , 'bookmarkable');
+    }
 }

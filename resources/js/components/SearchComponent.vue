@@ -14,19 +14,17 @@
 
             <!-- W-Friend-Pages-Added -->
 
-            <ul v-show="!flag_closeSearchBox" @scroll="onScroll" class="widget w-friend-pages-added notification-list friend-requests search-users-header" style="overflow-y: scroll; max-height: 350px!important;">
+            <ul v-slimscroll="options" v-show="!flag_closeSearchBox" @scroll="onScroll" class="widget w-friend-pages-added notification-list friend-requests search-users-header">
                 <li v-for="(user , index) in users" v-if="index < showItemsNumber" class="inline-items">
                     <div class="author-thumb">
                         <img class="img-search-hearder" v-if="user.photo !== null" :src="'/images/sm/'+user.photo.path" alt="author">
                     </div>
                     <div class="notification-event">
-                        <a href="#" class="h6 notification-friend">{{user.family}}</a>
+                        <a :href="'/profile/'+user.url" target="_blank" class="h6 notification-friend">{{user.family}}</a>
                         <span v-if="user.alias_original !== null" href="#" class="fs0-75"> ({{user.alias_original}}) </span>
                         <span v-for="major in user.categories" v-if="major.sort==='major' && major.pivot.status===1" class="chat-message-item d-block">{{major.titles}} / {{major.pivot.year}}</span>
                         <span v-for="major in user.categories" v-if="major.sort==='major' && major.pivot.status===2" class="chat-message-item d-block">{{major.titles}} / {{major.pivot.year}}</span>
                     </div>
-
-
                 </li>
 
             </ul>
@@ -58,8 +56,8 @@
     /*click outside element*/
     import { mixin as clickaway } from 'vue-clickaway';
 
-
-
+    import VueSlimScroll from 'vue-slimscroll'
+    Vue.use(VueSlimScroll);
 
     export default {
         data(){
@@ -72,12 +70,25 @@
                 listUsers: [],
                 v_searchQuery: '',
                 flag_closeSearchBox: true,
-                flag_doSearch: null
+                flag_doSearch: null,
+                /*slim scroll*/
+                options:{
+                    height:'400px',
+                    size: '8px',
+                    alwaysVisible: true,
+                    position: 'left',
+                    disableFadeOut: true,
+                    railOpacity: 0.1,
+                    railColor: '#0b82b1',
+                }
+                /*end slim scroll*/
+
+
             }
         },
         components: {
             Multiselect,
-            AtomSpinner
+            AtomSpinner,
         },
         mixins: [ clickaway ],
         props: [
@@ -152,10 +163,12 @@
 
             away: function() {
                 this.flag_closeSearchBox = true;
+                $('.slimScrollDiv').fadeOut();
             },
 
             showSearchBox: function () {
                 this.flag_closeSearchBox = false;
+                $('.slimScrollDiv').fadeIn();
             }
 
 

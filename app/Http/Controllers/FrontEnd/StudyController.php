@@ -14,13 +14,26 @@ class StudyController extends Controller
     {
         $majors = Category::with('childrenRecursive' , 'photo')->withCount(['childrenRecursive'])->whereSort('major')->where('parent_id' , 1)->get();
 
+        $majors = $majors->sortByDesc(function ($element) {
+            return $element['date_posts'];
+        })->values()->all();
+
         return view('frontend.study.index' , compact(['majors']));
     }
 
     public function college($slug)
     {
-        $majors = Category::with('childrenRecursive')->whereSlug($slug)->first();
-        return view('frontend.study.college' , compact(['majors']));
+        $major = Category::with('childrenRecursive' , 'photo')->whereSlug($slug)->first();
+
+        $majorTitle = $major->title;
+
+        $majors = $major->childrenRecursive;
+
+        $majors = $majors->sortByDesc(function ($element) {
+            return $element['latest_action'];
+        })->values()->all();
+
+        return view('frontend.study.college' , compact(['majors' , 'majorTitle']));
     }
 
     public function posts($slug)
@@ -35,6 +48,6 @@ class StudyController extends Controller
 
         $category = Category::whereSlug($slug)->first();
         $categoryId = $category['id'];
-        return view('frontend.study.posts' , compact(['categoryId' , 'year']));
+        return view('frontend.posts.posts' , compact(['categoryId' , 'year']));
     }
 }

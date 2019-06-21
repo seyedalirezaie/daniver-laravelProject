@@ -21,7 +21,7 @@ class UserController extends Controller
     public function apiCheckAuth()
     {
         if (Auth::check()){
-            $user = User::with('photo')->whereId(Auth::id())->first();
+            $user = User::with('photo' , 'bookmarks')->whereId(Auth::id())->first();
             return ['auth'=>'yes' , 'user' => $user];
         } else {
             return ['auth'=>'no' , 'user' => ''];

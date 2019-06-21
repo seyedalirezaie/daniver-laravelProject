@@ -13,11 +13,13 @@ class BlogPostController extends Controller
 
         $posts = Post
             ::with('category' , 'user' , 'photos')
+            ->withCount(['comments' , 'likes'])
             ->whereHas('category' , function ($q){
                 $q->where('categories.sort' , 'blog');
             })
             ->orderBy('id' , 'DESC')
-            ->paginate(10);
+            ->where('active' , 1)
+            ->paginate(6);
 
         $response = [
             'posts' => $posts
@@ -33,6 +35,13 @@ class BlogPostController extends Controller
             ->whereSlug($postSlug)
             ->first();
 
-        return view('frontend.blog.post' , compact(['post']));
+        $hasFile = 0;
+        foreach ($post->photos as $file){
+            if ($file->type != ''){
+                $hasFile = 1;
+            }
+        }
+
+        return view('frontend.blog.post' , compact(['post' , 'hasFile']));
     }
 }

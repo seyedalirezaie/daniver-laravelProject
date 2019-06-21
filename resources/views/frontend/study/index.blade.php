@@ -20,19 +20,19 @@
                             <img src="/images/adabiat.jpg" alt="friend">
                         </a>--}}
 
-                        <div class="photo-item">
+                        <a href="{{route('study.college' , ['slug'=>$major->slug])}}" class="photo-item college">
                             <img src="/images/md/{{$major->photo->path}}" alt="photo">
                             <div class="overlay overlay-dark"></div>
 
-                            <a href="{{route('study.college' , ['slug'=>$major->slug])}}" data-toggle="modal" data-target="#open-photo-popup-v1" class="  full-block"></a>
-                        </div>
+                            <span data-toggle="modal" data-target="#open-photo-popup-v1" class="  full-block"></span>
+                        </a>
 
                         <div class="friend-item-content">
 
 
                             <div class="friend-avatar bg-text-image">
                                 <div class="author-content">
-                                    <a href="{{route('study.college' , ['slug'=>$major->slug])}}" class="h5 author-name text-blue-light text-shadow">دانشکده {{$major->title}}</a>
+                                    <a href="{{route('study.college' , ['slug'=>$major->slug])}}" class="h5 author-name fs0-9">دانشکده {{$major->title}}</a>
                                 </div>
                             </div>
 

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\FrontEnd;
 
+use App\Gallery;
 use App\Http\Requests\PostFileUploadRequest;
 use App\Http\Requests\PostPhotoUploadRequest;
 use App\Photo;
+use function foo\func;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -49,7 +51,9 @@ class PhotoController extends Controller
 
     public function apiProfileImage(PostPhotoUploadRequest $request)
     {
-
+        if (isset($request->registering) && $request->registering == 'no'){
+            $this->apiDeleteProfileImage();
+        }
 
         $uploaded_file = $request->file('file');
         $original_name = $uploaded_file->getClientOriginalName();
@@ -66,10 +70,16 @@ class PhotoController extends Controller
         $photo->original_name = $original_name;
         $photo->save();
 
-        $user = User::findOrFail(Session::get('userId'));
+        if (isset($request->registering) && $request->registering == 'no'){
+            $user = User::findOrFail(Auth::id());
+        } else {
+            $user = User::findOrFail(Session::get('userId'));
+            Session::forget('userId');
+        }
         $user->photo_id = $photo->id;
         $user->save();
-        Session::forget('userId');
+
+        return ['path' => $photo->path];
     }
 
     public function apiPostImage(Request $request)
@@ -93,5 +103,18 @@ class PhotoController extends Controller
         return response()->json(['res' => true , 'url' => $path , 'id' => $photo->id.'-'.$path]);
 
         }
+
+    public function apiDeleteProfileImage()
+    {
+        $oldPhoto = Photo::whereHas('user' , function ($q){
+            $q->where('users.id' , Auth::id());
+        })->first();
+
+        if (!is_null($oldPhoto)){
+            @unlink('images/sm/'.$oldPhoto->path);
+            @unlink('images/md/'.$oldPhoto->path);
+            $oldPhoto->delete();
+        }
+    }
 
 }

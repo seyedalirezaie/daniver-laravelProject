@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\NotificationSeenEvent;
 use App\Seen;
+use Carbon\Carbon;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Arr;
@@ -59,6 +60,8 @@ class NotificationSeenListener
                 'user_id'=>Auth::id(),
                 'seenable_id'=>$seenableId,
                 'seenable_type'=>$seenableType,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
             ];
         }
 

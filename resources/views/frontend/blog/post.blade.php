@@ -1,11 +1,15 @@
-@extends('frontend.layout.master')
+@extends('frontend.layout.master' , ['container' => 'container-fluid'])
+
+@section('styles')
+    <link rel="stylesheet" href="/js/emojionearea-master/dist/emojionearea.min.css">
+@endsection
 
 @section('content')
 
-    <div class="container">
+    <div class="container-fluid pl-5">
         <div class="row mt50">
 
-            <div class="col col-xl-8 m-auto col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="col col-xl-8 m-auto col-lg-8 col-md-12 col-sm-12 col-12">
                 <div class="ui-block" dir="rtl">
 
 
@@ -33,7 +37,7 @@
                                 </svg>
                                 <div class="post-date text-right">
                                     <span>تاریخ انتشار:</span>
-                                    <span class="h6 date">{{$post->full_date}}</span>
+                                    <span class="h6 date">{{$post->displayed_at ? $post->displayed_at : ''}}</span>
                                 </div>
                             </div>
                             <div class="post-comments-wrap inline-items post-comments-count">
@@ -57,64 +61,118 @@
 
 
                             <div class="post-content text-right">
-                                <blog-post-content-show-component :post="{{$post}}"></blog-post-content-show-component>
+                                <div><?php echo $post->description ?></div>
                             </div>
                         </div>
 
-                        <div class="choose-reaction">
-                            <div class="title">Choose your <span>Reaction!</span></div>
+                        <div class="choose-reaction text-right">
 
-                            <ul>
-                                <li>
-                                    <a href="#">
-                                        <img src="/frontend/img/icon-chat13.png" alt="icon" data-toggle="tooltip" data-placement="top" data-original-title="LOL">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <img src="/frontend/img/icon-chat15.png" alt="icon" data-toggle="tooltip" data-placement="top" data-original-title="Amazed">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <img src="/frontend/img/icon-chat9.png" alt="icon" data-toggle="tooltip" data-placement="top" data-original-title="ANGER">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <img src="/frontend/img/icon-chat4.png" alt="icon" data-toggle="tooltip" data-placement="top" data-original-title="joy">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <img src="/frontend/img/icon-chat6.png" alt="icon" data-toggle="tooltip" data-placement="top" data-original-title="BAD">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <img src="/frontend/img/icon-chat26.png" alt="icon" data-toggle="tooltip" data-placement="top" data-original-title="LIKE">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <img src="/frontend/img/icon-chat27.png" alt="icon" data-toggle="tooltip" data-placement="top" data-original-title="COOL">
-                                    </a>
-                                </li>
+                            <span class="post-add-icon inline-items">
+                                <svg class="olymp-heart-icon">
+                                    <use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-heart-icon"></use>
+                                </svg>
+                                <span>{{$post->likes_count}}</span>
+                            </span>
+
+                            <div class="comments-shared mr-3 d-inline-block">
+                                <span class="post-add-icon inline-items">
+                                    <svg class="olymp-speech-balloon-icon">
+                                        <use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-speech-balloon-icon"></use>
+                                    </svg>
+                                    <span>{{$post->comments_count}}</span>
+                                </span>
+                            </div>
+
+                        </div>
+
+                        @if(!empty($post->tags))
+                        <div class="choose-reaction">
+                            <div class="title text-right">هشتگ ها</div>
+
+                            <ul class="tags-show" dir="rtl">
+                                @foreach($post->tags as $tag)
+                                <li><a href="#" class="tag-show">{{$tag->name}}</a></li>
+                                @endforeach
                             </ul>
 
                         </div>
+                        @endif
 
-                        <div class="socials-shared">
-                            <a href="#" class="social-item bg-facebook">
-                                <svg class="svg-inline--fa fa-facebook-f fa-w-9" aria-hidden="true" data-prefix="fab" data-icon="facebook-f" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 264 512" data-fa-i2svg=""><path fill="currentColor" d="M76.7 512V283H0v-91h76.7v-71.7C76.7 42.4 124.3 0 193.8 0c33.3 0 61.9 2.5 70.2 3.6V85h-48.2c-37.8 0-45.1 18-45.1 44.3V192H256l-11.7 91h-73.6v229"></path></svg><!-- <i class="fab fa-facebook-f" aria-hidden="true"></i> -->
-                            </a>
-                            <a href="#" class="social-item bg-twitter">
-                                <svg class="svg-inline--fa fa-twitter fa-w-16" aria-hidden="true" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg><!-- <i class="fab fa-twitter" aria-hidden="true"></i> -->
-                            </a>
-                            <a href="#" class="social-item bg-google">
-                                <svg class="svg-inline--fa fa-google-plus-g fa-w-20" aria-hidden="true" data-prefix="fab" data-icon="google-plus-g" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" data-fa-i2svg=""><path fill="currentColor" d="M386.061 228.496c1.834 9.692 3.143 19.384 3.143 31.956C389.204 370.205 315.599 448 204.8 448c-106.084 0-192-85.915-192-192s85.916-192 192-192c51.864 0 95.083 18.859 128.611 50.292l-52.126 50.03c-14.145-13.621-39.028-29.599-76.485-29.599-65.484 0-118.92 54.221-118.92 121.277 0 67.056 53.436 121.277 118.92 121.277 75.961 0 104.513-54.745 108.965-82.773H204.8v-66.009h181.261zm185.406 6.437V179.2h-56.001v55.733h-55.733v56.001h55.733v55.733h56.001v-55.733H627.2v-56.001h-55.733z"></path></svg><!-- <i class="fab fa-google-plus-g" aria-hidden="true"></i> -->
-                            </a>
+                        @if($hasFile == 1)
+                        <div class="choose-reaction">
+                            <div class="title text-right">فایل های ضمیمه</div>
+
+                        <ul class="notification-list friend-requests">
+
+                            @foreach($post->photos as $postFile)
+                                @if($postFile->type != '')
+                            <li class="file-items">
+
+
+                                                <span class="notification-icon btn-download-file">
+                                                    <a href="/files/{{$postFile->path}}" class="accept-request request-del" title="دانلود">
+												        <span class="icon-minus minus-delete">
+													        <i class="fas fa-download fs1-4"></i>
+												        </span>
+                                                    </a>
+                                                </span>
+
+
+                                <div class="author-thumb text-center">
+                                    @if($postFile->type === 'pdf')
+                                        <i class="text-danger fas fa-file-pdf fs1-6 mt-1"></i>
+                                    @elseif($postFile->type === 'ppt' || $postFile->type === 'pptx')
+                                        <i class="text-primary fas fa-file-powerpoint fs1-6 mt-1"></i>
+                                    @elseif($postFile->type === 'xls' || $postFile->type === 'xlsx')
+                                        <i class="text-green fas fa-file-excel fs1-6 mt-1"></i>
+                                    @elseif($postFile->type === 'doc' || $postFile->type === 'docx' || $postFile->type === 'rtf')
+                                        <i class="text-blue fas fa-file-word fs1-6 mt-1"></i>
+                                    @elseif($postFile->type === 'zip' || $postFile->type === 'rar')
+                                        <i class="fas fa-file-archive fs1-6 mt-1"></i>
+                                    @endif
+                                </div>
+
+                                <div class="notification-event">
+                                    <p href="#" class="h6 notification-friend fs0-8 m-0">{{$postFile->original_name}}</p>
+
+
+                                        @if($postFile->size < 512)
+                                            <span class="chat-message-item mr-3 fs0-7">{{$postFile->size}}
+                                            کیلوبایت</span>
+                                        @else
+                                            <span class="chat-message-item mr-3 fs0-85">{{round(($postFile->size * 0.0009765625) , 2)}} مگابایت</span>
+                                        @endif
+                                </div>
+
+                            </li>
+                                @endif
+                            @endforeach
+
+
+                        </ul>
                         </div>
+                        @endif
+
+                        @if(count($post->mentions) > 0)
+                        <div class="choose-reaction">
+                            <div class="title text-right">کاربران تگ شده</div>
+
+                        <ul class="widget w-faved-page js-zoom-gallery newest-users">
+
+                            @foreach($post->mentions as $mention)
+                            <li class="mentions-post">
+                                <a href="/profile/{{$mention->user->url}}">
+                                    <img width="40" src="{{$mention->user->path_sm}}" title="{{$mention->user->family}}" alt="{{$mention->user->family}}">
+                                </a>
+                                <a class="fs0-7 cursor-pointer">{{$mention->user->familyy}}</a>
+                            </li>
+                            @endforeach
+
+                        </ul>
+                        </div>
+                        @endif
+
+
 
                     </article>
 
@@ -123,173 +181,63 @@
 
                     <!-- Comments -->
 
-                    <ul class="comments-list">
-                        <li class="comment-item">
-                            <div class="post__author author vcard inline-items">
-                                <img src="/frontend/img/avatar10-sm.jpg" alt="author">
+                    <div class="fs0-9 p-4">
+                        <i class="fas fa-comments mr-4"></i>
+                        نظرات
+                    </div>
 
-                                <div class="author-date">
-                                    <a class="h6 post__author-name fn" href="#">Elaine Dreyfuss</a>
-                                    <div class="post__date">
-                                        <time class="published" datetime="2017-03-24T18:18">
-                                            5 mins ago
-                                        </time>
-                                    </div>
-                                </div>
 
-                                <a href="#" class="more">
-                                    <svg class="olymp-three-dots-icon">
-                                        <use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use>
-                                    </svg>
-                                </a>
 
-                            </div>
-
-                            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium der doloremque laudantium.</p>
-
-                            <a href="#" class="post-add-icon inline-items">
-                                <svg class="olymp-heart-icon">
-                                    <use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-heart-icon"></use>
-                                </svg>
-                                <span>8</span>
-                            </a>
-                            <a href="#" class="reply">Reply</a>
-                        </li>
+                    <ul class="comments-list style-2">
+                        @foreach($post->comments as $comment)
+                        @if($comment->parent_id == '')
                         <li class="comment-item has-children">
-                            <div class="post__author author vcard inline-items">
-                                <img src="/frontend/img/avatar5-sm.jpg" alt="author">
+                            <div class="post__author author vcard">
+                                <img src="{{$comment->user->path_sm}}" alt="{{$comment->user->family}}">
 
-                                <div class="author-date">
-                                    <a class="h6 post__author-name fn" href="#">Green Goo Rock</a>
+                                <div class="author-date pt-0">
+                                    <div class="comment-show"><span class="post__author-name fn fs0-8 text-primary mr-1 cursor-pointer ml-2">{{$comment->user->family}}</span>
+                                        <?php echo $comment->description ?>
+                                    </div>
+                                    <span {{--v-bind:class="{'post-comment-like': comment.liked === 1}"--}} class="post-add-icon inline-items cursor-pointer" {{--@click="doLike(comment.id , 'comment')"--}}>
+                                        <svg class="olymp-heart-icon"><use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-heart-icon"></use></svg>
+                                        <span>{{$comment->likes_count}}</span>
+                                    </span>
+                                    <span {{--@click="answerCommentBoxShow(comment.id)"--}} class="reply cursor-pointer text-grey-lighter btn-reply-comment">پاسخ دادن</span>
+
                                     <div class="post__date">
-                                        <time class="published" datetime="2017-03-24T18:18">
-                                            1 hour ago
+                                        <time class="published fs0-75 text-grey-lighter" datetime="">
+                                            {{$comment->date}}
                                         </time>
                                     </div>
-                                </div>
 
-                                <a href="#" class="more">
-                                    <svg class="olymp-three-dots-icon">
-                                        <use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use>
-                                    </svg>
-                                </a>
+                                    <div class="{{--answer-comment-box-{{$comment->id}}--}} mt-3 mb-2 emoji-comment-answer">
+
+                                        <textarea class="emoji-area-editor"></textarea>
+
+                                        <button {{--@click="postComment(comment.id)"--}} class="btn btn-sm btn-green mt-2">ارسال پاسخ</button>
+                                        <button class="btn btn-sm btn-secondary mt-2 btn-cancel-answer">لغو</button>
+                                    </div>
+
+                                </div>
 
                             </div>
 
-                            <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugiten, sed quia
-                                consequuntur magni dolores eos qui ratione voluptatem sequi en lod nesciunt. Neque porro
-                                quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur adipisci velit en lorem ipsum der.
-                            </p>
-
-                            <a href="#" class="post-add-icon inline-items">
-                                <svg class="olymp-heart-icon">
-                                    <use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-heart-icon"></use>
-                                </svg>
-                                <span>5</span>
-                            </a>
-                            <a href="#" class="reply">Reply</a>
-
-                            <ul class="children">
-                                <li class="comment-item">
-                                    <div class="post__author author vcard inline-items">
-                                        <img src="/frontend/img/avatar8-sm.jpg" alt="author">
-
-                                        <div class="author-date">
-                                            <a class="h6 post__author-name fn" href="#">Diana Jameson</a>
-                                            <div class="post__date">
-                                                <time class="published" datetime="2017-03-24T18:18">
-                                                    39 mins ago
-                                                </time>
-                                            </div>
-                                        </div>
-
-                                        <a href="#" class="more">
-                                            <svg class="olymp-three-dots-icon">
-                                                <use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use>
-                                            </svg>
-                                        </a>
-
-                                    </div>
-
-                                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-
-                                    <a href="#" class="post-add-icon inline-items">
-                                        <svg class="olymp-heart-icon">
-                                            <use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-heart-icon"></use>
-                                        </svg>
-                                        <span>2</span>
-                                    </a>
-                                    <a href="#" class="reply">Reply</a>
-                                </li>
-                                <li class="comment-item">
-                                    <div class="post__author author vcard inline-items">
-                                        <img src="/frontend/img/avatar2-sm.jpg" alt="author">
-
-                                        <div class="author-date">
-                                            <a class="h6 post__author-name fn" href="#">Nicholas Grisom</a>
-                                            <div class="post__date">
-                                                <time class="published" datetime="2017-03-24T18:18">
-                                                    24 mins ago
-                                                </time>
-                                            </div>
-                                        </div>
-
-                                        <a href="#" class="more">
-                                            <svg class="olymp-three-dots-icon">
-                                                <use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use>
-                                            </svg>
-                                        </a>
-
-                                    </div>
-
-                                    <p>Excepteur sint occaecat cupidatat non proident.</p>
-
-                                    <a href="#" class="post-add-icon inline-items">
-                                        <svg class="olymp-heart-icon">
-                                            <use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-heart-icon"></use>
-                                        </svg>
-                                        <span>0</span>
-                                    </a>
-                                    <a href="#" class="reply">Reply</a>
-
-                                </li>
-                            </ul>
-
+                            @if(!empty($comment->child))
+                                @include('partials.comment' , ['children' => $comment->child])
+                            @endif
+                            {{--<comment v-on:send_comment="sendCommentFromChild" v-if="comment.child.length > 0" :post="selectedPostArray" :children="comment.child" :user_id="user.id"></comment>--}}
                         </li>
-
-                        <li class="comment-item">
-                            <div class="post__author author vcard inline-items">
-                                <img src="/frontend/img/avatar4-sm.jpg" alt="author">
-
-                                <div class="author-date">
-                                    <a class="h6 post__author-name fn" href="#">Chris Greyson</a>
-                                    <div class="post__date">
-                                        <time class="published" datetime="2017-03-24T18:18">
-                                            1 hour ago
-                                        </time>
-                                    </div>
-                                </div>
-
-                                <a href="#" class="more">
-                                    <svg class="olymp-three-dots-icon">
-                                        <use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use>
-                                    </svg>
-                                </a>
-
-                            </div>
-
-                            <p>Dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.</p>
-
-                            <a href="#" class="post-add-icon inline-items">
-                                <svg class="olymp-heart-icon">
-                                    <use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-heart-icon"></use>
-                                </svg>
-                                <span>7</span>
-                            </a>
-                            <a href="#" class="reply">Reply</a>
-
-                        </li>
+                        @endif
+                        @endforeach
                     </ul>
+
+                    <div class="{{--answer-comment-box-{{$comment->id}}--}} mt-3 mb-2">
+
+                        <textarea class="emoji-area-editor"></textarea>
+
+                        <button {{--@click="postComment(comment.id)"--}} class="btn btn-sm btn-green mt-2">ارسال پاسخ</button>
+                    </div>
 
                     <!-- ... end Comments -->
 
@@ -593,5 +541,33 @@
         </div>
 
     </div>
+
+@endsection
+
+@section('scripts')
+
+    <script src="{{asset('/js/emojionearea-master/dist/emojionearea.min.js')}}"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            $(".emoji-area-editor").emojioneArea({
+                attributes: {
+                    dir: "rtl",
+                }
+            });
+        });
+
+        $(document).on('click', '.btn-reply-comment', function () {
+            $('.emoji-comment-answer').slideUp(0);
+            $(this).parent().find('.emoji-comment-answer').slideDown();
+        });
+
+        $(document).on('click', '.btn-cancel-answer', function () {
+            $('.emoji-comment-answer').slideUp();
+        })
+
+
+    </script>
 
 @endsection

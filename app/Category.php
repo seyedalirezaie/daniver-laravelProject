@@ -11,7 +11,22 @@ class Category extends Model
 
     public function children()
     {
-        return $this->hasMany(Category::class , 'parent_id');
+        return $this->hasMany(Category::class , 'parent_id')->with('photo');
+    }
+
+    public static function dorms()
+    {
+        return self::whereSort('dorm')->where('parent_id' , '!=' , null)->get();
+    }
+
+    public static function mates()
+    {
+        return self::whereSort('mate')->where('parent_id' , '!=' , null)->get();
+    }
+
+    public static function study()
+    {
+        return self::whereSort('major')->where('parent_id' , '!=' , null)->get();
     }
 
     public function childrenRecursive()
@@ -40,7 +55,7 @@ class Category extends Model
         return $this->belongsTo(Photo::class);
     }
 
-    protected $appends = ['titles' , 'subposts' , 'subusers' , 'dateposts' , 'url' , 'scores'];
+    protected $appends = ['titles' , 'subposts' , 'subusers' , 'dateposts' , 'url' , 'scores' , 'name' , 'latest_action'];
 
     public function getTitlesAttribute()
     {
@@ -75,6 +90,22 @@ class Category extends Model
             return 'dormitory';
         } elseif ($this->sort == 'mate') {
             return 'classmates';
+        } elseif ($this->sort == 'blog') {
+            return 'blog';
+        }
+    }
+
+
+    public function getNameAttribute()
+    {
+        if ($this->sort == 'major'){
+            return 'درس و بحث';
+        } elseif ($this->sort == 'dorm'){
+            return 'خوابگاه ها';
+        } elseif ($this->sort == 'mate') {
+            return 'هم کلاسی ها';
+        } elseif ($this->sort == 'blog') {
+            return 'وبلاگ';
         }
     }
 
@@ -141,5 +172,14 @@ class Category extends Model
 
 
         return $score;
+    }
+
+    public function getLatestActionAttribute()
+    {
+        $latestAction = $this->posts->sortByDesc(function ($element) {
+            return $element['created_at'];
+        })->values()->first();
+
+        return $latestAction['created_at'];
     }
 }

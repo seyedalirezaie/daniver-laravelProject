@@ -8,16 +8,16 @@
 
             <div class="control-icon more has-items">
 
-                <div class="cursor-pointer" v-bind:class="{'text-teal alert-light': friendRequests.length !== 0}">
+                <div class="cursor-pointer alert-icon" v-bind:class="{'text-teal alert-light': friendRequests.length !== 0}">
                     <i class="fas fa-user-plus fs1-25"></i>
                 </div>
 
-                <div v-if="friendRequests.length > 0" class="label-avatar bg-green">{{friendRequests.length}}</div>
+                <div v-if="friendRequests.length > 0" class="label-avatar bg-green alerts-count">{{friendRequests.length}}</div>
 
                 <div class="more-dropdown more-with-triangle triangle-top-center" dir="rtl">
                     <div class="ui-block-title ui-block-title-small">
-                        <h6 class="title">درخواست های دوستی جدید</h6>
-                        <span @click="readNotifications(friendRequests)" class="float-left see-all">همه را خواندم</span>
+                        <h6 class="title fs0-8">درخواست های دوستی جدید</h6>
+                        <span v-if="friendRequests.length > 0" @click="readNotifications('friendRequests')" class="float-left see-all">همه را خواندم</span>
                     </div>
 
                     <div class="mCustomScrollbar ps ps--theme_default ps--active-y" data-mcs-theme="dark" data-ps-id="50eac76a-25e9-1ba0-4544-43ce8da59774">
@@ -45,24 +45,31 @@
                             </li>
 
                         </ul>
+
+                        <ul v-else>
+                            <li class="fs0-8">
+                                هیچ درخواست دوستی جدیدی وجود ندارد
+                            </li>
+                        </ul>
+
                         <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__scrollbar-y-rail" style="top: 0px; height: 300px; right: 0px; opacity: 0;"><div class="ps__scrollbar-y" tabindex="0" style="top: 0px; height: 148px;"></div></div></div>
 
-                    <a href="#" class="view-all bg-teal" @click="readNotifications(friendRequests)">نمایش همه درخواست های دوستی</a>
+                    <a href="#" class="view-all bg-teal btn-show-all">نمایش همه درخواست های دوستی</a>
                 </div>
             </div>
 
             <div class="control-icon more has-items">
 
-                <div class="cursor-pointer" v-bind:class="{'text-gold alert-light': messages.length !== 0}">
+                <div class="cursor-pointer alert-icon" v-bind:class="{'text-gold alert-light': messages.length !== 0}">
                 <i class="fas fa-envelope fs1-25"></i>
                 </div>
 
-                <div v-if="messages.length > 0" class="label-avatar bg-primary">{{messages.length}}</div>
+                <div v-if="messages.length > 0" class="label-avatar bg-primary alerts-count">{{messages.length}}</div>
 
                 <div class="more-dropdown more-with-triangle triangle-top-center" dir="rtl">
                     <div class="ui-block-title ui-block-title-small">
-                        <h6 class="title">پیام های خوانده نشده</h6>
-                        <span @click="readNotifications(messages)" class="float-left see-all">همه را خواندم</span>
+                        <h6 class="title fs0-8">پیام های خوانده نشده</h6>
+                        <span v-if="messages.length > 0" @click="readNotifications('messages')" class="float-left see-all">همه را خواندم</span>
                     </div>
 
                     <div class="mCustomScrollbar ps ps--theme_default ps--active-y" data-mcs-theme="dark" data-ps-id="50eac76a-25e9-1ba0-4544-43ce8da59774">
@@ -76,13 +83,10 @@
                                     <div><a :href="'/profile/'+message.sender.url" class="notification-friend fs0-75">{{message.sender.family}}</a> یک پیام جدید برای شما ارسال کرد.</div>
                                     <span class="notification-date ml-1"><time class="entry-date updated">{{message.full_date}}</time></span>
                                 </div>
-                                <span class="notification-icon">
-										<svg class="olymp-comments-post-icon"><use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-comments-post-icon"></use></svg>
-									</span>
 
                                 <div class="comment-photo">
                                     <img src="/frontend/img/comment-photo1.jpg" alt="photo">
-                                    <span>“{{message.description.length > 100 ? message.description.substring(0,100)+'...' : message.description.substring(0,100)}}”</span>
+                                    <div class="fs0-7 p-1 comment-preview" v-html="message.description.substring(0,500)"></div><span>{{message.description.length > 500 ? '...' : ''}}</span>
                                 </div>
 
                                 <div class="more" @click="readNotifications(message , 1)">
@@ -91,23 +95,35 @@
                             </li>
 
                         </ul>
+
+                        <ul v-else>
+                            <li class="fs0-8">
+                                هیچ اعلانی وجود ندارد
+                            </li>
+                        </ul>
+
+                        <ul v-else>
+                            <li class="fs0-8">
+                                هیچ پیام جدیدی وجود ندارد
+                            </li>
+                        </ul>
                         <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__scrollbar-y-rail" style="top: 0px; height: 300px; right: 0px; opacity: 0;"><div class="ps__scrollbar-y" tabindex="0" style="top: 0px; height: 148px;"></div></div></div>
 
-                    <a href="#" class="view-all bg-gold" @click="readNotifications(messages)">نمایش همه پیام ها</a>
+                    <a href="#" class="view-all bg-gold btn-show-all">نمایش همه پیام ها</a>
                 </div>
             </div>
 
             <div class="control-icon more has-items">
-                <div class="cursor-pointer" v-bind:class="{'text-tomato alert-light': notifications.length !== 0}">
+                <div class="cursor-pointer alert-icon" v-bind:class="{'text-tomato alert-light': notifications.length !== 0}">
                     <i class="fas fa-bell fs1-25"></i>
                 </div>
 
-                <div v-if="notifications.length > 0" class="label-avatar bg-blue">{{notifications.length}}</div>
+                <div v-if="notifications.length > 0" class="label-avatar bg-blue alerts-count">{{notifications.length}}</div>
 
                 <div class="more-dropdown more-with-triangle triangle-top-center" dir="rtl">
                     <div class="ui-block-title ui-block-title-small">
-                        <h6 class="title">اعلان ها</h6>
-                        <span @click="readNotifications(notifications)" class="float-left see-all">همه را خواندم</span>
+                        <h6 class="title fs0-8">اعلان ها</h6>
+                        <span v-if="notifications.length > 0" @click="readNotifications('notifications')" class="float-left see-all">همه را خواندم</span>
                     </div>
 
                     <div class="mCustomScrollbar ps ps--theme_default ps--active-y" data-mcs-theme="dark" data-ps-id="50eac76a-25e9-1ba0-4544-43ce8da59774">
@@ -118,8 +134,8 @@
                                     <img :src="notification.user.path_sm" :alt="notification.user.family" :title="notification.user.family">
                                 </div>
                                 <div class="notification-event">
-                                    <div v-if="notification.parent_id === null"><a :href="'/profile/'+notification.user.url" class="notification-friend fs0-75">{{notification.user.family}}</a> یک نظر تازه برای <a :href="notification.commentable.category.url+'/posts/'+notification.commentable.category.slug+'/'+notification.commentable.slug" class="notification-link">پست {{notification.commentable.title}}</a>شما ارسال کرد.</div>
-                                    <div v-else><a :href="'/profile/'+notification.user.url" class="notification-friend fs0-75">{{notification.user.family}}</a> یک پاسخ برای نظر شما در <a :href="notification.commentable.category.url+'/posts/'+notification.commentable.category.slug+'/'+notification.commentable.slug" class="notification-link mx-1">پست {{notification.commentable.title}}</a>ارسال کرد.</div>
+                                    <div v-if="notification.is_answer"><a :href="'/profile/'+notification.user.url" class="notification-friend fs0-75">{{notification.user.family}}</a> یک پاسخ برای نظر شما در <a :href="notification.commentable.category.url+'/posts/'+notification.commentable.category.slug+'/'+notification.commentable.slug" class="mx-1"> پست {{notification.commentable.title}}</a> ارسال کرد.</div>
+                                    <div v-else><a :href="'/profile/'+notification.user.url" class="notification-friend fs0-75">{{notification.user.family}}</a> یک نظر تازه برای <a :href="notification.commentable.category.url+'/posts/'+notification.commentable.category.slug+'/'+notification.commentable.slug" class=""> پست {{notification.commentable.title}}</a> شما ارسال کرد.</div>
                                     <span class="notification-date ml-1"><time class="entry-date updated">{{notification.full_date}}</time></span>
                                 </div>
                                 <span class="notification-icon">
@@ -128,7 +144,7 @@
 
                                 <div class="comment-photo">
                                     <img src="/frontend/img/comment-photo1.jpg" alt="photo">
-                                    <span>“{{notification.description.length > 70 ? notification.description.substring(0,70)+'...' : notification.description.substring(0,70)}}”</span>
+                                    <div class="fs0-7 p-1 comment-preview" v-html="notification.description.substring(0,200)"></div><span>{{notification.description.length > 200 ? '...' : ''}}</span>
                                 </div>
 
                                 <div class="more" @click="readNotifications(notification , 1)">
@@ -159,8 +175,8 @@
                                     <img :src="notification.receiver.path_sm" :alt="notification.receiver.family" :title="notification.receiver.family">
                                 </div>
                                 <div class="notification-event">
-                                    <div><a :href="'/profile/'+notification.receiver.url" class="notification-friend fs0-75">{{notification.receiver.family}}</a> درخواست دوستی شما پذیرفت.</div>
-                                    <span class="notification-date"><time class="entry-date updated">{{notification.full_date}}</time></span>
+                                    <div><a :href="'/profile/'+notification.receiver.url" class="notification-friend fs0-75">{{notification.receiver.family}}</a> درخواست دوستی شما را پذیرفت.</div>
+                                    <span class="notification-date"><time class="entry-date updated">{{notification.full_date_accept}}</time></span>
                                 </div>
                                 <span class="notification-icon">
 										<i class="fas fa-check-circle ml-1"></i>
@@ -170,11 +186,16 @@
                                     <svg class="olymp-little-delete"><use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-little-delete"></use></svg>
                                 </div>
                             </li>
+                        </ul>
 
+                        <ul v-else>
+                            <li class="fs0-8">
+                                هیچ اعلانی وجود ندارد
+                            </li>
                         </ul>
                         <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__scrollbar-y-rail" style="top: 0px; height: 300px; right: 0px; opacity: 0;"><div class="ps__scrollbar-y" tabindex="0" style="top: 0px; height: 148px;"></div></div></div>
 
-                    <a href="#" class="view-all bg-tomato" @click="readNotifications(notifications)">نمایش همه اعلان ها</a>
+                    <a href="#" class="view-all bg-tomato btn-show-all">نمایش همه اعلان ها</a>
                 </div>
             </div>
 
@@ -182,7 +203,7 @@
 
             <div class="author-page author vcard inline-items more" dir="rtl">
                 <div class="author-thumb">
-                    <img alt="author" :src="'/images/sm/'+user.photo.path" class="avatar img-login-header">
+                    <img alt="author" :src="user.path_sm" class="avatar img-login-header">
                     <span class="icon-status online"></span>
                     <div class="more-dropdown more-with-triangle">
                         <div class="mCustomScrollbar ps ps--theme_default ps--active-y" data-mcs-theme="dark" data-ps-id="3ea55468-58d4-7ec0-afd2-e0b909ebe4bf">
@@ -190,11 +211,11 @@
 
                             <ul class="account-settings account-preview">
                                 <li>
-                                    <a href="29-YourAccount-AccountSettings.html">
+                                    <a href="/panel">
 
                                         <i class="fas fa-user fs1 text-grey-custom ml-2"></i>
 
-                                        <span>پروفایل</span>
+                                        <a href="/panel">پروفایل</a>
                                     </a>
                                 </li>
                                 <li>
@@ -205,7 +226,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="" @click="logout()">
 
                                         <i class="fas fa-sign-out-alt fs1 text-red ml-2"></i>
                                         <span>خروج</span>
@@ -232,7 +253,7 @@
                     </div>
                 </div>
                 <a href="02-ProfilePage.html" class="author-name fn">
-                    <div class="author-title text-dark-light">
+                    <div class="author-title text-dark-light fw-400">
                         {{user.family}} <svg class="olymp-dropdown-arrow-icon"><use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-dropdown-arrow-icon"></use></svg>
                     </div>
                     <span class="author-subtitle mt-1 fs0-6">{{latestUserStatusNow}}</span>
@@ -349,7 +370,20 @@
                 }).catch(err => {
                     console.log(err);
                 })
-            }
+            },
+
+            logout:function(){
+                axios.post('logout').then(response => {
+                    if (response.status === 302 || 401) {
+                        window.location.reload();
+                    }
+                    else {
+                        // throw error and go to catch block
+                    }
+                }).catch(error => {
+
+                });
+            },
         }
     }
 </script>

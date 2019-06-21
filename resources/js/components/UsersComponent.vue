@@ -60,8 +60,6 @@
 
     import comment from './comment.vue';
 
-    import VueEmoji from 'emoji-vue'
-
     import Vue from 'vue';
 
 
@@ -125,7 +123,6 @@
             Multiselect,
             VuePaginateAl,
             'comment': comment,
-            VueEmoji
         },
         props: [
             'categoryid' , 'year'

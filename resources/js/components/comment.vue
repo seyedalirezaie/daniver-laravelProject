@@ -23,11 +23,11 @@
                             </time>
                         </div>
 
-                        <div :class="'answer-comment-box-'+child.id+' mt-3 mb-2'" v-show="flag_answerComment === child.id">
-                            <textareas class="emoji-editor"></textareas>
+                        <div :class="'answer-comment-box-'+child.id+' mt-3 mb-2 emoji-comment-box'" v-show="flag_answerComment === child.id">
+                            <emoji-area></emoji-area>
 
-                            <button @click="postComment(child.id)" class="btn btn-sm btn-green">ارسال پاسخ</button>
-                            <button class="btn btn-sm btn-secondary">لغو</button>
+                            <button @click="postComment(child.id)" class="btn btn-sm btn-green mt-2">ارسال پاسخ</button>
+                            <button class="btn btn-sm btn-secondary mt-2">لغو</button>
                         </div>
 
                     </div>
@@ -35,7 +35,7 @@
 
                 </div>
 
-                <comment v-on:send_comment="sendCommentFromChild" :post_id="post_id" v-if="child.child.length > 0" :children="child.child"></comment>
+                <comment ref="childAccess" v-on:send_comment="sendCommentFromChild" :post="post" :user_id="user_id" v-if="child.child.length > 0" :children="child.child"></comment>
             </li>
         </ul>
 
@@ -56,13 +56,13 @@
         },
         name: 'comment',
         props: [
-            'children' , 'post_id'
+            'children' , 'post' , 'user_id'
         ],
         components: {
             'comment': comment
         },
         mounted() {
-
+            this.hasLike();
         },
         methods: {
             postComment: function (commentParentId=null) {
@@ -76,7 +76,7 @@
 
                     axios.post('/api/postComment' , {
                         'comment' : commentContent,
-                        'postId' : this.post_id,
+                        'postId' : this.post.id,
                         'parent_id' : commentParentId
                     }).then(res=>{
                         this.flag_answerComment = '';
@@ -89,9 +89,27 @@
                 },1000);
             },
 
+
+            hasLike: function(){
+                        for (var i=0; i<this.children.length; i++) {
+                            for (var i2=0; i2<this.children[i].likes.length; i2++){
+                                if (this.children[i].likes[i2].user_id === this.user_id){
+                                    this.children[i]['liked'] = 1;
+                                } else {
+                                    this.children[i]['liked'] = 0;
+                                }
+                            }
+                        }
+            },
+
             doLike: function (likedId , type) {
-                axios.post('/api/doLike' , {'id':likedId , 'type':type , 'postId':this.post_id}).then(res=>{
+                axios.post('/api/doLike' , {'id':likedId , 'type':type , 'postId':this.post.id}).then(res=>{
                     this.$emit('send_comment', 'liked');
+                    setTimeout(() => {
+                        this.hasLike();
+                        this.$refs.childAccess.hasLike();
+                        this.$emit('send_comment', 'doHasLike');
+                    },2500)
                 }).catch(err=>{
                     if(err.response.data.message === 'Unauthenticated.') {
                         this.$emit('send_comment', 'not-auth');
@@ -106,8 +124,14 @@
             },
 
             sendCommentFromChild(response) {
-                this.$emit('send_comment', 'sent');
+                if(response === 'sent'){
+                    this.$emit('send_comment', 'sent');
+                } else if (response === 'doHasLike'){
+                    this.hasLike();
+                }
+
             }
         }
+
     }
 </script>

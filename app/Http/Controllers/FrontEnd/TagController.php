@@ -10,8 +10,10 @@ class TagController extends Controller
 {
     public function apiTags()
     {
-        $tags = Tag::with('posts.category')->whereHas('posts.category' , function ($q){
-            $q->where('categories.sort' , 'major');
+        $tags = Tag::with('posts.category')->whereHas('posts' , function ($q){
+            $q->whereHas('category' , function ($q2){
+                $q2->where('sort' , 'major');
+            });
         })->orderBy('id' , 'DESC')->get();
 
         $response = [

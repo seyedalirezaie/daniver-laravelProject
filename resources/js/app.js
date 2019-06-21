@@ -19,16 +19,22 @@ window.Axios = require('axios').default;
 let AppLayout = require('./components/App');
 
 const Posts = Vue.component('Posts' , require('./components/PostsComponent'));
+const panel = Vue.component('Posts' , require('./components/PanelComponent'));
 
 Vue.use(VueRouter , VueAxios , axios);
 
 const routes = [
     {
         name: 'post',
-        path: '/study/posts/:category/:slug',
+        path: '/:category_url/posts/:category_slug/:post_slug',
         component: Posts
     },
-]
+    {
+        name: 'panel',
+        path: '/panel/:section',
+        component: panel
+    },
+];
 
 
 const router = new VueRouter({
@@ -57,6 +63,7 @@ const router = new VueRouter({
 Vue.component('posts-component', require('./components/PostsComponent.vue').default);
 Vue.component('comment', require('./components/comment.vue').default);
 Vue.component('ckeditor', require('./components/ckeditor.vue').default);
+Vue.component('emoji-area', require('./components/emojiArea.vue').default);
 Vue.component('register-component', require('./components/RegisterComponent.vue').default);
 Vue.component('profile-component', require('./components/ProfileComponent.vue').default);
 Vue.component('users-component', require('./components/UsersComponent.vue').default);
@@ -65,7 +72,6 @@ Vue.component('profile-header-component', require('./components/ProfileHeaderCom
 Vue.component('friends-list-component', require('./components/FriendsListComponent.vue').default);
 Vue.component('blog-posts-component', require('./components/BlogPostsComponent.vue').default);
 Vue.component('panel-component', require('./components/PanelComponent.vue').default);
-Vue.component('blog-post-content-show-component', require('./components/BlogPostContentShowComponent.vue').default);
 /*admin*/
 Vue.component('create-post-component', require('./components/AdminCreatePost.vue').default);
 Vue.component('admin-users-component', require('./components/AdminUsers.vue').default);
@@ -78,7 +84,7 @@ Vue.component('blog-category-component', require('./components/BlogCategoryCompo
  */
 
 import VueRouter from 'vue-router'
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 
 /**imported plugins**/
@@ -142,23 +148,15 @@ require('vue2-animate/dist/vue2-animate.min.css')
 /**vue stiky*/
 
 import VueSticky from 'vue-sticky' // Es6 module
-Vue.use(VueSticky)
-
-/*vue algoliasearch*/
-
-import algoliasearch from 'algoliasearch/lite';
-window.algoliasearch = algoliasearch;
-
-import InstantSearch from 'vue-instantsearch';
-Vue.use(InstantSearch)
+Vue.use(VueSticky);
 
 /*vue copy to clipboard*/
 import VueClipboard from 'vue-clipboard2'
-Vue.use(VueClipboard)
+Vue.use(VueClipboard);
 
 /*vue scroll to*/
 var VueScrollTo = require('vue-scrollto');
-Vue.use(VueScrollTo)
+Vue.use(VueScrollTo);
 
 /**end imported plugins************************************************************/
 
@@ -169,9 +167,14 @@ document.addEventListener("DOMContentLoaded", () => {
         data:{
         },
         mounted(){
-            this.setUserLastSeen();
+            /*this.setUserLastSeen();*/
+
         },
         created(){
+
+        },
+
+        watch : {
 
         },
 
@@ -187,7 +190,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     })
                 } , 25000)
             },
+
+
         }
+
     });
+
 
 });

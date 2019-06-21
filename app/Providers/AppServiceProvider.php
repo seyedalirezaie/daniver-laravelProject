@@ -32,10 +32,11 @@ class AppServiceProvider extends ServiceProvider
 
             $majors = Category::with('childrenRecursive')->whereSort('major')->where('parent_id' , 1)->get();
             $dorms = Category::whereSort('dorm')->where('parent_id' , 2)->get();
+            $classmatesMajors = Category::with('childrenRecursive')->whereSort('mate')->where('parent_id' , 4)->get();
             $user = User::with('photo')->whereId(Auth::id())->first();
             $allRoles = Role::pluck('name')->toArray();
 
-            $view->with(['majors' => $majors , 'dorms' => $dorms , 'user' => $user , 'allRoles' => $allRoles]);
+            $view->with(['majors' => $majors , 'dorms' => $dorms , 'user' => $user , 'allRoles' => $allRoles , 'classmatesMajors' => $classmatesMajors]);
         });
     }
 }

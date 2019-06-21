@@ -139,7 +139,7 @@
                                     </div>
 
                                     <div class="col col-lg-6 col-md-6 col-sm-12 col-12">
-                                        <router-link v-if="posts[0]" :to="{name:'post' , params:{category:posts[0].category.slug , slug:'create-post'}}">
+                                        <router-link v-if="posts[0]" :to="{name:'post' , params:{category_url:posts[0].category.url , category_slug:posts[0].category.slug , post_slug:'creat-post'}}">
                                     <span @click="createPost()" class="btn btn-grey btn-sm float-left btn-create-post">افزودن پست جدید<div class="ripple-container"></div></span>
                                         </router-link>
                                     </div>
@@ -164,14 +164,14 @@
                                 <div class="row">
 
                                     <div class="col-3">
-                                        <router-link v-if="posts[0]" :to="{name:'post' , params:{category:posts[0].category.slug , slug:post.slug}}">
+                                        <router-link v-if="posts[0]" :to="{name:'post' , params:{category_url:posts[0].category.url , category_slug:posts[0].category.slug , post_slug:post.slug}}">
                                         <img v-if="post.photos.length > 0" width="60px" :src="'/images/sm/'+post.photos[0].path" :alt="post.title" :title="post.title">
                                         <img v-else width="60px" :src="postimages" :alt="post.title" :title="post.title">
                                         </router-link>
                                     </div>
 
                                     <div class="composition col-9">
-                                        <router-link v-if="posts[0]" :to="{name:'post' , params:{category: posts[0].category.slug , slug:post.slug}}">
+                                        <router-link v-if="posts[0]" :to="{name:'post' , params:{category_url:posts[0].category.url , category_slug:posts[0].category.slug , post_slug:post.slug}}">
                                         <span class="composition-name" @click="selectPost(post.id , post.slug)">{{post.title}}</span>
                                         </router-link>
                                         <span class="composition-author mt-2 position-relative">
@@ -416,16 +416,12 @@
 
 
 
-                            <span v-bind:class="{'liked-circle': selectedPostArray['liked'] === 1}" href="#" class="btn btn-control" @click="doLike(selectedPostArray.id , 'post')">
-                                <svg class="olymp-like-post-icon">
-                                    <use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-like-post-icon"></use>
-                                </svg>
+                            <span v-bind:class="{'liked-circle': selectedPostArray['liked'] === 1}" class="btn btn-control" @click="doLike(selectedPostArray.id , 'post')">
+                                <i class="far fa-heart"></i>
                             </span>
 
-                            <span class="btn btn-control btn-comment-circle">
-                                <svg class="olymp-comments-post-icon">
-                                    <use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-comments-post-icon"></use>
-                                </svg>
+                            <span class="btn btn-control btn-comment-circle" v-bind:class="{'liked-circle': selectedPostArray['bookmarked'] === 1}" @click="doBookmark(selectedPostArray.id)">
+                                <i class="far fa-bookmark"></i>
                             </span>
 
 
@@ -459,7 +455,7 @@
                                         <svg class="olymp-heart-icon"><use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-heart-icon"></use></svg>
                                         <span>{{comment.likes_count}}</span>
                                     </span>
-                                    <span @click="answerCommentBoxShow(comment.id)" class="reply cursor-pointer text-grey-lighter">پاسخ دادن</span>
+                                    <span @click="answerCommentBoxShow(comment.id)" class="reply cursor-pointer text-grey-lighter btn-reply-comment">پاسخ دادن</span>
 
                                     <div class="post__date">
                                         <time class="published fs0-75 text-grey-lighter" datetime="">
@@ -467,11 +463,12 @@
                                         </time>
                                     </div>
 
-                                    <div :class="'answer-comment-box-'+comment.id+' mt-3 mb-2'" v-show="flag_answerComment === comment.id">
-                                    <textareas class="emoji-editor"></textareas>
+                                    <div :class="'answer-comment-box-'+comment.id+' mt-3 mb-2 emoji-comment-box'" v-show="flag_answerComment === comment.id">
 
-                                        <button @click="postComment(comment.id)" class="btn btn-sm btn-green">ارسال پاسخ</button>
-                                        <button class="btn btn-sm btn-secondary">لغو</button>
+                                        <emoji-area></emoji-area>
+
+                                        <button @click="postComment(comment.id)" class="btn btn-sm btn-green mt-2">ارسال پاسخ</button>
+                                        <button class="btn btn-sm btn-secondary mt-2">لغو</button>
                                     </div>
 
                                 </div>
@@ -479,7 +476,7 @@
                             </div>
 
                             <slot></slot>
-                            <comment v-on:send_comment="sendCommentFromChild" v-if="comment.child.length > 0" :post_id="selectedPostId" :children="comment.child"></comment>
+                            <comment v-on:send_comment="sendCommentFromChild" v-if="comment.child.length > 0" :post="selectedPostArray" :children="comment.child" :user_id="user.id"></comment>
                         </li>
                     </ul>
 
@@ -492,19 +489,18 @@
                             <img class="ml-2" v-else src="'/frontend/img/avatar5-sm.jpg" alt="author">
 
                             <div class="form-group with-icon-right is-empty main-comment-box">
-
-                                <textarea class="emoji-editor"></textarea>
-
+                                <emoji-area></emoji-area>
                                 <div class="add-options-message">
 
                                 </div>
                                 <span class="material-input"></span></div>
                         </div>
 
+                        <div class="p-5 mb-4">
                         <button type="button" class="btn btn-md-2 btn-green" @click="postComment()">ارسال نظر</button>
 
-                        <button type="button" class="btn btn-md-2 btn-border-think c-grey btn-transparent custom-color">لغو</button>
-
+                        <button type="button" class="btn btn-md-2 btn-border-think btn-secondary text-white">لغو</button>
+                        </div>
                     </form>
 
                     <!-- ... end Comment Form  -->			</div>
@@ -691,11 +687,6 @@
 <script>
 
 
-    /*jquery inside vue component*/
-
-
-
-
     /**dropzone plugin**/
     import vue2Dropzone from 'vue2-dropzone'
     import 'vue2-dropzone/dist/vue2Dropzone.min.css'
@@ -710,10 +701,8 @@
 
     import comment from './comment.vue';
 
-    import VueEmoji from 'emoji-vue'
-
     import VueSticky from 'vue-sticky' // Es6 module
-    Vue.use(VueSticky)
+    Vue.use(VueSticky);
 
     import Vue from 'vue';
 
@@ -736,8 +725,7 @@
         },
         x: false,
         y: true
-    }
-
+    };
 
 
     export default {
@@ -794,7 +782,9 @@
                 postSlug: '',
                 flag_noResult: false,
                 flag_hasFile: false,
-                flag_answerComment: ''
+                flag_answerComment: '',
+                studyRouter: [],
+                toSlugRout: ''
             }
         },
         created: {
@@ -805,7 +795,6 @@
             Multiselect,
             VuePaginateAl,
             'comment': comment,
-            VueEmoji,
         },
         props: [
             'categoryid' , 'year' , 'images' , 'postimages'
@@ -849,11 +838,27 @@
                 localStorage.setItem('pageItems' , val);
             },
 
+        /*    $route (to, from){
+                this.studyRouter.push({'name':from.params.slug , 'value':this.selectedPostArray});
+                console.log(from.params.slug);
+                sessionStorage.setItem('study-router' , this.studyRouter);
+                this.toSlugRout = to.params.slug;
+            },*/
+
+            '$route' (to, from) {
+                alert(to)
+                // react to route changes...
+            }
+
+
+
         },
 
         mounted() {
 
             this.checkAuth();
+            this.createYearsLoop();
+            this.getTags();
 
             if (localStorage.getItem('pageItems')){
                 this.v_postItems = localStorage.getItem('pageItems');
@@ -877,6 +882,7 @@
                         this.selectedPostId = res.data.post.id;
                         this.currentPage = res.data.page;
                         this.hasLike();
+                        this.hasBookmark();
                         this.checkPostFiles();
                         this.goToFunction(this.currentPage);
                         setTimeout(() => {
@@ -896,10 +902,6 @@
                 this.checkPostFiles();
             }
 
-            this.createYearsLoop();
-            this.getTags();
-
-
         },
         computed: {
 
@@ -907,23 +909,25 @@
 
         methods: {
 
+
             selectPost: function (postId) {
 
                 this.flag_createPost = false;
 
-                this.$Progress.start()
+                this.$Progress.start();
 
                 axios.get('/api/post/'+postId).then(res=>{
-                    this.$Progress.finish()
+                    this.$Progress.finish();
                     this.selectedPostArray = res.data.post;
+                    this.selectedPostId = res.data.post.id;
                     this.hasLike();
+                    this.hasBookmark();
                     this.checkPostFiles();
                 }).catch(err=>{
                     console.log(err);
-                })
+                });
 
                 this.selectedPostId = postId;
-
 
 
             },
@@ -1097,6 +1101,7 @@
                     if (res.data.auth === 'yes'){
                         this.flag_isAuth = true;
                         this.user = res.data.user;
+                        this.hasBookmark();
                     } else {
                         this.flag_isAuth = false;
                     }
@@ -1173,6 +1178,18 @@
                             }
             },
 
+            hasBookmark:function(){
+
+                for (var i=0; i<this.user.bookmarks.length; i++){
+                    if (this.user.bookmarks[i].bookmarkable_type === 'App\\Post' && this.user.bookmarks[i].bookmarkable_id === this.selectedPostId) {
+                        this.selectedPostArray['bookmarked'] = 1;
+                    } else {
+                        this.selectedPostArray['bookmarked'] = 0;
+                    }
+                }
+
+            },
+
             doLike: function (likedId , type) {
                 axios.post('/api/doLike' , {'id':likedId , 'type':type , 'postId':this.selectedPostId}).then(res=>{
                     console.log(res);
@@ -1185,6 +1202,28 @@
                             type: 'error',
                             duration: 20000,
                         text: 'برای لایک کردن پست ها باید به حساب کاربری خود وارد شوید یا در سایت ثبت نام کنید'
+                        });
+                    } else {
+                        this.$notify({
+                            group: 'auth',
+                            type: 'error',
+                            duration: 20000,
+                            text: 'مشکلی در برقراری ارتباط پیش آمده، لطفا لحظاتی دیگر امتحان کنید'
+                        });
+                    }
+                });
+            },
+
+            doBookmark: function (postId) {
+                axios.post('/api/doBookmark' , {'postId':postId}).then(res=>{
+                    this.checkAuth();
+                }).catch(err=>{
+                    if(err.response.data.message === 'Unauthenticated.') {
+                        this.$notify({
+                            group: 'auth',
+                            type: 'error',
+                            duration: 20000,
+                            text: 'برای افزودن پست ها به لیت علاقه مندی باید به حساب کاربری خود وارد شوید یا در سایت ثبت نام کنید'
                         });
                     } else {
                         this.$notify({
@@ -1228,6 +1267,13 @@
                         duration: 20000,
                         text: 'نظر شما با موفقیت ثبت شد'
                     });
+
+                   /* if (commentParentId !== null){
+                        $('.answer-comment-box-'+commentParentId).find('.emojionearea-editor').html('');
+                    } else {
+                        $('.main-comment-box .emojionearea-editor').html('');
+                    }*/
+
                 }).catch(err=>{
                     if(err.response.data.message === 'Unauthenticated.') {
                             this.$notify({
@@ -1294,11 +1340,20 @@
                         text: 'مشکلی در برقراری ارتباط پیش آمده، لطفا لحظاتی دیگر امتحان کنید'
                     });
                 }
-            }
+            },
 
+            goBack () {
+                window.history.length > 1
+                    ? this.$router.go(-1)
+                    : this.$router.push('/')
+            },
 
-        }
+        },
+
     }
+
+
+
 </script>
 
 <!--multi select for tags style-->
