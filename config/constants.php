@@ -11,6 +11,7 @@ public static $img = [
     'user_avatar_female' => '/images/avatars/avatar_female.png',
     'user_avatar_unknown' => '/images/avatars/avatar_unknown.png',
     'post_profile' => '/images/avatars/post_profile.png',
+    'user_header' => '/images/avatars/header.jpg'
 ];
 
 public static $userImg = [

@@ -40,6 +40,7 @@ Route::group(['middleware' =>  ['verified' , 'permission:enter-admin-panel']] , 
 /**home**/
 Route::get('/' , 'FrontEnd\HomeController@index');
 Route::get('/api/blog/posts/{searchQuery?}' , 'FrontEnd\BlogPostController@apiBlogPosts');
+Route::post('/api/contactus' , 'FrontEnd\SupportController@contactUs');
 /**study**/
 Route::get('study' , 'FrontEnd\StudyController@index')->name('study');
 Route::get('study/college/{slug}' , 'FrontEnd\StudyController@college')->name('study.college');
@@ -67,7 +68,7 @@ Route::post('api/upload' , 'FrontEnd\PhotoController@apiProfileImage');
 /**users**/
 Route::get('users' , 'FrontEnd\UserController@index');
 /*profile*/
-Route::get('profile/{alias}' , 'FrontEnd\ProfileController@profile');
+Route::get('profile/{alias}/{vueSection?}' , 'FrontEnd\ProfileController@profile');
 Route::get('api/getUsers/{searchQuery?}' , 'FrontEnd\UserController@getUsers');
 Route::post('api/profile/checkFriendShip' , 'FrontEnd\FriendController@checkFriendShip');
 /*friend*/
@@ -103,6 +104,7 @@ Route::group(['middleware' => ['auth']] , function (){
     Route::post('panel/messages/send' , 'FrontEnd\MessageController@sendMessage');
     Route::get('panel/friends/requests' , 'FrontEnd\PanelAlertsController@friendRequests');
     Route::get('api/notifications/init' , 'FrontEnd\HeaderPanelController@initNotifications');
+    Route::post('panel/bookmarks/delete' , 'FrontEnd\BookmarkController@deleteBookmark');
     Route::post('api/panel/notifications/alerts' , 'FrontEnd\PanelAlertsController@initialize');
     Route::get('api/panel/notifications/messages' , 'FrontEnd\PanelAlertsController@messages');
     Route::post('api/panel/message' , 'FrontEnd\PanelAlertsController@getChat');

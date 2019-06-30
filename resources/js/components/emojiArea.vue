@@ -24,19 +24,12 @@
         mounted() {
             this.$nextTick(function() {
 
-                if (sessionStorage.getItem('emoji-init') !== 'emoji-init'){
                     $(".emoji-editor").emojioneArea({
                         attributes: {
                             dir: "rtl",
                             autocomplete: false,
                         }
                     });
-                    alert('emoji');
-                    sessionStorage.setItem('emoji-init' , 'emoji-init');
-                }
-
-
-
             });
         },
         methods: {

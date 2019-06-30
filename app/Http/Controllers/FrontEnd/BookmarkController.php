@@ -4,6 +4,7 @@ namespace App\Http\Controllers\FrontEnd;
 
 use App\Bookmark;
 use App\Post;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +24,11 @@ class BookmarkController extends Controller
         }else{
             $postBookmark->delete();
         }
+    }
 
+    public function deleteBookmark(Request $request)
+    {
+        $bookmark = Bookmark::findOrFail($request->bookmarkId);
+        $bookmark->delete();
     }
 }

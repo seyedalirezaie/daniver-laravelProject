@@ -54,7 +54,7 @@
 
                         <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__scrollbar-y-rail" style="top: 0px; height: 300px; right: 0px; opacity: 0;"><div class="ps__scrollbar-y" tabindex="0" style="top: 0px; height: 148px;"></div></div></div>
 
-                    <a href="#" class="view-all bg-teal btn-show-all">نمایش همه درخواست های دوستی</a>
+                    <a href="/panel/friend-requests" class="view-all bg-teal btn-show-all">نمایش همه درخواست های دوستی</a>
                 </div>
             </div>
 
@@ -98,18 +98,12 @@
 
                         <ul v-else>
                             <li class="fs0-8">
-                                هیچ اعلانی وجود ندارد
-                            </li>
-                        </ul>
-
-                        <ul v-else>
-                            <li class="fs0-8">
                                 هیچ پیام جدیدی وجود ندارد
                             </li>
                         </ul>
                         <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__scrollbar-y-rail" style="top: 0px; height: 300px; right: 0px; opacity: 0;"><div class="ps__scrollbar-y" tabindex="0" style="top: 0px; height: 148px;"></div></div></div>
 
-                    <a href="#" class="view-all bg-gold btn-show-all">نمایش همه پیام ها</a>
+                    <a href="/panel/messages" class="view-all bg-gold btn-show-all">نمایش همه پیام ها</a>
                 </div>
             </div>
 
@@ -195,7 +189,7 @@
                         </ul>
                         <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__scrollbar-y-rail" style="top: 0px; height: 300px; right: 0px; opacity: 0;"><div class="ps__scrollbar-y" tabindex="0" style="top: 0px; height: 148px;"></div></div></div>
 
-                    <a href="#" class="view-all bg-tomato btn-show-all">نمایش همه اعلان ها</a>
+                    <a href="/panel/notifications" class="view-all bg-tomato btn-show-all">نمایش همه اعلان ها</a>
                 </div>
             </div>
 
@@ -219,18 +213,25 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="36-FavPage-SettingsAndCreatePopup.html">
+                                    <a href="/panel/friends">
+
+                                        <i class="fas fa-bookmark fs1 text-grey-custom ml-2"></i>
+                                        <span>دوستان من</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/panel/bookmarks">
 
                                         <i class="fas fa-bookmark fs1 text-grey-custom ml-2"></i>
                                         <span>صفحات نشان شده</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="" @click="logout()">
+                                    <h6 class="cursor-pointer fs0-8 mt-3" @click="logout()">
 
-                                        <i class="fas fa-sign-out-alt fs1 text-red ml-2"></i>
+                                        <i class="fas fa-sign-out-alt fs1 text-red ml-2 icon-logout"></i>
                                         <span>خروج</span>
-                                    </a>
+                                    </h6>
                                 </li>
                             </ul>
 

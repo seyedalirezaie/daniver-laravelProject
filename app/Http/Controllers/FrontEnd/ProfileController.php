@@ -18,7 +18,7 @@ class ProfileController extends Controller
     {
         $is_int = filter_var($alias_id, FILTER_VALIDATE_INT);
 
-        $user = User::with( 'categories' , 'photo' , 'places.province' , 'places.city' , 'places.subcity' , 'othermajors' , 'settings' , 'accounts')
+        $user = User::with( 'categories' , 'photo' , 'places.province' , 'places.city' , 'places.subcity' , 'othermajors' , 'settings' , 'accounts' , 'header')
             ->withCount(['posts' , 'studyPosts' , 'dormPosts' , 'matesPosts' , 'likes' , 'comments'])
             ->when(isset($is_int) , function ($q) use ($is_int , $alias_id){
                 if ($is_int == false){
@@ -50,7 +50,7 @@ class ProfileController extends Controller
 
         $actions =$latestMentions->merge($latestComments);
 
-        $sortedActions = $actions->sortBy(function ($element) {
+        $sortedActions = $actions->sortByDESC(function ($element) {
             return $element['created_at'];
         })->values()->all();
 

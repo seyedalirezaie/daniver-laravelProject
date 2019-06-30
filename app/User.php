@@ -128,7 +128,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function bookmarks()
     {
-        return $this->hasMany(Bookmark::class);
+        return $this->hasMany(Bookmark::class)->with('bookmarkable.category');
     }
 
     public function places()
@@ -242,8 +242,14 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getBirthdayJalaliAttribute()
     {
-        $v = new Verta($this->birthday);
-        return $v->format('%d %B، %Y');
+        if (empty($this->birthday)){
+            return 'نامشخص';
+        } else {
+            $v = new Verta($this->birthday);
+            return $v->format('%d %B، %Y');
+        }
+
+
     }
 
     public function getCreatedAtAttribute($value)
@@ -254,6 +260,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getLastseenAttribute($value)
     {
+        if (empty($value)){
+            return 'نامشخص';
+        }
         return \Hekmatinasser\Verta\Verta::instance($value)->formatDifference();
     }
 

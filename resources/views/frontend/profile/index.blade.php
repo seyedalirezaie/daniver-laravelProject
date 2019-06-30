@@ -26,12 +26,12 @@
 @section('content')
 
     <div class="container" {{--id="app"--}}>
-    <profile-component :profile_user="{{$user}}" :posts="{{$posts}}" :received_comments="{{$receivedComments}}" :received_likes="{{$receivedLikes}}" :birthday="{{json_encode($birthday)}}" :post_avatar="{{json_encode(Constants::$img['post_profile'])}}" :user_avatar="{{json_encode(Constants::$img['user_avatar_male'])}}" :sorted_actions="{{json_encode($sortedActions)}}" :avatars="{{json_encode(Constants::$img)}}"></profile-component>
+    <profile-component :profile_user="{{$user}}" :posts="{{$posts}}" :received_comments="{{$receivedComments}}" :received_likes="{{$receivedLikes}}" :birthday="{{json_encode($birthday)}}" :post_avatar="{{json_encode(Constants::$img['post_profile'])}}" :user_avatar="{{json_encode(Constants::$img['user_avatar_male'])}}" :sorted_actions="{{json_encode($sortedActions)}}" :avatars="{{json_encode(Constants::$img)}}" :auth_user="{{json_encode(Auth::user())}}"></profile-component>
         <vue-progress-bar></vue-progress-bar>
         <notifications group="alert"
                        position="bottom left"
                        width="400"
-                       :speed="500" />
+                       :speed="500"></notifications>
 
     </div>
 

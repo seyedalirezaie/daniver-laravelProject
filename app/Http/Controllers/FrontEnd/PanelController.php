@@ -35,7 +35,7 @@ class PanelController extends Controller
 
         $userId = Auth::id();
         $user = User
-            ::with('places', 'photo' , 'categories', 'accounts', 'posts.category', 'posts.photos' , 'galleries' , 'header' , 'schools')
+            ::with('places', 'photo' , 'categories', 'accounts', 'posts.category', 'posts.photos' , 'galleries' , 'header' , 'schools' , 'bookmarks.bookmarkable')
             ->withCount(['posts'])
             ->whereId($userId)->first();
 

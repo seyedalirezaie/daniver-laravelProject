@@ -1,5 +1,15 @@
 @extends('frontend.layout.master')
 
+@section('titleTag')
+    <title>هم کلاسی ها:: رشته ها</title>
+@endsection
+@section('metaDescription')
+    <meta name="description" content="رشته تحصیلی خود را انتخاب کنید">
+@endsection
+@section('metaKeywords')
+    <meta name="keywords" content="گفتگوی دوستانه,چت دانشجویی,وبلاگ دانشجویی,خاطرات دانشجویی,دوستان دوران دانشگاه,دانشگاه ولی عصر,دانشگاه ولیعصر,دانشگاه رفسنجان">
+@endsection
+
 @section('content')
 
     <div class="container">

@@ -135,13 +135,12 @@ class PanelAlertsController extends Controller
     {
         $friendRequests = Friend::with('sender.photo' , 'seens')->where('receiver_id' , Auth::id())->where('accepted' , 0)->orderBy('id' , 'DESC')->get();
 
-        foreach ($friendRequests['seens'] as $key=>$seen) {
+        foreach ($friendRequests as $key=>$friendRequest) {
+            foreach ($friendRequest->seens as $seen)
             if ($seen['user_id'] == Auth::id()) {
                 $friendRequests[$key]['has_seen'] = 1;
             }
         }
-
-        return $friendRequests;
 
         $response = [
             'friendRequests' => $friendRequests,

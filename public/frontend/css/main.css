@@ -477,11 +477,11 @@ Preserve the relative scale, though. */
 }
 
 /* Make the block quoted text serif with some additional spacing. */
-.document-editor .ck-content blockquote {
+/*.document-editor .ck-content blockquote {
   font-family: sahel!important;
   margin-left: calc( 2 * var(--ck-spacing-large) );
   margin-right: calc( 2 * var(--ck-spacing-large) );
-}
+}*/
 
 /*end ck editor*/
 
@@ -2913,7 +2913,7 @@ p {
   -webkit-transform: rotate(0);
           transform: rotate(0); }
 
-blockquote {
+/*blockquote {
   margin: 3em 0;
   padding: 15px 80px 15px 80px;
   position: relative; }
@@ -2924,8 +2924,8 @@ blockquote {
     blockquote h6 span {
       font-weight: 700;
       display: block;
-      color: #515365; }
-  blockquote p {
+      color: #515365; }*/
+  /*blockquote p {
     margin: 0 0 15px !important;
     font-size: 22px;
     line-height: 1.3em;
@@ -2940,10 +2940,10 @@ blockquote {
       top: 0;
       left: -80px;
       display: block;
-      background-color: #ff5e3a; }
+      background-color: #ff5e3a; }*/
     @media (max-width: 640px) {
-      blockquote p {
-        font-size: 16px; } }
+      /*blockquote p {
+        font-size: 16px; } */}
 
 a > svg {
   transition: all .15s ease; }
@@ -8460,11 +8460,11 @@ ol ol li {
       margin: 0 -30px 50px; }
   .single-post-additional > * {
     padding: 10px; }
-  blockquote {
+/*  blockquote {
     margin: 1.5em 0;
     padding: 15px 30px 15px 30px; }
     blockquote p::before {
-      left: -30px; } }
+      left: -30px; } */}
 
 @media (max-width: 768px) {
   .blog-post .post-control-button .btn-control {
@@ -15592,9 +15592,15 @@ input[type=checkbox] {
 }
 
 .post-add-icon.post-comment-like{
-  fill: #ff0505;
-  color: #ff0505;
+  fill: #ff0505!important;
+  color: #ff0505!important;
 }
+
+.post-comment-like{
+  fill: #ff0505!important;
+  color: #ff0505!important;
+}
+
 .btn-download-file{
   float: left!important;
   width: 40px!important;
@@ -16207,10 +16213,15 @@ input[type=checkbox] {
 }
 
 .right-info-author{
+  width: max-content;
+  width: -moz-max-content;
+  bottom: 10px;
+  left: 220px;
   position: absolute;
-  right: -100px;
-  top: 60px;
   color: #fff6f6;
+  text-align: left;
+  text-shadow: 0 0 3px #020202, 0 0 5px #FFE700;
+  z-index: 10;
 }
 
 .icons-main:hover{
@@ -16523,7 +16534,7 @@ input[type=checkbox] {
   display: inline!important;
 }
 
-.slimScrollDiv{
+.search-box-container .slimScrollDiv{
   display: none;
 }
 
@@ -16702,3 +16713,149 @@ input[type=checkbox] {
   top: 10px;
   left: 10px;
 }
+
+.btn-friendship{
+  position: absolute;
+  left: 10px;
+  top: 25%;
+}
+
+.unseen-friend-request{
+  right:2px!important;
+  top:2px!important;
+  width: 30px;
+  padding: 4px;
+  font-size: .6rem;
+  height: 16px;
+  line-height: 6px;
+  text-align: center;
+}
+
+.bookmark-post-img{
+  width: 50px;
+  height: 40px;
+  border-radius: 4px!important;
+}
+
+.icon-logout{
+  vertical-align: middle!important;
+}
+
+.newest-users-block{
+  padding: 18px!important;
+}
+
+.user-profile-name{
+  width: -moz-max-content;
+  width: max-content;
+}
+
+/*blockquote*/
+
+blockquote{
+  width:95%;
+  margin:50px auto;
+  color: #555555;
+  padding:1.2em 30px 1.2em 75px;
+  border-right:8px solid #78C0A8 ;
+  line-height:1.6;
+  position: relative;
+  background:#EDEDED;
+}
+
+blockquote::before{
+  content: "\201C";
+  color:#78C0A8;
+  font-size:4em;
+  position: absolute;
+  left: 10px;
+  top:-10px;
+}
+
+blockquote::after{
+  content: '';
+}
+
+blockquote span{
+  display:block;
+  color:#333333;
+  font-style: normal;
+  font-weight: bold;
+  margin-top:1em;
+}
+
+.blog-comment{
+  margin-bottom: 30px;
+}
+
+.blog-comment:hover{
+  background-color: #f5f5ef;
+  transition: .4s;
+}
+
+.blog-comment li:hover{
+  background-color: #efefe9;
+  transition: .4s;
+}
+
+.blog-comment-container ul{
+  margin-bottom: 0!important;
+}
+
+.blog-comment-container li{
+  border-bottom: none!important;
+}
+
+.like-bookmark{
+  bottom: unset!important;
+  left: 25px!important;
+  top: 20%!important;
+  right: unset!important;
+}
+
+.btn-expand-posts{
+  color: #d2d2d2;
+}
+
+.btn-expand-posts:hover{
+  color: #0b82b1;
+}
+
+.min-searchbar{
+  height: 25px;
+  transition: .4s;
+  margin-bottom: 5px;
+  overflow: hidden;
+}
+
+.btn-expand-container{
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+
+.comment-box-emoji{
+  position: fixed;
+  bottom: 0;
+  left: 54px;
+  right: 0;
+  width: 100%;
+  z-index: 400;
+  background-color: #eee;
+  box-shadow: 1px 1px 10px 2px rgba(0,0,0,.3);
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.answering-comment{
+  border: 1px solid red;
+  padding: 4px;
+}
+
+.padding-scrollbar{
+  padding-left: 15px;
+}
+
+
+
+

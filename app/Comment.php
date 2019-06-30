@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Comment extends Model
 {
@@ -52,7 +53,16 @@ class Comment extends Model
 
     public function getLikedAttribute()
     {
-        return 0;
+        if (Auth::check()){
+            $likes = $this->likes->where('user_id' , Auth::id())->first();
+
+            if (!is_null($likes)){
+                return 1;
+            } else {
+                return 0;
+            }
+
+        }
     }
 
     public function likes()

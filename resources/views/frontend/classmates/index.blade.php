@@ -1,5 +1,15 @@
 @extends('frontend.layout.master')
 
+@section('titleTag')
+    <title>هم کلاسی ها:: دانشکده ها</title>
+@endsection
+@section('metaDescription')
+    <meta name="description" content="با انتخاب دانشکده رشته های مرتبط را مشاهده کنید">
+@endsection
+@section('metaKeywords')
+    <meta name="keywords" content="گفتگوی دوستانه,چت دانشجویی,وبلاگ دانشجویی,خاطرات دانشجویی,دوستان دوران دانشگاه,دانشگاه ولی عصر,دانشگاه ولیعصر,دانشگاه رفسنجان,دانشکده,فنی و مهندسی,ادبیات و علوم انسانی,ایران شناسی,علوم اداری و اقتصاد,علوم پایه,علوم ریاضی,کشاورزی">
+@endsection
+
 @section('content')
 
 

@@ -12,6 +12,7 @@ use App\School;
 use App\Subcity;
 use App\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -48,6 +49,7 @@ class RegisterController extends Controller
      *
      * @return void
      */
+
 
     public function register(Request $request)
     {
@@ -107,6 +109,10 @@ class RegisterController extends Controller
             $alias = make_slug($data['alias']);
         }
 
+        if ($data['userStatus'] == 'end'){
+            $data['dormStatus'] = null;
+        }
+
         /*store user data*/
 
         $user = User::create([
@@ -130,7 +136,7 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-
+        $user->sendEmailVerificationNotification();
 
 
         /*store places data*/
@@ -149,7 +155,7 @@ class RegisterController extends Controller
             array_push($placesArray , ['country' => $data['foreignBirthPlace'] , 'foreign' => true , 'type' => 'birth']);
         }
 
-        /*this foreach is just for two query*/
+
         foreach ($placesArray as $row){
             $place = new Place();
             $place->user_id = $user->id;
@@ -229,8 +235,8 @@ class RegisterController extends Controller
         }
 
         Account::insert($accountsArray);
-
         Session::put('userId', $user->id);
 
+        Auth::loginUsingId($user->id);
     }
 }

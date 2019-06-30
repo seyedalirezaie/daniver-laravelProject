@@ -899,6 +899,8 @@
 
             submitForm: function () {
 
+                this.$Progress.start();
+
                 if (this.reg_email === '') {
                     this.reg_email = ''
                 }
@@ -1012,6 +1014,7 @@
 
 
                 }).then(res=>{
+                    this.$Progress.finish();
                     this.upload();
                 }).catch(err=>{
 
@@ -1160,8 +1163,9 @@
 
             /**image croppa**/
             upload() {
+                this.$Progress.start();
                 if (!this.croppa.hasImage()) {
-                    alert('no image to upload')
+                    window.location.href = '/';
                     return
                 }
 
@@ -1180,7 +1184,7 @@
                         processData: false,
                         contentType: false,
                         success: function(data) {
-                            alert(data)
+                            window.location.href = '/';
                         }
                     })
                 })

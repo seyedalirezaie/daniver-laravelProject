@@ -86,12 +86,23 @@ class PostController extends Controller
 
 
             if (count($post->photos) > 0){
-                $thumbnailPath = $post->photos[0]->path;
-                create_thumbnail('images/lg/' . $thumbnailPath , 'images/sm/'.$thumbnailPath , 120 , 120 , 'jpeg');
-                /*create_thumbnail2('images/lg/' . $thumbnailPath , 'images/sm/'.$thumbnailPath , 120 , 120);*/
+
+                foreach ($post->photos as $photo){
+                    if ($photo->type == null){
+                        $thumbnailPath = $photo->path;
+                        create_thumbnail('images/lg/' . $thumbnailPath , 'images/sm/'.$thumbnailPath , 120 , 120 , 'jpeg');
+                        /*create_thumbnail2('images/lg/' . $thumbnailPath , 'images/sm/'.$thumbnailPath , 120 , 120);*/
+
+                        $previewPhoto = Photo::findOrFail($photo->id);
+                        $previewPhoto->is_preview = 1;
+                        $previewPhoto->save();
+
+                        break;
+                    }
+                }
+
+
             }
-
-
 
         if ($request->tags){
 
@@ -121,9 +132,9 @@ class PostController extends Controller
 
             $post->tags()->attach($totalTagIds);
 
-            return $post->id;
-
         }
+
+        return $post->id;
 
 
 
@@ -238,7 +249,7 @@ class PostController extends Controller
 
 
 
-            $posts = Post::with('user.photo', 'user.categories' , 'likes.user.photo' , 'category')->withCount(['likes' , 'comments'])->orderBy($orderFilter , 'DESC')
+            $posts = Post::with('user', 'user.categories')->withCount(['likes' , 'comments'])->orderBy($orderFilter , 'DESC')
                 ->when(1==1 , function ($q) use($categoryId){
                     $q->where('category_id' , '=' , $categoryId)->where('active' , 1);
                 })

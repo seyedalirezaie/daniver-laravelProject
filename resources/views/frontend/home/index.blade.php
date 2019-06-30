@@ -111,7 +111,7 @@
                         @foreach($sortedStudies as $group)
                             <li class="inline-items p-2" dir="rtl">
                                 <div class="author-thumb">
-                                    <img class="img-category-home" src="/images/avatars/{{$group->photo ? $group->photo->path : ''}}" alt="author">
+                                    <img class="img-category-home" src="{{$group->path}}" alt="author">
                                 </div>
                                 <div class="notification-event">
                                     <a href="{{$group->url}}/posts/{{$group->slug}}" class="notification-friend">{{$group->titles}}</a>
@@ -172,7 +172,6 @@
             <div class="ui-block-title bg-white mb-3 text-right rounded"><h6 class="title">وبلاگ</h6></div>
 
             <blog-posts-component></blog-posts-component>
-
 
         </div>
 
@@ -289,32 +288,24 @@
                             <div dir="rtl" class="post-additional-info inline-items">
                                 <div class="comments-shared">
                                     <a href="#" class="post-add-icon inline-items">
-                                        <i class="far fa-heart fs1-3"></i>
+                                        <i class="far fa-heart fs1-3 text-grey-lighter"></i>
                                         <span>{{$post->likes_count}}</span>
                                     </a>
                                 </div>
 
                                 <div class="comments-shared">
                                     <a href="#" class="post-add-icon inline-items">
-                                        <i class="far fa-comments fs1-3"></i>
+                                        <i class="far fa-comments fs1-3 text-grey-lighter"></i>
                                         <span>{{$post->comments_count}}</span>
                                     </a>
                                 </div>
-
                             </div>
                         </div>
-
                     </article>
                     @endforeach
-
-                    <!-- ... end Post -->
-
                 </div>
                 @endif
-
             </aside>
         </div>
-
     </div>
-
 @endsection

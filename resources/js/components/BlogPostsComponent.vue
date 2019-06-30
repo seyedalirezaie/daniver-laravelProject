@@ -35,13 +35,13 @@
                     <div class="post-additional-info inline-items position-absolute">
 
                         <span class="post-add-icon inline-items">
-                                <i class="far fa-heart fs1-2"></i>
+                                <i class="far fa-heart fs1-2 text-grey-lighter"></i>
                                 <span>{{post.likes_count}}</span>
                             </span>
 
                         <div class="comments-shared mr-3 d-inline-block">
                                 <span class="post-add-icon inline-items">
-                                    <i class="far fa-comment fs1-2"></i>
+                                    <i class="far fa-comment fs1-2 text-grey-lighter"></i>
                                     <span>{{post.comments_count}}</span>
                                 </span>
                         </div>

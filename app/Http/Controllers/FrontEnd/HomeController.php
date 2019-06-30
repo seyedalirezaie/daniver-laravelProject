@@ -32,15 +32,6 @@ class HomeController extends Controller
     
     public function index()
     {
-        $newestUsers = User
-            ::with('photo')
-            ->orderBy('id' , 'DESC')
-            ->where('active' , 1)
-            ->where('email_verified_at' , '!=' , null)
-            ->where('visible' , 1)
-            ->take(25)
-            ->get();
-
         $studyGroups = Category::whereIn('sort' , ['major'])->with('posts' , 'photo')->withCount(['users' , 'posts'])->get();
         $dormGroups = Category::whereIn('sort' , ['dorm'])->with('posts' , 'photo')->withCount(['users' , 'posts'])->get();
         $mateGroups = Category::whereIn('sort' , ['mate'])->with('posts' , 'photo')->withCount(['users' , 'posts'])->get();
@@ -49,19 +40,6 @@ class HomeController extends Controller
         $sortedStudies = $this->sortGroupsByScores($studyGroups);
         $sortedMates = $this->sortGroupsByScores($mateGroups);
 
-        $start = Carbon::now()->subDays(7);
-        $end = Carbon::now()->toDateTimeString();
-
-        $favoritePosts = Post::with('category' , 'photos' , 'user.photo')->withCount(['likes' , 'comments'])->whereActive(1)->orderBy('likes_count' , 'DESC')->whereBetween('created_at', [$start , $end])->take(5)->get();
-
-        foreach ($favoritePosts as $key=>$post){
-            if ($post['likes_count'] == 0){
-                unset($favoritePosts[$key]);
-            }
-        }
-
-        $featuredPosts = Post::with('user.photo' , 'category')->withCount(['likes' , 'comments'])->where('featured' , 1)->where('active' , 1)->get();
-
-        return view('frontend.home.index' , compact(['newestUsers' , 'sortedDorms' , 'sortedStudies' , 'sortedMates' , 'favoritePosts' , 'featuredPosts']));
+        return view('frontend.home.index' , compact(['sortedDorms' , 'sortedStudies' , 'sortedMates']));
     }
 }

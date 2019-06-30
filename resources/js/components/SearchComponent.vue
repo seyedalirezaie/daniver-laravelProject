@@ -163,12 +163,12 @@
 
             away: function() {
                 this.flag_closeSearchBox = true;
-                $('.slimScrollDiv').fadeOut();
+                $('.search-box-container .slimScrollDiv').fadeOut();
             },
 
             showSearchBox: function () {
                 this.flag_closeSearchBox = false;
-                $('.slimScrollDiv').fadeIn();
+                $('.search-box-container .slimScrollDiv').fadeIn();
             }
 
 

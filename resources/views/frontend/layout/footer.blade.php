@@ -5,13 +5,14 @@
             <div class="col col-lg-4 col-md-4 col-sm-6 col-6" dir="rtl">
                 <div class="widget w-list text-right">
                     <h6 class="title fs0-85">تماس با ما</h6>
-                    <div class="form-group contact-us" dir="rtl">
+                    <form class="form-group contact-us form-contact-us" dir="rtl" method="post">
                         <input class="form-control" name="name" placeholder="نام و نام خانوادگی">
                         <input class="form-control" name="email" placeholder="ایمیل">
+                        <input class="form-control" name="phone" placeholder="شماره تماس">
                         <input class="form-control" name="title" placeholder="موضوع">
                         <textarea class="form-control" name="description" placeholder="متن پیام"></textarea>
-                        <span class="btn btn-sm btn-transparent border mt-3 btn-send-msg">ارسال</span>
-                    </div>
+                        <span onclick="submitContactUsForm()" class="btn btn-sm btn-transparent border mt-3 btn-send-msg">ارسال</span>
+                    </form>
 
                 </div>
             </div>
@@ -21,22 +22,19 @@
                     <h6 class="title">لینک های اصلی</h6>
                     <ul>
                         <li>
-                            <a href="#">ثبت نام</a>
+                            <a href="/register">ثبت نام</a>
                         </li>
                         <li>
-                            <a href="#">ورود</a>
+                            <a href="/login">ورود</a>
                         </li>
                         <li>
-                            <a href="#">وبلاگ</a>
+                            <a href="/study">درس و بحث</a>
                         </li>
                         <li>
-                            <a href="#">درس و بحث</a>
+                            <a href="/dormitory">خوابگاه ها</a>
                         </li>
                         <li>
-                            <a href="#">خوابگاه ها</a>
-                        </li>
-                        <li>
-                            <a href="#">هم کلاسی ها</a>
+                            <a href="/classmates">هم کلاسی ها</a>
                         </li>
                         <li>
                             <a href="#">بازارچه</a>
@@ -50,7 +48,7 @@
                     <ul>
                         @foreach($majors as $major)
                             <li>
-                                <a href="#">دانشکده {{$major->title}}</a>
+                                <a href="/{{$major->url}}/college/{{$major->slug}}">دانشکده {{$major->title}}</a>
                             </li>
                         @endforeach
                     </ul>
@@ -63,7 +61,7 @@
                     <ul>
                         @foreach($dorms as $dorm)
                             <li>
-                                <a href="#">خوابگاه {{$dorm->title}}</a>
+                                <a href="/{{$dorm->url}}/posts/{{$dorm->slug}}">خوابگاه {{$dorm->title}}</a>
                             </li>
                         @endforeach
                     </ul>
@@ -75,7 +73,7 @@
                     <h6 class="title">لینک های مفید</h6>
                     <ul>
                         <li>
-                            <a href="#">دانشگاه ولی عصر (عج) رفسنجان</a>
+                            <a target="_blank" href="https://www.vru.ac.ir">دانشگاه ولی عصر (عج) رفسنجان</a>
                         </li>
                     </ul>
                 </div>
@@ -127,3 +125,37 @@
         </div>
     </div>
 </div>
+
+@section('scripts')
+
+    <script src="{{asset('/js/notifyjs.js')}}"></script>
+
+    <script>
+        function submitContactUsForm(){
+            $('.form-contact-us').serializeArray();
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/contactus' +'?_token=' + '{{ csrf_token() }}',
+                data: $('.form-contact-us').serializeArray(),
+                success: function (data){
+                    $(".form-contact-us")[0].reset();
+                    $.notify("پیام شما با موفقیت ثبت شد و در سریع ترین زمان ممکن به آن رسیدگی خواهد شد", {
+                        autoHideDelay: 20000,
+                        globalPosition: 'bottom left',
+                        className: 'success',
+                    });
+                },
+                error: function(e) {
+                    if (e.responseJSON.message === 'Unauthenticated.'){
+                        $.notify("در حال حار مشکلی در ثبت پیام پیش آمده. لطفا مجددا امتحان کنید", {
+                            autoHideDelay: 15000,
+                            globalPosition: 'bottom left',
+                            className: 'error',
+                        });
+                    }
+                }});
+        }
+    </script>
+
+@endsection

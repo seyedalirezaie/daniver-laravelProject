@@ -9,28 +9,40 @@
                 <div class="ui-block">
                     <div class="top-header">
                         <div class="top-header-thumb">
-                            <img src="/frontend/img/top-header1.jpg" alt="nature">
+                            <img v-if="profile_user.header.length !== 0" :src="'/images/lg/'+profile_user.header[0].path" alt="nature">
+                            <img v-else :src="avatars['user_header']" alt="nature">
+
+                            <div class="right-info-author">
+                                <span v-if="profile_user.alias_original !== null && profile_user.alias_original !== ''" class="d-block ml-2">نام مستعار: {{profile_user.alias_original}}</span>
+                                <div class="country ml-2">آخرین بازدید :  {{profile_user.lastseen}}</div>
+                            </div>
                         </div>
                         <div class="profile-section">
                             <div class="row justify-content-center">
                                 <div class="col col-lg-5 col-md-5 col-sm-12 col-12">
                                     <ul class="profile-menu">
                                         <li>
-                                            <a v-bind:class="{'active': flag_tabs['posts']}" @click="changeTab('posts')" href="#posts">پست ها</a>
+                                            <router-link v-bind:class="{'active': flag_tabs['posts']}" :to="{name:'profile' , params:{user:profile_user.url , section:'posts'}}">
+                                            پست ها
+                                            </router-link>
                                         </li>
                                         <li>
-                                            <a v-bind:class="{'active': flag_tabs['actions']}" @click="changeTab('actions')" href="#actions">فعالیت ها</a>
+                                            <router-link v-bind:class="{'active': flag_tabs['actions']}" :to="{name:'profile' , params:{user:profile_user.url , section:'actions'}}">
+                                            فعالیت ها
+                                            </router-link>
                                         </li>
                                         <li>
-                                            <a v-bind:class="{'active': flag_tabs['info']}" @click="changeTab('info')" href="#info">مشخصات</a>
+                                            <router-link v-bind:class="{'active': flag_tabs['information']}" :to="{name:'profile' , params:{user:profile_user.url , section:'information'}}">
+                                             مشخصات
+                                            </router-link>
                                         </li>
                                     </ul>
                                 </div>
 
                             </div>
 
-                            <div class="control-block-button">
-                                <div class="btn btn-control bg-blue more">
+                            <div v-if="auth_user.id !== profile_user.id" class="control-block-button">
+                                <div class="btn btn-control bg-blue more" data-toggle="modal" data-target="#modal-message">
                                     <i class="fas fa-envelope text-white"></i>
                                     <ul class="more-dropdown more-with-triangle triangle-bottom-right bg-white">
                                         <li>
@@ -39,7 +51,7 @@
                                     </ul>
                                 </div>
 
-                                <div class="btn btn-control bg-primary more" data-toggle="modal" data-target="#edit-widget-pool">
+                                <div v-if="auth_user.id !== profile_user.id" class="btn btn-control bg-primary more" data-toggle="modal" data-target="#edit-widget-pool">
                                     <i class="fas fa-user text-white"></i>
 
                                     <ul class="more-dropdown more-with-triangle triangle-bottom-right bg-white">
@@ -48,41 +60,15 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <!--<div v-if="flag_isFriend && friendship_status.accepted === 1" class="btn btn-control bg-primary more" @click="cancelFriendShip(friendship_status.id)">
-                                    <i class="fas fa-user text-white"></i>
-
-                                    <ul class="more-dropdown more-with-triangle triangle-bottom-right bg-white">
-                                        <li>
-                                            <span class="text-grey">لغو دوستی</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div v-if="flag_isFriend && friendship_status.accepted === 0" class="btn btn-control bg-primary more" @click="cancelFriendShip(friendship_status.id)">
-                                    <i class="fas fa-user text-white"></i>
-
-                                    <ul class="more-dropdown more-with-triangle triangle-bottom-right bg-white">
-                                        <li>
-                                            <span class="text-grey">لغو دوستی</span>
-                                        </li>
-                                    </ul>
-                                </div>-->
                             </div>
                         </div>
                         <div class="top-header-author profile-header-info">
                             <a href="02-ProfilePage.html" class="author-thumb">
-                                <img v-if="profile_user.photo" :src="'/images/md/'+profile_user.photo.path" :alt="profile_user.family" :title="profile_user.family">
-                                <img v-else-if="profile_user.gender === 1" :src="avatars['user_avatar_male']" :alt="profile_user.family" :title="profile_user.family">
-                                <img v-else-if="profile_user.gender === 0" :src="avatars['user_avatar_female']" :alt="profile_user.family" :title="profile_user.family">
-                                <img v-else-if="profile_user.gender === null" :src="avatars['user_avatar_unknown']" :alt="profile_user.family" :title="profile_user.family">
+                                <img :src="profile_user.path_md" :alt="profile_user.family" :title="profile_user.family">
                             </a>
                             <div class="author-content">
-                                <a href="02-ProfilePage.html" class="h4 author-name">{{profile_user.family}}</a>
-                                <div class="country profile-status-now">وضعیت فعلی |  {{profile_user.status_now}}</div>
-                            </div>
-
-                            <div class="right-info-author">
-                                <span href="#" class="d-block ml-2">نام مستعار: {{profile_user.alias_original}}</span>
-                                <div class="country ml-2">آخرین بازدید :  {{profile_user.lastseen}}</div>
+                                <span class="author-name user-profile-name fs1-1">{{profile_user.family}}</span>
+                                <div v-if="profile_user.status_now !== null && profile_user.status_now !== ''" class="country profile-status-now">وضعیت فعلی |  {{profile_user.status_now}}</div>
                             </div>
 
                         </div>
@@ -93,7 +79,7 @@
 
             <!-- Window-popup Edit Widget Pool -->
 
-            <div dir="rtl" class="modal fade" id="edit-widget-pool" tabindex="-1" role="dialog" aria-labelledby="edit-widget-pool" aria-hidden="true">
+            <div v-if="auth_user.id !== profile_user.id" dir="rtl" class="modal fade" id="edit-widget-pool" tabindex="-1" role="dialog" aria-labelledby="edit-widget-pool" aria-hidden="true">
                 <div class="modal-dialog window-popup edit-widget edit-widget-pool" role="document">
                     <div class="modal-content">
                         <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Close">
@@ -105,8 +91,6 @@
                         </div>
 
                         <div class="modal-body">
-
-
 
                             <div class="row" v-if="!flag_isFriend && friendship_status === 'noFriend'">
 
@@ -124,20 +108,29 @@
 
                                 <span class="p-5">برای ارسال درخواست دوستی لازم است به پروفایل خود وارد شوید یا ثبت نام کنید</span>
 
-                                <div class="col col-lg-6 col-sm-12 col-12">
-                                    <a href="/register" class="btn btn-sm btn-secondary full-width">ثبت نام</a>
-                                </div>
+                                <div class="container-fluid mt-3">
+                                    <div class="row">
+                                        <div class="col col-lg-4 col-sm-12 col-12">
+                                            <span data-dismiss="modal" aria-label="Close" class="btn btn-sm bg-secondary full-width">لغو</span>
+                                        </div>
 
-                                <div class="col col-lg-6 col-sm-12 col-12">
-                                    <a href="/login" class="btn btn-sm btn-green full-width" >ورود</a>
+                                        <div class="col col-lg-4 col-sm-12 col-12">
+                                            <a href="/register" class="btn btn-sm btn-blue full-width">ثبت نام</a>
+                                        </div>
+
+                                        <div class="col col-lg-4 col-sm-12 col-12">
+                                            <a href="/login" class="btn btn-sm btn-green full-width">ورود</a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row" v-if="flag_isFriend && friendship_status.accepted === 1">
 
-                                <span class="p-5">شما و {{profile_user.family}} در حال حاضر دوست هستید. اگر تمایل دارید می توانید این دوستی را لغو کنید</span>
+                                <span class="p-4 text-red">نمی توانید درخواست دوستی ارسال کنید!</span>
+                                <span class="p-4 mb-2">شما و {{profile_user.family}} در حال حاضر دوست هستید. اگر تمایل دارید می توانید این دوستی را لغو کنید</span>
 
                                 <div class="col col-lg-6 col-sm-12 col-12">
-                                    <span data-dismiss="modal" aria-label="Close" class="btn btn-sm btn-secondary full-width">بستن پنجره</span>
+                                    <span data-dismiss="modal" aria-label="Close" class="btn btn-sm bg-secondary full-width">بستن پنجره</span>
                                 </div>
 
                                 <div class="col col-lg-6 col-sm-12 col-12">
@@ -146,10 +139,11 @@
                             </div>
                             <div class="row" v-if="flag_isFriend && friendship_status.accepted === 0 && friendship_status.receiver_id === profile_user.id">
 
-                                <span class="p-5">{{profile_user.family}} هنوز به درخواست دوستی شما پاسخ نداده است. با این حال می توانید درخواست دوستی قبلی خود را لغو کنید.</span>
+                                <span class="p-4 text-red">نمی توانید درخواست دوستی ارسال کنید!</span>
+                                <span class="p-4 mb-2">{{profile_user.family}} هنوز به درخواست دوستی شما پاسخ نداده است. با این حال می توانید درخواست دوستی قبلی خود را لغو کنید.</span>
 
                                 <div class="col col-lg-6 col-sm-12 col-12">
-                                    <span data-dismiss="modal" aria-label="Close" class="btn btn-sm btn-secondary full-width">بستن پنجره</span>
+                                    <span data-dismiss="modal" aria-label="Close" class="btn btn-sm bg-secondary full-width">بستن پنجره</span>
                                 </div>
 
                                 <div class="col col-lg-6 col-sm-12 col-12">
@@ -158,7 +152,8 @@
                             </div>
                             <div class="row" v-if="flag_isFriend && friendship_status.accepted === 0 && friendship_status.sender_id === profile_user.id">
 
-                                <span class="p-5">شما هنوز به درخواست دوستی {{profile_user.family}} پاسخ نداده اید.</span>
+                                <span class="p-4 text-red">نمی توانید درخواست دوستی ارسال کنید!</span>
+                                <span class="p-4 mb-2">شما هنوز به درخواست دوستی {{profile_user.family}} پاسخ نداده اید.</span>
 
                                 <div class="col col-lg-6 col-sm-12 col-12">
                                     <span data-dismiss="modal" aria-label="Close" class="btn btn-sm btn-secondary full-width" @click="cancelFriendShip(friendship_status.id)">رد درخواست دوستی</span>
@@ -176,6 +171,67 @@
             </div>
 
             <!-- ... end Window-popup Edit Widget Pool -->
+
+
+
+            <div v-if="auth_user.id !== profile_user.id" dir="rtl" class="modal fade" id="modal-message" tabindex="-1" role="dialog" aria-labelledby="modal-message" aria-hidden="true">
+                <div class="modal-dialog window-popup edit-widget edit-widget-pool" role="document">
+                    <div class="modal-content">
+                        <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Close">
+                            <svg class="olymp-close-icon"><use xlink:href="svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
+                        </a>
+
+                        <div class="modal-header">
+                            <h6 class="title">ارسال پیام</h6>
+                        </div>
+
+                        <div v-if="auth_user.id" class="modal-body">
+
+
+                                <span class="p-4">ارسال پیام به {{profile_user.family}}</span>
+
+                                <div class="p-4 mb-2 form-group w-100">
+                                    <textarea v-model="v_message" class="form-control full-width">
+
+                                    </textarea>
+                                </div>
+
+                                <div class="col col-lg-6 col-sm-12 col-12">
+                                    <span data-dismiss="modal" aria-label="Close" class="btn btn-sm bg-secondary full-width">لغو</span>
+                                </div>
+
+                                <div class="col col-lg-6 col-sm-12 col-12">
+                                    <span data-dismiss="modal" aria-label="Close" class="btn btn-sm btn-green full-width" @click="sendMessage(profile_user.id)">ارسال پیام</span>
+                                </div>
+
+                        </div>
+
+                        <div v-else class="modal-body">
+
+                            <span>برای ارسال پیام لازم است به حساب کاربری خود وارد شوید یا ثبت نام کنید</span>
+
+                            <div class="container-fluid mt-5">
+                                <div class="row">
+                                    <div class="col col-lg-4 col-sm-12 col-12">
+                                         <span data-dismiss="modal" aria-label="Close" class="btn btn-sm bg-secondary full-width">لغو</span>
+                                    </div>
+
+                                    <div class="col col-lg-4 col-sm-12 col-12">
+                                        <a href="/register" class="btn btn-sm btn-blue full-width">ثبت نام</a>
+                                    </div>
+
+                                    <div class="col col-lg-4 col-sm-12 col-12">
+                                        <a href="/login" class="btn btn-sm btn-green full-width">ورود</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
 
 
         </div>
@@ -250,7 +306,7 @@
 
                                     <div class="post-content">
 
-                                        <a href="#" class="h6 post-title">{{post.title}}</a>
+                                        <a :href="'/study/posts/'+post.category.slug+'/'+post.slug" class="h6 post-title">{{post.title}}</a>
 
                                         <div class="author-date">
                                             <div class="post__date">
@@ -262,26 +318,17 @@
 
                                         <div class="post-additional-info inline-items">
 
-                                            <ul class="friends-harmonic">
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="/frontend/img/icon-chat27.png" alt="icon">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="/frontend/img/icon-chat2.png" alt="icon">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                            <div class="names-people-likes">
-                                                26
+                                            <div class="comments-shared">
+                                                <a href="#" class="post-add-icon inline-items">
+                                                    <i class="far fa-comments fs1-3"></i>
+                                                    <span>{{post.comments_count}}</span>
+                                                </a>
                                             </div>
 
                                             <div class="comments-shared">
                                                 <a href="#" class="post-add-icon inline-items">
-                                                    <svg class="olymp-speech-balloon-icon"><use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-speech-balloon-icon"></use></svg>
-                                                    <span>0</span>
+                                                    <i class="far fa-heart fs1-3"></i>
+                                                    <span>{{post.likes_count}}</span>
                                                 </a>
                                             </div>
 
@@ -319,9 +366,8 @@
 
                 <div class="ui-block">
 
-                    <div class="ui-block-title text-right pr-1">
+                    <div class="ui-block-title text-right pr-2">
                         <h6 class="title">در یک هفته گذشته</h6>
-                        <a href="#" class="more"><svg class="olymp-three-dots-icon"><use xlink:href="\frontend\svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg></a>
                     </div>
 
 
@@ -330,7 +376,7 @@
                     <ul class="widget w-activity-feed notification-list">
                         <li v-for="action in sorted_actions" v-if="action.mentionable_id">
                             <div class="author-thumb float-right">
-                                <img :src="'/images/sm/'+action.mentionable.user.photo.path" alt="author">
+                                <img :src="action.mentionable.user.path_sm" alt="author">
                             </div>
                             <div class="notification-event pr-1 pl-0" dir="rtl">
                                 <a v-if="action.mentionable.user.alias" class="h6 notification-friend" :href="'/profile/'+action.mentionable.user.alias"> {{action.mentionable.user.family}} </a>
@@ -354,7 +400,7 @@
                                         {{profile_user.family}} را تگ کرد
                                     </span>
                                 </span>
-                                <span class="notification-date"><time class="entry-date updated bg-grey-small p-1 rounded fs0-7">{{action.created_at}}</time></span>
+                                <span class="notification-date"><time class="entry-date updated bg-grey-small p-1 rounded fs0-7">{{action.date}}</time></span>
                             </div>
                         </li>
 
@@ -378,11 +424,18 @@
                                     <span v-else>{{action.commentable.user.family}}</span>
                                 </a>
                                 <span v-if="action.parent_id === null">نظر ارسال کرد.</span>
-                                <span v-else>پاسخ داد.</span>
+                                <div v-else>
+                                    <span>در پست</span>
+                                    <a :href="'/'+action.commentable.category.url+'/posts/'+action.commentable.category.slug+'/'+action.commentable.slug">{{action.commentable.title}}</a>
+                                    پاسخ داد.</div>
 
 
                                 <span class="notification-date"><time class="entry-date updated bg-grey-small p-1 rounded fs0-7">{{action.date}}</time></span>
                             </div>
+                        </li>
+
+                        <li v-if="sorted_actions.length === 0">
+                            بدون فعالیت
                         </li>
 
                     </ul>
@@ -408,9 +461,12 @@
                             </span>
                             </div>
 
-                            <flip-countdown class="flip-timer" :deadline="birthday"
+                            <flip-countdown v-if="profile_user.birthday !== null && profile_user.birthday !== ''" class="flip-timer" :deadline="birthday"
                                             :labels="timerLabels"
                             ></flip-countdown>
+                            <span v-else>
+                                نامشخص
+                            </span>
                         </div>
                     </div>
 
@@ -599,7 +655,7 @@
 
         <!------------------------------------info tab content---------------------------------------------->
 
-        <div v-if="flag_tabs['info']" class="row">
+        <div v-if="flag_tabs['information']" class="row">
             <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                 <div class="container-fluid">
                     <div class="row" dir="rtl">
@@ -640,7 +696,7 @@
 
                                             <ul class="widget w-personal-info item-block">
                                                 <li>
-                                                    <span class="title">کتاب های مورد علاقه::</span>
+                                                    <span class="title">کتاب های مورد علاقه:</span>
                                                     <span v-html="profile_user.favorites_book" class="text"></span>
                                                 </li>
                                                 <li>
@@ -661,7 +717,6 @@
                             <div class="ui-block">
                                 <div class="ui-block-title">
                                     <h6 class="title">اطلاعات دانشجویی</h6>
-                                    <a href="#" class="more"><svg class="olymp-three-dots-icon"><use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg></a>
                                 </div>
                                 <div class="ui-block-content">
                                     <div class="row">
@@ -674,12 +729,12 @@
                                                 <li v-for="major in profile_user.categories" v-if="major.sort === 'major' && major.pivot.status === 1">
                                                     <span class="title">رشته تحصیلی کنونی در دانشگاه ولی عصر</span>
                                                     <span class="text">{{major.titles}}</span>
-                                                    <span class="date">ورودی {{major.pivot.year}}</span>
+                                                    <span class="date text-dark-light">ورودی {{major.pivot.year}}</span>
                                                 </li>
                                                 <li v-for="major in profile_user.categories" v-if="major.sort === 'major' && major.pivot.status === 2">
                                                     <span class="title">رشته فارغ التحصیلی از دانشگاه ولی عصر</span>
                                                     <span class="text">{{major.titles}}</span>
-                                                    <span class="date">ورودی {{major.pivot.year}}</span>
+                                                    <span class="date text-dark-light">ورودی {{major.pivot.year}}</span>
                                                 </li>
                                                 <li v-for="otherMajor in profile_user.othermajors" v-if="otherMajor.status === 1">
                                                     <span class="title">رشته تحصیلی کنونی در سایر دانشگاه ها</span>
@@ -706,7 +761,7 @@
                                                     <span v-if="profile_user.location === 'dorm-vru'" class="text">خوابگاه دانشجویی دانشگاه</span>
                                                     <span v-if="profile_user.location === 'dorm-other'" class="text">خوابگاه دانشجویی دیگر(غیر از خوابگاه های دانشگاه)</span>
                                                     <span v-if="profile_user.location === 'home-dorm'" class="text">خانه دانشجویی</span>
-                                                    <span v-for="dorm in profile_user.categories" v-if="profile_user.location === 'dorm-vru' && dorm.sort === 'dorm'" class="date">{{dorm.titles}}</span>
+                                                    <span v-for="dorm in profile_user.categories" v-if="profile_user.location === 'dorm-vru' && dorm.sort === 'dorm'" class="date text-dark-light">{{dorm.titles}}</span>
                                                 </li>
 
                                             </ul>
@@ -731,12 +786,13 @@
                                     <ul class="widget w-personal-info user-info">
                                         <li>
                                             <span class="title">درباره من:</span>
-                                            <span v-html="profile_user.description" class="text">
-												</span>
+                                            <span v-if="profile_user.description !== null && profile_user.description !== ''" v-html="profile_user.description" class="text"></span>
+                                            <span v-else class="text">-</span>
                                         </li>
                                         <li>
                                             <span class="title">تولد:</span>
-                                            <span class="text">{{profile_user.birthday_jalali}}</span>
+                                            <span v-if="profile_user.birthday === null && profile_user.birthday === ''" class="text">نامشخص</span>
+                                            <span v-else class="text">{{profile_user.birthday_jalali}}</span>
                                         </li>
                                         <li>
                                             <span class="title">محل تولد:</span>
@@ -756,10 +812,10 @@
                                             <span class="title">جنسیت:</span>
                                             <span v-if="profile_user.gender === 1" class="text">مرد</span>
                                             <span v-if="profile_user.gender === 0" class="text">زن</span>
-                                            <span v-if="profile_user.gender === null" class="text">نامشخص</span>
+                                            <span v-if="profile_user.gender === null || profile_user.gender === ''" class="text">نامشخص</span>
                                         </li>
 
-                                        <li v-for="setting in profile_user.settings" v-if="setting.title === 'عدم نمایش شماره موبایل'">
+                                        <li v-for="setting in profile_user.settings" v-if="setting.title === 'no-phone' && profile_user.phone !== null && profile_user.phone !== ''">
                                             <span class="title">شماره موبایل:</span>
                                             <span class="text">{{profile_user.phone}}</span>
                                         </li>
@@ -768,7 +824,7 @@
                                     <!-- ... end W-Personal-Info -->
                                     <!-- W-Socials -->
 
-                                    <div class="widget w-socials">
+                                    <div class="widget w-socials" v-if="profile_user.accounts.length > 0">
                                         <h6 class="title">شبکه های اجتماعی:</h6>
                                         <a v-for="account in profile_user.accounts" target="_blank" v-if="account.type === 'telegram'" :href="'https://t.me/'+account.address" class="social-item bg-twitter">
                                             <i class="fab fa-telegram-plane"></i>
@@ -835,17 +891,18 @@
         data(){
             return{
                 flag_tabs:{
-                    posts: true,
+                    posts: false,
                     actions: false,
                     gallery: false,
-                    info: false,
+                    information: true,
                 },
                 postItems: 15,
                 flag_loader: false,
                 flag_hasMore: false,
                 timerLabels: {'days':'روز' , 'hours':'ساعت' , 'minutes':'دقیقه' , 'seconds':'ثانیه'},
                 flag_isFriend: '',
-                friendship_status: ''
+                friendship_status: '',
+                v_message: ''
             }
         },
         components: {
@@ -853,11 +910,18 @@
             FlipCountdown
         },
         props: [
-            'profile_user' , 'posts' , 'birthday' , 'post_avatar' , 'sorted_actions' , 'user_avatar' , 'avatars' , 'received_comments' , 'received_likes'
+            'profile_user' , 'posts' , 'birthday' , 'post_avatar' , 'sorted_actions' , 'user_avatar' , 'avatars' , 'received_comments' , 'received_likes' , 'auth_user'
         ],
         mounted() {
-            if (sessionStorage.getItem('tab')){
-                this.changeTab(sessionStorage.getItem('tab'));
+            if (this.$route.params.section) {
+                var tab = this.$route.params.section;
+
+                this.$Progress.start();
+                setTimeout(() => {
+                    this.$Progress.finish()
+                }, 1500);
+                Object.keys(this.flag_tabs).forEach(key => this.flag_tabs[key] = false);
+                this.flag_tabs[tab] = true;
             }
 
 
@@ -867,7 +931,17 @@
         },
 
         watch : {
+            '$route'(to, from) {
+                var tab = to.params.section;
 
+                this.$Progress.start();
+                setTimeout(() => {
+                    this.$Progress.finish()
+                }, 1500);
+                Object.keys(this.flag_tabs).forEach(key => this.flag_tabs[key] = false);
+                this.flag_tabs[tab] = true;
+
+            }
         },
         methods: {
 
@@ -911,7 +985,7 @@
             cancelFriendShip:function (friendShipId) {
                 axios.post('/api/friends/cancelFriendShip' , {'friendShipId':friendShipId}).then(res => {
                     this.$notify({
-                        group: 'alert-panel',
+                        group: 'alert',
                         type: 'success',
                         duration: 20000,
                         text: 'دوستی با موفقیت لغو شد'
@@ -934,7 +1008,7 @@
             acceptFriendRequest:function (requestId) {
                 axios.post('/api/profile/acceptFriendShip' , {'requestId':requestId}).then(res => {
                     this.$notify({
-                        group: 'alert-panel',
+                        group: 'alert',
                         type: 'success',
                         duration: 20000,
                         text: 'درخواست دوستی با موفقیت پذیرفته شد'
@@ -943,7 +1017,32 @@
                 }).catch(err => {
                     console.log(err);
                 })
-            }
+            },
+
+            sendMessage:function (audienceId) {
+                axios.post('/panel/messages/send', {
+                    'audienceId': audienceId,
+                    'description': this.v_message
+                }).then(res => {
+                    this.v_message ='';
+                    this.$notify({
+                        group: 'alert',
+                        type: 'success',
+                        duration: 20000,
+                        text: 'پیام شما با موفقیت ارسال شد'
+                    })
+                }).catch(err => {
+                })
+            },
+
+            onCopy: function (e) {
+                this.$notify({
+                    group: 'alert',
+                    type: 'success',
+                    duration: 20000,
+                    text: 'ایمیل کاربر کپی شد'
+                })
+            },
 
         }
     }

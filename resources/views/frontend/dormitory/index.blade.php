@@ -1,5 +1,15 @@
 @extends('frontend.layout.master')
 
+@section('titleTag')
+    <title>خوابگاه ها:: انتخاب خوابگاه</title>
+@endsection
+@section('metaDescription')
+    <meta name="description" content="خوابگاه دانشجویی مورد نظر خود را انتخاب کنید">
+@endsection
+@section('metaKeywords')
+    <meta name="keywords" content="گفتگوی دوستانه,چت دانشجویی,وبلاگ دانشجویی,خاطرات دانشجویی,خاطرات خوابگاه,هم خوابگاهی,خوابگاه دانشجویی,خوابگاه پسرانه,خوابگاه دخترانه,هم اتاقی ها,دوستان دوران دانشگاه,دانشگاه ولی عصر,دانشگاه ولیعصر,دانشگاه رفسنجان">
+@endsection
+
 @section('content')
 
 

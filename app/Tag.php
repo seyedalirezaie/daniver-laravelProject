@@ -12,4 +12,11 @@ class Tag extends Model
     {
         return $this->belongsToMany(Post::class);
     }
+
+    protected $appends = ['date'];
+
+    public function getDateAttribute()
+    {
+        return \Hekmatinasser\Verta\Verta::instance($this->created_at)->formatDifference();
+    }
 }

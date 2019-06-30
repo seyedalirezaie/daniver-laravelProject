@@ -1,4 +1,4 @@
-@extends('frontend.layout.master' , ['noHeader' => 'noHeader'])
+@extends('frontend.layout.master' , ['noHeader' => 'noHeader' , 'container' => 'container-fluid'])
 
 @section('styles')
     <link rel="stylesheet" href="https://unpkg.com/vue2-animate/dist/vue2-animate.min.css"/>
@@ -7,17 +7,14 @@
 
 @section('content')
 
-    <div class="container-fluid" {{--id="app"--}}>
-    <posts-component :categoryid="{{$categoryId}}" :year="{{$year}}" :images="{{json_encode(Constants::$img['user_avatar_male'])}}" :postimages="{{json_encode(Constants::postImgRandom())}}"></posts-component>
+    <div class="container-fluid">
+    <posts-component :category="{{$category}}" :year="{{$year}}" :images="{{json_encode(Constants::$img['user_avatar_male'])}}" :postimages="{{json_encode(Constants::postImgRandom())}}"></posts-component>
         <vue-progress-bar></vue-progress-bar>
         <notifications group="auth"
                        position="bottom left"
                        width="400"
                        :speed="500"></notifications>
     </div>
-
-
-
 
 @endsection
 
@@ -43,7 +40,10 @@
             $('.photos-path').val(srcArray);
         });
 
+        $(document).on('click', '.reply-post-comment', function () {
+
+        });
+
 
     </script>
-    <script src="{{asset('/js/app.js')}}"></script>
 @endsection

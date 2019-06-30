@@ -2,9 +2,14 @@
 
     <div>
 
+        <vue-headful
+                :title="titleTag"
+                description="Description from vue-headful"
+        />
+
         <div class="container-fluid">
             <div class="row">
-                <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 px-0">
+                <div v-bind:class="{'min-searchbar' : !flag_searchBarTop}" class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 px-0">
                     <div class="ui-block responsive-flex mb-2">
                         <div class="ui-block-title" dir="rtl">
                             <div class="w-search col col-lg-4 col-md-6 col-sm-12 col-12 pr-0 pl-0">
@@ -74,10 +79,16 @@
                             </div>
 
                         </div>
+                        <div @click="expandSearchBar('top')" class="btn-expand-container">
+                        <i class="fas fa-minus-circle fs1-2 cursor-pointer btn-expand-posts btn-expand-top"></i>
+                        </div>
                     </div>
+
+
+
                 </div>
 
-                <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 px-0">
+                <div v-bind:class="{'min-searchbar' : !flag_searchBarBottom}" class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 px-0">
                     <div class="ui-block responsive-flex mb-2">
                         <div class="ui-block-title row" dir="rtl">
                             <div class="form-group col col-lg-2 col-md-6 col-sm-10 col-12 items-select-container">
@@ -114,18 +125,21 @@
                                 <span v-if="value_search!== 0 && keyWord !== ''">و تگ «{{value_search.name}}»</span>
                                 <span v-if="value_search!== 0 && keyWord === ''">با تگ «{{value_search.name}}»</span>
                             </div>
-
-
                         </div>
+
+                        <div @click="expandSearchBar('bottom')" class="btn-expand-container">
+                            <i class="fas fa-minus-circle fs1-2 cursor-pointer btn-expand-posts btn-expand-bottom"></i>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
 
 
-        <div class="row" dir="rtl">
+        <div class="row padding-scrollbar" dir="rtl">
 
-            <div class="col col-xl-4 order-xl-4 col-lg-6 order-lg-3 col-md-6 col-sm-12 col-12">
+            <div class="col col-xl-3 order-xl-4 col-lg-3 order-lg-3 col-md-12 col-sm-12 col-12">
                 <div class="ui-block">
                     <div class="ui-block-title posts-titlebar p-0">
                         <div class="container-fluid">
@@ -139,7 +153,7 @@
                                     </div>
 
                                     <div class="col col-lg-6 col-md-6 col-sm-12 col-12">
-                                        <router-link v-if="posts[0]" :to="{name:'post' , params:{category_url:posts[0].category.url , category_slug:posts[0].category.slug , post_slug:'creat-post'}}">
+                                        <router-link v-if="category.id" :to="{name:'post' , params:{category_url:category.url , category_slug:category.slug , post_slug:'create-post'}}">
                                     <span @click="createPost()" class="btn btn-grey btn-sm float-left btn-create-post">افزودن پست جدید<div class="ripple-container"></div></span>
                                         </router-link>
                                     </div>
@@ -158,24 +172,23 @@
                     <ol class="widget w-playlist pr-0">
 
                         <transition-group name="fadeRight" tag="ul" class="list-group sidebar-scroll" v-if="posts.length > 0">
-                        <li class="post-item-list" v-for="post in posts" v-bind:key="post.id" v-on:click.self="selectPost(post.id , post.slug)" v-bind:class="{'selected-post-list' : selectedPostId === post.id}" :id="'post'+post.id">
+                        <li class="post-item-list" v-for="post in posts" v-bind:key="post.id" v-on:click.self="selectPost(post.id ,  'scroll' , false)" v-bind:class="{'selected-post-list' : selectedPostId === post.id}" :id="'post'+post.id">
 
                             <div class="container-fluid">
                                 <div class="row">
 
                                     <div class="col-3">
-                                        <router-link v-if="posts[0]" :to="{name:'post' , params:{category_url:posts[0].category.url , category_slug:posts[0].category.slug , post_slug:post.slug}}">
-                                        <img v-if="post.photos.length > 0" width="60px" :src="'/images/sm/'+post.photos[0].path" :alt="post.title" :title="post.title">
-                                        <img v-else width="60px" :src="postimages" :alt="post.title" :title="post.title">
+                                        <router-link v-if="category.id" :to="{name:'post' , params:{category_url:category.url , category_slug:category.slug , post_slug:post.slug}}">
+                                        <img width="60px" :src="post.path_sm" :alt="post.title" :title="post.title">
                                         </router-link>
                                     </div>
 
                                     <div class="composition col-9">
-                                        <router-link v-if="posts[0]" :to="{name:'post' , params:{category_url:posts[0].category.url , category_slug:posts[0].category.slug , post_slug:post.slug}}">
-                                        <span class="composition-name" @click="selectPost(post.id , post.slug)">{{post.title}}</span>
+                                        <router-link v-if="category.id" :to="{name:'post' , params:{category_url:category.url , category_slug:category.slug , post_slug:post.slug}}">
+                                        <span class="composition-name" @click="selectPost(post.id , 'scroll' , false)">{{post.title}}</span>
                                         </router-link>
                                         <span class="composition-author mt-2 position-relative">
-                                            <img width="30px" class="rounded-circle" :src="post.user.path_sm" :alt="post.user.family" :title="post.user.family" @error="avatarSRC">
+                                            <img width="30px" class="rounded-circle" :src="post.user['path_sm']" :alt="post.user.family" :title="post.user.family" @error="avatarSRC">
                                              نوشته {{post.user.family}}
                                             <span class="badge badge-primary badge-guest" v-if="post.is_guest === 1">مهمان</span>
                                              <span class="more">
@@ -184,7 +197,7 @@
                                                 <li>
                                                     <aside class="profile-card">
                                                         <header>
-                                                              <a><img class="rounded-circle img-card-user" :src="post.user.path_sm"></a>
+                                                              <a><img class="rounded-circle img-card-user" :src="post.user['path_sm']"></a>
                                                               <p>{{post.user.family}}</p>
                                                         </header>
                                                             <a class="profile-bio">
@@ -215,7 +228,12 @@
                                         <span class="notification-date time-post-list float-left"><span class="entry-date updated">{{post.date}}</span>
                                         </span>
 
-                                        <div class="comments-shared d-inline-block float-right"><span class="post-add-icon inline-items mr-0"><svg class="olymp-speech-balloon-icon small-icons-post"><use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-speech-balloon-icon"></use></svg> <span>{{post.comments_count}}</span></span> <span class="post-add-icon inline-items"><svg class="olymp-heart-icon small-icons-post"><use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-heart-icon"></use></svg> <span>{{post.likes_count}}</span></span></div>
+                                        <div class="comments-shared d-inline-block float-right"><span class="post-add-icon inline-items mr-0">
+                                            <i class="far fa-comments fs1-2 text-grey-lighter"></i>
+                                            <span>{{post.comments_count}}</span></span> <span class="post-add-icon inline-items">
+                                            <i class="far fa-heart fs1-2 text-grey-lighter"></i>
+                                            <span>{{post.likes_count}}</span></span>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -235,7 +253,7 @@
                 </div>
             </div>
 
-            <div style="height: 88vh; overflow-y: auto; overflow-x:unset" class="col col-xl-8 order-xl-8 col-lg-6 order-lg-3 col-md-6 col-sm-12 col-12" v-if="selectedPostArray.id" v-sticky="{ zIndex: 1, stickyTop: 60, disabled: false}">
+            <div style="height: 88vh; overflow-y: auto; overflow-x:unset" class="col col-xl-9 order-xl-8 col-lg-9 order-lg-3 col-md-12 col-sm-12 col-12 post-scroll pl-0" v-if="selectedPostArray.id" v-sticky="{ zIndex: 1, stickyTop: 60, disabled: false}">
                 <div class="ui-block selected-post-container">
 
                     <div class="ui-block-title selected-post"><h1 class="fs1-6">{{selectedPostArray.title}}</h1></div>
@@ -277,13 +295,8 @@
                                         <ul class="widget w-faved-page js-zoom-gallery newest-users">
 
                                             <li class="mentions-post" v-for="mention in selectedPostArray.mentions">
-                                                <a v-if="mention.user.alias !== null" :href="'/profile/'+mention.user.alias">
-                                                    <img width="40" v-if="mention.user.photo" :src="'/images/sm/'+mention.user.photo.path" :title="mention.user.family" :alt="mention.user.family" @error="avatarSRC">
-                                                    <img width="40" v-else :src="images" :title="mention.user.family" :alt="mention.user.family">
-                                                </a>
-                                                <a v-else :href="'/profile/'+mention.user.id">
-                                                    <img width="40" v-if="mention.user.photo" :src="'/images/sm/'+mention.user.photo.path" :title="mention.user.family" :alt="mention.user.family" @error="avatarSRC">
-                                                    <img width="40" v-else :src="images" :title="mention.user.family" :alt="mention.user.family">
+                                                <a :href="'/profile/'+mention.user.url">
+                                                    <img width="40" :src="mention.user['path_sm']" :title="mention.user.family" :alt="mention.user.family">
                                                 </a>
                                                 <a class="fs0-7 cursor-pointer">{{mention.user.family}}</a>
                                             </li>
@@ -376,7 +389,7 @@
                             <ul v-if="selectedPostArray.likes.length > 0" class="friends-harmonic">
                                 <li v-for="(like , index) in selectedPostArray.likes" v-if="index < 4">
                                     <a href="#">
-                                        <img :src="'/images/sm/'+like.user.photo.path" alt="friend">
+                                        <img :src="like.user['path_sm']" :title="like.user.family" :alt="like.user.family">
                                     </a>
                                 </li>
                             </ul>
@@ -414,8 +427,6 @@
 
                         <div class="control-block-button post-control-button">
 
-
-
                             <span v-bind:class="{'liked-circle': selectedPostArray['liked'] === 1}" class="btn btn-control" @click="doLike(selectedPostArray.id , 'post')">
                                 <i class="far fa-heart"></i>
                             </span>
@@ -445,8 +456,8 @@
 
                         <li class="comment-item has-children" v-for="comment in selectedPostArray.comments" v-if="comment.parent_id === null">
                             <div class="post__author author vcard">
-                                <img :src="comment.user.path_sm" alt="author">
-
+                                <img :src="comment.user['path_sm']" :alt="comment.user.family" :title="comment.user.family">
+                                <a class="text-primary fs0-75 mr-1" :href="'/profile/'+comment.user.url">{{comment.user.family}}</a>
                                 <div class="author-date">
                                     <div class="comment-show" v-html="comment.description"><span class="post__author-name fn fs0-8 text-primary mr-1 cursor-pointer ml-2">{{comment.user.family}}</span>
                                     </div>
@@ -455,7 +466,7 @@
                                         <svg class="olymp-heart-icon"><use xlink:href="/frontend/svg-icons/sprites/icons.svg#olymp-heart-icon"></use></svg>
                                         <span>{{comment.likes_count}}</span>
                                     </span>
-                                    <span @click="answerCommentBoxShow(comment.id)" class="reply cursor-pointer text-grey-lighter btn-reply-comment">پاسخ دادن</span>
+                                    <span @click="commentBoxShow(comment.id)" class="reply cursor-pointer text-grey-lighter btn-reply-comment reply-post-comment">پاسخ دادن</span>
 
                                     <div class="post__date">
                                         <time class="published fs0-75 text-grey-lighter" datetime="">
@@ -463,43 +474,22 @@
                                         </time>
                                     </div>
 
-                                    <div :class="'answer-comment-box-'+comment.id+' mt-3 mb-2 emoji-comment-box'" v-show="flag_answerComment === comment.id">
-
-                                        <emoji-area></emoji-area>
-
-                                        <button @click="postComment(comment.id)" class="btn btn-sm btn-green mt-2">ارسال پاسخ</button>
-                                        <button class="btn btn-sm btn-secondary mt-2">لغو</button>
-                                    </div>
 
                                 </div>
 
                             </div>
 
                             <slot></slot>
-                            <comment v-on:send_comment="sendCommentFromChild" v-if="comment.child.length > 0" :post="selectedPostArray" :children="comment.child" :user_id="user.id"></comment>
+                            <comment v-on:liked_id="getLikedCommentId" v-on:parent_id="getChildCommentParentId" v-if="comment.child.length > 0" :post="selectedPostArray" :children="comment.child" :user_id="user.id"></comment>
                         </li>
                     </ul>
 
                     <!-- Comment Form  -->
 
-                    <form class="comment-form inline-items">
+                    <form class="comment-form inline-items text-center">
 
-                        <div class="post__author author vcard inline-items">
-                            <img class="ml-2" v-if="user !== ''" :src="'/images/sm/'+user.photo.path" alt="author">
-                            <img class="ml-2" v-else src="'/frontend/img/avatar5-sm.jpg" alt="author">
-
-                            <div class="form-group with-icon-right is-empty main-comment-box">
-                                <emoji-area></emoji-area>
-                                <div class="add-options-message">
-
-                                </div>
-                                <span class="material-input"></span></div>
-                        </div>
-
-                        <div class="p-5 mb-4">
-                        <button type="button" class="btn btn-md-2 btn-green" @click="postComment()">ارسال نظر</button>
-
-                        <button type="button" class="btn btn-md-2 btn-border-think btn-secondary text-white">لغو</button>
+                        <div class="p-5 mb-4 text-center">
+                            <span @click="commentBoxShow()" class="btn btn-lg btn-purple">به این پست نظر دهید</span>
                         </div>
                     </form>
 
@@ -536,7 +526,7 @@
                                 <div class="tab-pane active show" id="blog" role="tabpanel" aria-expanded="true">
                                     <form>
                                         <div class="author-thumb post-user-avatar">
-                                            <img class="img-circle-40" :src="'/images/sm/'+user.photo.path" :alt="user.family" :title="user.family" @error="avatarSRC">
+                                            <img class="img-circle-40" :src="user['path_sm']" :alt="user.family" :title="user.family" @error="avatarSRC">
                                         </div>
                                         <div class="with-icon label-floating is-empty create-post-container">
                                             <label class="control-label">متن پست را وارد کنید...</label>
@@ -638,6 +628,20 @@
             </div>
         </div>
 
+        <div v-show="flag_showCommentBox" class="comment-box-emoji col-xl-6 col-lg-6 col-md-10 offset-1">
+            <div class="float-left">
+            <span @click="closeCommentBox()" class="btn btn-sm btn-secondary mb-0">لغو</span>
+            <span @click="postComment()" class="btn btn-sm btn-green mb-0">ارسال</span>
+            </div>
+
+            <div>
+            <img class="ml-2 img-circle-35" v-if="user !== ''" :src="user.path_sm" :alt="user.family" :title="user.family">
+            <img class="ml-2 img-circle-35" v-else src="'/frontend/img/avatar5-sm.jpg" alt="author">
+            </div>
+
+        <emoji-area></emoji-area>
+        </div>
+
         <!--end upload image modal-->
 
         <!--post store error modal-->
@@ -709,6 +713,11 @@
 
     import {scroller} from 'vue-scrollto/src/scrollTo'
 
+    /*meta tags plugin*/
+
+    import vueHeadful from 'vue-headful';
+    Vue.component('vue-headful', vueHeadful);
+
     var options = {
         container: 'body',
         easing: 'ease-in',
@@ -757,7 +766,7 @@
                 flag_hasError: false,
                 posts: 0,
                 currentPage: 1,
-                totalPage: '',
+                totalPage: 0,
                 v_searchQuery: '',
                 v_searchTitle: true,
                 v_searchDescription: true,
@@ -782,9 +791,14 @@
                 postSlug: '',
                 flag_noResult: false,
                 flag_hasFile: false,
-                flag_answerComment: '',
+                flag_showCommentBox: false,
                 studyRouter: [],
-                toSlugRout: ''
+                toSlugRout: '',
+                flag_searchBarTop: true,
+                flag_searchBarBottom: true,
+                commentParentId: '',
+                titleTag: '',
+                flag_isRouterWatch: true
             }
         },
         created: {
@@ -797,7 +811,7 @@
             'comment': comment,
         },
         props: [
-            'categoryid' , 'year' , 'images' , 'postimages'
+            'category' , 'year' , 'images' , 'postimages'
         ],
 
         directives: {
@@ -846,8 +860,9 @@
             },*/
 
             '$route' (to, from) {
-                alert(to)
-                // react to route changes...
+                if (this.flag_isRouterWatch){
+                    this.routingComponent(to.params.post_slug , 'watch')
+                }
             }
 
 
@@ -864,43 +879,24 @@
                 this.v_postItems = localStorage.getItem('pageItems');
             }
 
-            if (this.$route.params.slug){
+            if (this.$route.params.post_slug){
 
-                if (this.$route.params.slug === 'create-post'){
-                    this.flag_createPost = true;
-                    this.selectedPostArray = [];
-                    this.selectSearchType();
-                    this.goToFunction(this.currentPage);
-                } else {
-                    this.postSlug = this.$route.params.slug;
-                    this.$Progress.start();
-                    this.selectSearchType();
+                this.routingComponent(this.$route.params.post_slug , 'mount');
 
-                    axios.get('/api/postBySlug/'+this.postSlug + '/' + this.v_postItems).then(res=>{
-                        this.$Progress.finish();
-                        this.selectedPostArray = res.data.post;
-                        this.selectedPostId = res.data.post.id;
-                        this.currentPage = res.data.page;
-                        this.hasLike();
-                        this.hasBookmark();
-                        this.checkPostFiles();
-                        this.goToFunction(this.currentPage);
-                        setTimeout(() => {
-                            const firstScrollTo = scroller();
-                            firstScrollTo('#post'+this.selectedPostId)
-                        } , 1000);
-
-
-                    }).catch(err=>{
-                        alert();
-                        console.log(err);
-                    })
-                }
             } else {
                 this.selectSearchType();
                 this.goToFunction(1);
                 this.checkPostFiles();
+
+                const categoryName = this.category.name;
+                const categoryTitle = this.category.titles;
+
+                this.titleTag = categoryName + '::' + categoryTitle;
             }
+
+
+
+
 
         },
         computed: {
@@ -909,27 +905,63 @@
 
         methods: {
 
+            routingComponent:function(url , type=null){
+                if (url === 'create-post'){
+                    this.createPost();
+                    if (type === 'mount'){
+                        this.selectSearchType();
+                        this.goToFunction(this.currentPage);
+                    }
+                    this.titleTag = 'ایجاد پست جدید';
+                } else {
+                    this.postSlug = url;
+                    this.$Progress.start();
+                    this.selectSearchType();
 
-            selectPost: function (postId) {
+                    axios.get('/api/postBySlug/'+this.postSlug + '/' + this.v_postItems).then(res=>{
+                        this.$Progress.finish();
+                        this.selectedPostArray = res.data.post;
+                        this.selectedPostId = res.data.post.id;
+                        this.currentPage = res.data.page;
+                        this.checkPostFiles();
+                        this.goToFunction(this.currentPage);
+                        if (type === 'mount'){
+                            setTimeout(() => {
+                                const firstScrollTo = scroller();
+                                firstScrollTo('#post'+this.selectedPostId)
+                            } , 1500);
+                        }
+
+                        this.titleTag = res.data.post.title;
+                    }).catch(err=>{
+                        alert();
+                        console.log(err);
+                    })
+                }
+            },
+
+
+            selectPost: function (postId , scroll=null , isRouterWatch=true) {
+
+                this.flag_isRouterWatch = isRouterWatch;
 
                 this.flag_createPost = false;
-
                 this.$Progress.start();
 
                 axios.get('/api/post/'+postId).then(res=>{
                     this.$Progress.finish();
                     this.selectedPostArray = res.data.post;
                     this.selectedPostId = res.data.post.id;
-                    this.hasLike();
-                    this.hasBookmark();
                     this.checkPostFiles();
+                    if (scroll === 'scroll') {
+                        setTimeout(() => {
+                            this.scrollToTop();
+                        },100)
+                    }
+                    this.flag_isRouterWatch = true;
                 }).catch(err=>{
                     console.log(err);
                 });
-
-                this.selectedPostId = postId;
-
-
             },
 
             createPost: function () {
@@ -940,16 +972,17 @@
                         duration: 40000,
                         text: 'برای ایجاد پست باید به پروفایل خود وارد شوید یا ثبت نام کنید'
                     });
-                    return;
-                }
-                this.$Progress.start()
-                setTimeout(() => {
-                    this.$Progress.finish()
-                },2000);
-                this.flag_createPost = true;
-                this.selectedPostArray = []
-                this.getTags();
+                } else {
 
+                    this.$Progress.start()
+                    setTimeout(() => {
+                        this.$Progress.finish()
+                    },2000);
+                    this.flag_createPost = true;
+                    this.selectedPostArray = []
+                    this.getTags();
+
+                }
             },
 
             filesUploaded: function (event) {
@@ -985,8 +1018,14 @@
                     var editorPhotoIds = $('.photo-ids').val();
                     var editorPhotosPath = $('.photos-path').val();
 
-                    axios.post('/api/storePost' , {'title':this.v_postTitle , 'description':description , 'tags':this.value , 'uploadedFiles':this.uploadedFile , 'editorPhotos':editorPhotoIds , 'editorPhotosPath':editorPhotosPath , 'categoryId':this.categoryId}).then(res=>{
-                        console.log(res);
+                    axios.post('/api/storePost' , {
+                        'title':this.v_postTitle ,
+                        'description':description , 'tags':this.value ,
+                        'uploadedFiles':this.uploadedFile ,
+                        'editorPhotos':editorPhotoIds ,
+                        'editorPhotosPath':editorPhotosPath ,
+                        'categoryId':this.category.id ,
+                    }).then(res=>{
                         this.flag_createPost = false;
                         this.$Progress.finish();
                         this.selectPost(res.data);
@@ -1015,7 +1054,7 @@
                 var searchTag = this.value_search.id;
 
                 this.currentPage = n;
-                axios.get('/api/posts/'+ this.categoryid + '/' + searchKeyword + '/' + this.searchType + '/' + this.v_timeFilter + '/' + this.v_otherFilters + '/' + this.v_order + '/' + searchTag + '/' + this.v_postItems + '/' + '/?page='+n).then(res=>{
+                axios.get('/api/posts/'+ this.category.id + '/' + searchKeyword + '/' + this.searchType + '/' + this.v_timeFilter + '/' + this.v_otherFilters + '/' + this.v_order + '/' + searchTag + '/' + this.v_postItems + '/' + '/?page='+n).then(res=>{
 
                         this.posts = res.data.posts.data;
                         this.totalPage = res.data.posts.last_page;
@@ -1069,7 +1108,7 @@
                 console.log(event.target.value)
                 this.goToFunction(1);
                 if (event.target.value === 'mates'){
-                    this.checkAuth();
+                    /*this.checkAuth();*/
                     if (!this.flag_isAuth){
                         this.$notify({
                             group: 'auth',
@@ -1101,7 +1140,6 @@
                     if (res.data.auth === 'yes'){
                         this.flag_isAuth = true;
                         this.user = res.data.user;
-                        this.hasBookmark();
                     } else {
                         this.flag_isAuth = false;
                     }
@@ -1111,7 +1149,7 @@
             },
 
             checkCategory: function () {
-                axios.get('/api/checkCategory/' + this.categoryid).then(res=>{
+                axios.get('/api/checkCategory/' + this.category.id).then(res=>{
                     if (res.data === 0){
                         this.flag_hasCategory = false;
                     } else {
@@ -1139,7 +1177,7 @@
 
                 var n = 1;
                 this.currentPage = 1;
-                axios.get('/api/posts/'+ this.categoryid + '/' + searchKeyword + '/' + this.searchType + '/' + this.v_timeFilter + '/' + this.v_year + '/' + this.v_order + '/' + searchTag + '/' + this.v_postItems + '/?page='+n).then(res=>{
+                axios.get('/api/posts/'+ this.category.id + '/' + searchKeyword + '/' + this.searchType + '/' + this.v_timeFilter + '/' + this.v_year + '/' + this.v_order + '/' + searchTag + '/' + this.v_postItems + '/?page='+n).then(res=>{
 
                         this.posts = res.data.posts.data;
                         this.totalPage = res.data.posts.last_page
@@ -1158,42 +1196,10 @@
                 return `${name} — [${language}]`
             },
 
-            hasLike: function(){
-                            for (var i3=0; i3<this.selectedPostArray.likes.length; i3++) {
-                                if (this.selectedPostArray.likes[i3].user_id === this.user.id) {
-                                    this.selectedPostArray['liked'] = 1;
-                                } else {
-                                    this.selectedPostArray['liked'] = 0;
-                                }
-                            }
-
-                            for (var i2 = 0; i2 < this.selectedPostArray.comments.length; i2++) {
-                                        for (var i4=0; i4<this.selectedPostArray.comments[i2].likes.length; i4++) {
-                                            if (this.selectedPostArray.comments[i2].likes[i4].user_id === this.user.id) {
-                                                this.selectedPostArray.comments[i2]['liked'] = 1;
-                                            } else {
-                                                this.selectedPostArray.comments[i2]['liked'] = 0;
-                                        }
-                                    }
-                            }
-            },
-
-            hasBookmark:function(){
-
-                for (var i=0; i<this.user.bookmarks.length; i++){
-                    if (this.user.bookmarks[i].bookmarkable_type === 'App\\Post' && this.user.bookmarks[i].bookmarkable_id === this.selectedPostId) {
-                        this.selectedPostArray['bookmarked'] = 1;
-                    } else {
-                        this.selectedPostArray['bookmarked'] = 0;
-                    }
-                }
-
-            },
-
             doLike: function (likedId , type) {
                 axios.post('/api/doLike' , {'id':likedId , 'type':type , 'postId':this.selectedPostId}).then(res=>{
                     console.log(res);
-                    this.selectPost(this.selectedPostId);
+                    this.selectPost(this.selectedPostId , 'no-scroll');
 
                 }).catch(err=>{
                     if(err.response.data.message === 'Unauthenticated.') {
@@ -1216,14 +1222,14 @@
 
             doBookmark: function (postId) {
                 axios.post('/api/doBookmark' , {'postId':postId}).then(res=>{
-                    this.checkAuth();
+                    this.selectPost(this.selectedPostId , 'no-scroll');
                 }).catch(err=>{
                     if(err.response.data.message === 'Unauthenticated.') {
                         this.$notify({
                             group: 'auth',
                             type: 'error',
                             duration: 20000,
-                            text: 'برای افزودن پست ها به لیت علاقه مندی باید به حساب کاربری خود وارد شوید یا در سایت ثبت نام کنید'
+                            text: 'برای افزودن پست ها به لیست علاقه مندی باید به حساب کاربری خود وارد شوید یا در سایت ثبت نام کنید'
                         });
                     } else {
                         this.$notify({
@@ -1241,39 +1247,35 @@
             },
 
             doOrder: function () {
-                this.goToFunction();
+                this.goToFunction(1);
             },
 
 
-            postComment: function (commentParentId=null) {
+            postComment: function () {
+                this.$Progress.start();
                 setTimeout(() => {
-                    var commentContent = '';
-                    if (commentParentId !== null){
-                        commentContent = $('.answer-comment-box-'+commentParentId).find('.emojionearea-editor').html();
-                    } else {
-                        commentContent = $('.main-comment-box .emojionearea-editor').html();
+                    var commentContent = $('.emojionearea-editor').html();
+
+                    if (commentContent.trim() === ''){
+                        return;
                     }
 
                 axios.post('/api/postComment' , {
                     'comment' : commentContent,
                     'postId' : this.selectedPostId,
-                    'parent_id' : commentParentId
+                    'parent_id' : this.commentParentId
                 }).then(res=>{
-                    this.flag_answerComment = '';
-                    this.selectPost(this.selectedPostId);
+                    this.flag_showCommentBox = false;
+                    this.selectPost(this.selectedPostId , 'no-scroll');
                     this.$notify({
                         group: 'auth',
                         type: 'success',
                         duration: 20000,
                         text: 'نظر شما با موفقیت ثبت شد'
                     });
-
-                   /* if (commentParentId !== null){
-                        $('.answer-comment-box-'+commentParentId).find('.emojionearea-editor').html('');
-                    } else {
-                        $('.main-comment-box .emojionearea-editor').html('');
-                    }*/
-
+                    this.$Progress.finish();
+                    $('.emojionearea-editor').html('');
+                    $('.post__author').removeClass('answering-comment');
                 }).catch(err=>{
                     if(err.response.data.message === 'Unauthenticated.') {
                             this.$notify({
@@ -1293,59 +1295,77 @@
 
             checkPostFiles:function(){
                 this.flag_hasFile = false;
-                    if (this.selectedPostArray.photos.length > 0){
-                        for(var i=0; i<this.selectedPostArray.photos.length; i++){
-                            if (this.selectedPostArray.photos[i].type !== null){
-                                this.flag_hasFile = true;
-                            }
-                        }
+                if (!this.selectedPostArray.photos || this.selectedPostArray.photos.length > 0){
+                    return;
+                }
+
+                for(var i=0; i<this.selectedPostArray.photos.length; i++){
+                    if (this.selectedPostArray.photos[i].type !== null){
+                        this.flag_hasFile = true;
                     }
+                }
 
             },
 
-            answerCommentBoxShow:function (commentId){
-                this.flag_answerComment = commentId;
-            },
-
-            sendCommentFromChild(response) {
-                if(response === 'sent'){
-                    this.selectPost(this.selectedPostId);
-                    this.$notify({
-                        group: 'auth',
-                        type: 'success',
-                        duration: 20000,
-                        text: 'نظر شما با موفقیت ثبت شد'
-                    });
-                } else if (response === 'sent-error-auth'){
+            commentBoxShow:function (commentId=null){
+                if (!this.flag_isAuth){
                     this.$notify({
                         group: 'auth',
                         type: 'error',
                         duration: 20000,
                         text: 'برای ارسال نظر باید به حساب کاربری خود وارد شوید یا در سایت ثبت نام کنید'
                     });
-                }  else if(response === 'liked'){
-                    this.selectPost(this.selectedPostId);
-                } else if (response === 'not-auth'){
+                } else {
+                    $('.post__author').removeClass('answering-comment');
+                    $(this).parents('.post__author').addClass('answering-comment');
+                    this.flag_showCommentBox = true;
+                    this.commentParentId = commentId;
+                }
+
+            },
+
+            getChildCommentParentId(response) {
+
+
+                if (!this.flag_isAuth){
                     this.$notify({
                         group: 'auth',
                         type: 'error',
                         duration: 20000,
-                        text: 'برای لایک کردن پست ها باید به حساب کاربری خود وارد شوید یا در سایت ثبت نام کنید'
+                        text: 'برای ارسال نظر باید به حساب کاربری خود وارد شوید یا در سایت ثبت نام کنید'
                     });
-                } else if (response === 'error') {
-                    this.$notify({
-                        group: 'auth',
-                        type: 'error',
-                        duration: 20000,
-                        text: 'مشکلی در برقراری ارتباط پیش آمده، لطفا لحظاتی دیگر امتحان کنید'
-                    });
+                } else {
+                    $('.emojionearea-editor').html('');
+                    $('.post__author').removeClass('answering-comment');
+                    $(this).parents('.post__author').addClass('answering-comment');
+                    this.commentParentId = response;
+                    this.flag_showCommentBox = true;
+                }
+
+            },
+
+            expandSearchBar:function (type) {
+                if (type === 'top'){
+                    this.flag_searchBarTop = !this.flag_searchBarTop;
+                }
+                if (type === 'bottom'){
+                    this.flag_searchBarBottom = !this.flag_searchBarBottom;
                 }
             },
 
-            goBack () {
-                window.history.length > 1
-                    ? this.$router.go(-1)
-                    : this.$router.push('/')
+            closeCommentBox:function (parentId) {
+                this.flag_showCommentBox = false;
+                $('.emojionearea-editor').html('');
+                $('.post__author').removeClass('answering-comment');
+            },
+
+            getLikedCommentId:function (response) {
+                this.doLike(response , 'comment');
+            },
+
+            scrollToTop(){
+                var container = document.querySelector(".post-scroll");
+                container.scrollTop = 0;
             },
 
         },

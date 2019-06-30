@@ -1,5 +1,10 @@
 @extends('frontend.layout.master')
 
+@section('titleTag')
+    <title>ورود</title>
+@endsection
+
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">

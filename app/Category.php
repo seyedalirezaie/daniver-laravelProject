@@ -182,4 +182,21 @@ class Category extends Model
 
         return $latestAction['created_at'];
     }
+
+
+    public function getPath()
+    {
+        return $this->totalPath($this->photo['path']);
+    }
+
+    public function totalPath($path)
+    {
+        if (empty($path)){
+            $totalPath = \Constants::$img['post_profile'];
+            return $totalPath;
+        }
+
+        $totalPath = '/images/avatars/'.$path;
+        return $totalPath;
+    }
 }

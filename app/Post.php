@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Post extends Model
 {
@@ -43,12 +44,30 @@ class Post extends Model
 
     public function getLikedAttribute()
     {
-        return 0;
+        if (Auth::check()){
+            $likes = $this->likes->where('user_id' , Auth::id())->first();
+
+
+            if (!is_null($likes)){
+                return 1;
+            } else {
+                return 0;
+            }
+
+        }
     }
 
     public function getBookmarkedAttribute()
     {
-        return 0;
+        if (Auth::check()) {
+            $bookmarks = $this->bookmarks->where('user_id', Auth::id())->first();
+
+            if (!is_null($bookmarks)) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
     }
 
     public function likes()
@@ -143,5 +162,15 @@ class Post extends Model
         }
 
         return $totalPath;
+    }
+
+    public function setDescriptionAttribute($value)
+    {
+        $this->attributes['description'] = htmlspecialchars($value);
+    }
+
+    public function getDescriptionAttribute($value)
+    {
+        return htmlspecialchars_decode($value);
     }
 }

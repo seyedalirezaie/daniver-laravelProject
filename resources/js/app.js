@@ -19,7 +19,8 @@ window.Axios = require('axios').default;
 let AppLayout = require('./components/App');
 
 const Posts = Vue.component('Posts' , require('./components/PostsComponent'));
-const panel = Vue.component('Posts' , require('./components/PanelComponent'));
+const panel = Vue.component('panel' , require('./components/PanelComponent'));
+const profile = Vue.component('profile' , require('./components/PanelComponent'));
 
 Vue.use(VueRouter , VueAxios , axios);
 
@@ -33,6 +34,11 @@ const routes = [
         name: 'panel',
         path: '/panel/:section',
         component: panel
+    },
+    {
+        name: 'profile',
+        path: '/profile/:user/:section',
+        component: profile
     },
 ];
 
@@ -128,7 +134,7 @@ Vue.use(Notifications)
 import VueProgressBar from 'vue-progressbar'
 
 Vue.use(VueProgressBar, {
-    color: 'rgb(34,230,65)',
+    color: 'rgb(238,0,163)',
     failedColor: 'red',
     height: '3px'
 })
@@ -167,11 +173,11 @@ document.addEventListener("DOMContentLoaded", () => {
         data:{
         },
         mounted(){
-            /*this.setUserLastSeen();*/
+
 
         },
         created(){
-
+            this.setUserLastSeen();
         },
 
         watch : {

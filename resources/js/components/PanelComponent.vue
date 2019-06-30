@@ -154,6 +154,20 @@
         <div class="container-fluid px-0" dir="rtl">
             <div class="row">
                 <div class="col col-xl-9 order-xl-2 col-lg-9 order-lg-2 col-md-12 order-md-1 col-sm-12 col-12">
+
+                    <!--<div v-show="flag_tabs['dashboard']" class="ui-block">
+                        <div class="ui-block-title">
+                            <div class="col col-lg-12 col-md-12 col-sm-12 col-12 bg-grey-title rounded p-3 mb-3">
+                                میز کار
+                            </div>
+                        </div>
+                        <div class="ui-block-content">
+
+                        </div>
+
+                    </div>-->
+
+
                     <div v-show="flag_tabs['personal']" class="ui-block">
                         <div class="ui-block-title">
                             <div class="col col-lg-12 col-md-12 col-sm-12 col-12 bg-grey-title rounded p-3 mb-3">
@@ -888,6 +902,91 @@
 
 
 
+                    <div v-show="flag_tabs['friend_requests']" class="ui-block">
+                        <div class="ui-block-title">
+                            <h6 class="title bg-grey-title p-3 rounded">درخواست های دوستی</h6>
+                        </div>
+                        <div class="ui-block-content">
+
+
+                            <div class="more-with-triangle triangle-top-center" dir="rtl">
+
+                                <div class="">
+                                    <ul class="notification-list" v-if="friendRequests.length > 0">
+
+                                        <li v-for="requests in friendRequests" class="with-comment-photo">
+                                            <div class="author-thumb">
+                                                <img class="img-circle-40" :src="requests.sender.path_sm" :alt="requests.sender.family" :title="requests.sender.family">
+                                            </div>
+                                            <div class="notification-event">
+                                                <div><a :href="'/profile/'+requests.sender.url" class="notification-friend fs0-75">{{requests.sender.family}}</a> برای شما درخواست دوستی ارسال کرد.</div>
+                                                <span class="notification-date ml-1"><time class="entry-date updated">{{requests.full_date}}</time></span>
+                                            </div>
+
+                                            <div class="btn-friendship">
+                                                <span class="btn btn-sm btn-green" @click="acceptFriendShip(requests.id , requests.sender.family)">پذیرفتن</span>
+                                                <span class="btn btn-sm btn-danger" @click="refuseFriendShip(requests.id , requests.sender.family)">رد کردن</span>
+                                            </div>
+
+                                            <span v-if="!requests.has_seen" class="unseen-notify text-danger unseen-friend-request" v-bind:class="{'alert-light-border unread-notification' : !requests.has_seen}">
+                                                جدید
+                                            </span>
+
+
+
+                                        </li>
+
+                                    </ul>
+
+                                    <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__scrollbar-y-rail" style="top: 0px; height: 300px; right: 0px; opacity: 0;"><div class="ps__scrollbar-y" tabindex="0" style="top: 0px; height: 148px;"></div></div></div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+                    <div v-show="flag_tabs['bookmarks']" class="ui-block">
+                        <div class="ui-block-title">
+                            <h6 class="title bg-grey-title p-3 rounded">صفحات نشان شده</h6>
+                        </div>
+                        <div class="ui-block-content">
+
+
+                            <div class="more-with-triangle triangle-top-center" dir="rtl">
+
+                                <div class="">
+                                    <ul class="notification-list" v-if="userBookmarks.length > 0">
+
+                                        <li v-for="(bookmark , index) in userBookmarks" class="with-comment-photo">
+                                            <div class="author-thumb">
+                                                <img class="bookmark-post-img" :src="bookmark.bookmarkable.path_sm" :alt="bookmark.bookmarkable.title" :title="bookmark.bookmarkable.title">
+                                            </div>
+                                            <div class="notification-event">
+                                                <div><a :href="bookmark.bookmarkable.category.sort+'/posts/'+bookmark.bookmarkable.category.slug+'/'+bookmark.bookmarkable.slug" class="notification-friend fs0-75 mr-4">{{bookmark.bookmarkable.title}}</a></div>
+                                            </div>
+
+                                            <div class="btn-friendship">
+                                                <span class="btn btn-sm btn-danger" @click="deleteBookmark(bookmark.id , index)">حذف</span>
+                                            </div>
+
+                                        </li>
+
+                                    </ul>
+
+                                    <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__scrollbar-y-rail" style="top: 0px; height: 300px; right: 0px; opacity: 0;"><div class="ps__scrollbar-y" tabindex="0" style="top: 0px; height: 148px;"></div></div></div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+
 
 
                 </div>
@@ -914,6 +1013,11 @@
 
                                     <div id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne">
                                         <ul class="your-profile-menu panel-menu-items">
+                                            <!--<li class="p-2 cursor-pointer">
+                                                <router-link :to="{name:'panel' , params:{section:'dashboard'}}">
+                                                    <span v-bind:class="{'active': flag_tabs['dashboard']}">میز کار</span>
+                                                </router-link>
+                                            </li>-->
                                             <li class="p-2 cursor-pointer">
                                                 <router-link :to="{name:'panel' , params:{section:'personal'}}">
                                                 <span v-bind:class="{'active': flag_tabs['personal']}">اطلاعات شخصی</span>
@@ -966,17 +1070,17 @@
 
                                 <router-link :to="{name:'panel' , params:{section:'messages'}}" class="ui-block-title">
                                     <span v-bind:class="{'text-primary': flag_tabs['messages']}" class="title cursor-pointer text-dark">پیام ها</span>
-                                    <span class="items-round-little bg-primary">8</span>
+                                    <span class="items-round-little bg-primary">{{allUnreadMessages}}</span>
                                 </router-link>
 
                                 <router-link :to="{name:'panel' , params:{section:'friend-requests'}}" class="ui-block-title">
                                     <span v-bind:class="{'text-primary': flag_tabs['friend_requests']}" class="title cursor-pointer text-dark">درخواست های دوستی</span>
-                                    <span class="items-round-little bg-blue">4</span>
+                                    <span class="items-round-little bg-blue">{{friendRequests.length}}</span>
                                 </router-link>
 
-                                <router-link :to="{name:'panel' , params:{section:'favorites'}}" class="ui-block-title">
-                                    <span v-bind:class="{'text-primary': flag_tabs['favorites']}" class="title cursor-pointer text-dark">صفحات مورد علاقه</span>
-                                    <span class="items-round-little bg-blue">4</span>
+                                <router-link :to="{name:'panel' , params:{section:'bookmarks'}}" class="ui-block-title">
+                                    <span v-bind:class="{'text-primary': flag_tabs['bookmarks']}" class="title cursor-pointer text-dark">صفحات مورد علاقه</span>
+                                    <span class="items-round-little bg-blue">{{userBookmarks.length}}</span>
                                 </router-link>
                         </div>
 
@@ -993,27 +1097,6 @@
 </template>
 
 <script>
-
-
-    import {scroller} from 'vue-scrollto/src/scrollTo'
-
-    var options = {
-        container: '#messages',
-        easing: 'ease-in',
-        offset: -60,
-        force: true,
-        cancelable: true,
-        onStart: function(element) {
-        },
-        onDone: function(element) {
-            // scrolling is done
-        },
-        onCancel: function() {
-            // scrolling has been interrupted
-        },
-        x: false,
-        y: true
-    };
 
 
     /*loader*/
@@ -1059,8 +1142,8 @@
             data() {
                 return {
                     books: '',
-                    flag_tabs: {
-                        dashboard: true,
+                   /* flag_tabs: {
+                        dashboard: false,
                         personal: false,
                         educational: false,
                         hobbies: false,
@@ -1071,8 +1154,24 @@
                         notifications: false,
                         messages: false,
                         friend_requests: false,
-                        favorites: false,
-                    },
+                        bookmarks: false,
+                    },*/
+
+                    flag_tabs : [
+                        { dashboard: false },
+                        { personal: false },
+                        { educational: false },
+                        { hobbies: false },
+                        { social_networks: false },
+                        { change_password: false },
+                        { settings: false },
+                        { posts: false },
+                        { notifications: false },
+                        { messages: false },
+                        { friend_requests: false },
+                        { bookmarks: false },
+                    ],
+
                     flag_loader: false,
 
                     /*from register component*/
@@ -1181,10 +1280,41 @@
                     audienceMessages: [],
                     selectedChatArray: [],
                     flag_headerUploading: false,
-                    flag_profileUploading: false,
                     profileInterval: '',
                     headerInterval: '',
-                    v_message: ''
+                    v_message: '',
+                    friendRequests: [],
+                    allUnreadMessages: '',
+                    userBookmarks: [],
+                    account_twitter: '',
+                    account_facebook: '',
+                    account_email: '',
+                    account_linkedin: '',
+                    account_telegram: '',
+                    account_instagram: '',
+                    flag_ProfileUploading: false,
+                    selected: '',
+                    oldBirthCountry: '',
+                    oldBirthProvince: '',
+                    oldBirthCity: '',
+                    oldBirthSubCity: '',
+                    v_selfDescription : '',
+                    oldLiveCountry: '',
+                    oldLiveProvince: '',
+                    oldLiveCity: '',
+                    oldLiveSubCity: '',
+                    v_selfDescription : '',
+                    v_favorites_book: '',
+                    v_favorites: '',
+                    cv: '',
+                    v_favorites_music: '',
+                    v_favorites_movie: '',
+                    v_skills: '',
+                    flag_hasHeaderImage: '',
+
+
+
+
                 }
             },
             components: {
@@ -1198,7 +1328,13 @@
 
             },
 
+            beforeMount(){
+
+
+            },
+
             mounted() {
+                this.initFriendRequests();
 
                 if (this.$route.params.section) {
                     var tab = this.$route.params.section;
@@ -1225,23 +1361,13 @@
                 this.initNotifications();
                 this.initMessages();
 
-
                 this.getInitializeData();
                 this.initializeForMounted();
 
-                this.initFriendRequests();
-
                 setTimeout(() => {
                     this.checkHasMoreNotifications();
-                } , 2000);
 
-
-
-                this.croppa.addClipPlugin(function (ctx, x, y, w, h) {
-                    ctx.beginPath();
-                    ctx.arc(x + w / 2, y + h / 2, w / 2, 0, 2 * Math.PI, true);
-                    ctx.closePath();
-                })
+                }, 2000);
 
             },
 
@@ -1287,6 +1413,10 @@
 
                     if (tab === 'notifications') {
                         this.readNotifications('notifications');
+                    }
+
+                    if (tab === 'friend_requests'){
+                        this.readNotifications('friendRequests');
                     }
 
                 }
@@ -1397,15 +1527,17 @@
                         }
                     }
 
+                    this.userBookmarks = this.user.bookmarks;
+
                     /**vue validate**/
                     this.$validator.localize('en', customMessages);
 
 
-                    this.croppa.addClipPlugin(function (ctx, x, y, w, h) {
+                    /*this.croppa.addClipPlugin(function (ctx, x, y, w, h) {
                         ctx.beginPath();
                         ctx.arc(x + w / 2, y + h / 2, w / 2, 0, 2 * Math.PI, true);
                         ctx.closePath()
-                    });
+                    });*/
 
                 },
 
@@ -1943,6 +2075,11 @@
                     axios.get('/api/panel/notifications/messages').then(res => {
                         this.audienceMessages = res.data.audience;
 
+                        this.allUnreadMessages = 0;
+                        for (var i = 0; i < res.data.audience.length; i++) {
+                                    this.allUnreadMessages+= res.data.audience[i]['unseen_items']
+
+                        }
                     }).catch(err => {
                     })
                 },
@@ -2010,8 +2147,50 @@
 
                 initFriendRequests:function () {
                     axios.get('/panel/friends/requests').then(res => {
-
+                        this.friendRequests = res.data.friendRequests;
                     }).catch(err => {
+                    })
+                },
+
+                acceptFriendShip: function (requestId , friendFamily) {
+                    axios.post('/api/profile/acceptFriendShip', {'requestId': requestId}).then(res => {
+                        this.initFriendRequests();
+                        this.$notify({
+                            group: 'alert-panel',
+                            type: 'success',
+                            duration: 20000,
+                            text: friendFamily+' به لیست دوستان شما اضافه شد'
+                        });
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                },
+
+                refuseFriendShip: function (requestId , friendFamily) {
+                    axios.post('/api/friends/cancelFriendShip', {'friendShipId': requestId}).then(res => {
+                        this.initFriendRequests();
+                        this.$notify({
+                            group: 'alert-panel',
+                            type: 'error',
+                            duration: 20000,
+                            text: 'درخواست دوستی' + ' ' +friendFamily+ ' ' + 'رد شد'
+                        });
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                },
+
+                deleteBookmark:function (bookmarkId , index) {
+                    axios.post('/panel/bookmarks/delete', {'bookmarkId': bookmarkId}).then(res => {
+                        this.userBookmarks.splice(index , 1);
+                        this.$notify({
+                            group: 'alert-panel',
+                            type: 'success',
+                            duration: 20000,
+                            text: 'صفحه مورد نظر از لیست علاقه مندی های شما حذف شد'
+                        });
+                    }).catch(err => {
+                        console.log(err);
                     })
                 }
 

@@ -5,14 +5,14 @@ namespace App\Http\Controllers\FrontEnd;
 use App\Post;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class BlogPostController extends Controller
 {
     public function apiBlogPosts($searchQuery='')
     {
 
-        $posts = Post
-            ::with('category' , 'user' , 'photos')
+        $posts = Post::with('category' , 'user')
             ->withCount(['comments' , 'likes'])
             ->whereHas('category' , function ($q){
                 $q->where('categories.sort' , 'blog');
