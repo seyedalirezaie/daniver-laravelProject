@@ -41,7 +41,7 @@
 
                             </div>
 
-                            <div v-if="auth_user.id !== profile_user.id" class="control-block-button">
+                            <div v-if="auth_userId !== profile_user.id" class="control-block-button">
                                 <div class="btn btn-control bg-blue more" data-toggle="modal" data-target="#modal-message">
                                     <i class="fas fa-envelope text-white"></i>
                                     <ul class="more-dropdown more-with-triangle triangle-bottom-right bg-white">
@@ -51,7 +51,7 @@
                                     </ul>
                                 </div>
 
-                                <div v-if="auth_user.id !== profile_user.id" class="btn btn-control bg-primary more" data-toggle="modal" data-target="#edit-widget-pool">
+                                <div v-if="auth_userId !== profile_user.id" class="btn btn-control bg-primary more" data-toggle="modal" data-target="#edit-widget-pool">
                                     <i class="fas fa-user text-white"></i>
 
                                     <ul class="more-dropdown more-with-triangle triangle-bottom-right bg-white">
@@ -79,7 +79,7 @@
 
             <!-- Window-popup Edit Widget Pool -->
 
-            <div v-if="auth_user.id !== profile_user.id" dir="rtl" class="modal fade" id="edit-widget-pool" tabindex="-1" role="dialog" aria-labelledby="edit-widget-pool" aria-hidden="true">
+            <div v-if="auth_userId !== profile_user.id" dir="rtl" class="modal fade" id="edit-widget-pool" tabindex="-1" role="dialog" aria-labelledby="edit-widget-pool" aria-hidden="true">
                 <div class="modal-dialog window-popup edit-widget edit-widget-pool" role="document">
                     <div class="modal-content">
                         <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Close">
@@ -174,7 +174,7 @@
 
 
 
-            <div v-if="auth_user.id !== profile_user.id" dir="rtl" class="modal fade" id="modal-message" tabindex="-1" role="dialog" aria-labelledby="modal-message" aria-hidden="true">
+            <div v-if="auth_userId !== profile_user.id" dir="rtl" class="modal fade" id="modal-message" tabindex="-1" role="dialog" aria-labelledby="modal-message" aria-hidden="true">
                 <div class="modal-dialog window-popup edit-widget edit-widget-pool" role="document">
                     <div class="modal-content">
                         <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Close">
@@ -185,7 +185,7 @@
                             <h6 class="title">ارسال پیام</h6>
                         </div>
 
-                        <div v-if="auth_user.id" class="modal-body">
+                        <div v-if="auth_user !== null" class="modal-body">
 
 
                                 <span class="p-4">ارسال پیام به {{profile_user.family}}</span>
@@ -902,7 +902,8 @@
                 timerLabels: {'days':'روز' , 'hours':'ساعت' , 'minutes':'دقیقه' , 'seconds':'ثانیه'},
                 flag_isFriend: '',
                 friendship_status: '',
-                v_message: ''
+                v_message: '',
+                auth_userId: 0
             }
         },
         components: {
@@ -913,6 +914,12 @@
             'profile_user' , 'posts' , 'birthday' , 'post_avatar' , 'sorted_actions' , 'user_avatar' , 'avatars' , 'received_comments' , 'received_likes' , 'auth_user'
         ],
         mounted() {
+
+
+            if (this.auth_user !== null){
+                this.auth_userId = this.auth_user.id;
+            }
+
             if (this.$route.params.section) {
                 var tab = this.$route.params.section;
 

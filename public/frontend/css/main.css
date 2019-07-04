@@ -16856,6 +16856,45 @@ blockquote span{
   padding-left: 15px;
 }
 
+.guidance-container{
+  position: fixed;
+  bottom: 30px;
+  width: 65%;
+  margin: 0 auto;
+  background-color: white;
+  box-shadow: 1px 1px 8px 6px rgba(0,0,0,.3);
+  padding: 6px;
+  border-radius: 0 8px 8px 0;
+}
+
+.guidance-container img{
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+
+.guid-text{
+  text-align: right;
+  margin-bottom: 0;
+}
+
+.btn-close-guid{
+  position: absolute;
+  right:20px;
+  top: 40%;
+  cursor: pointer;
+}
+
+.btn-close-guid:hover{
+  color: red;
+  transition: .3s;
+}
+
+.guid-item:hover{
+  color: #1caf00;
+  transform: scale(1.1) rotate(10deg);
+  cursor: pointer;
+}
 
 
 

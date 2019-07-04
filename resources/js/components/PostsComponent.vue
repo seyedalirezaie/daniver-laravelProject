@@ -122,8 +122,8 @@
                                 <span v-if="v_otherFilters === 'mates' && flag_isAuth && flag_hasCategory">هم ورودی های من </span>
                                 <span v-if="v_otherFilters === 'special' && v_year !== 'select'">ورودی های سال {{v_year}} </span>
                                 <span>{{keyWord}}</span>
-                                <span v-if="value_search!== 0 && keyWord !== ''">و تگ «{{value_search.name}}»</span>
-                                <span v-if="value_search!== 0 && keyWord === ''">با تگ «{{value_search.name}}»</span>
+                                <span v-if="value_search!== 0 && keyWord !== ''">و هشتگ «{{value_search.name}}»</span>
+                                <span v-if="value_search!== 0 && keyWord === ''">با هشتگ «{{value_search.name}}»</span>
                             </div>
                         </div>
 
@@ -139,7 +139,7 @@
 
         <div class="row padding-scrollbar" dir="rtl">
 
-            <div class="col col-xl-3 order-xl-4 col-lg-3 order-lg-3 col-md-12 col-sm-12 col-12">
+            <div class="col col-xl-4 order-xl-4 col-lg-4 order-lg-3 col-md-12 col-sm-12 col-12">
                 <div class="ui-block">
                     <div class="ui-block-title posts-titlebar p-0">
                         <div class="container-fluid">
@@ -253,7 +253,7 @@
                 </div>
             </div>
 
-            <div style="height: 88vh; overflow-y: auto; overflow-x:unset" class="col col-xl-9 order-xl-8 col-lg-9 order-lg-3 col-md-12 col-sm-12 col-12 post-scroll pl-0" v-if="selectedPostArray.id" v-sticky="{ zIndex: 1, stickyTop: 60, disabled: false}">
+            <div style="height: 88vh; overflow-y: auto; overflow-x:unset" class="col col-xl-8 order-xl-8 col-lg-8 order-lg-3 col-md-12 col-sm-12 col-12 post-scroll pl-0" v-if="selectedPostArray.id" v-sticky="{ zIndex: 1, stickyTop: 60, disabled: false}">
                 <div class="ui-block selected-post-container">
 
                     <div class="ui-block-title selected-post"><h1 class="fs1-6">{{selectedPostArray.title}}</h1></div>
@@ -1054,7 +1054,7 @@
                 var searchTag = this.value_search.id;
 
                 this.currentPage = n;
-                axios.get('/api/posts/'+ this.category.id + '/' + searchKeyword + '/' + this.searchType + '/' + this.v_timeFilter + '/' + this.v_otherFilters + '/' + this.v_order + '/' + searchTag + '/' + this.v_postItems + '/' + '/?page='+n).then(res=>{
+                axios.get('/api/posts/'+ this.category.id + '/' + searchKeyword + '/' + this.searchType + '/' + this.v_timeFilter + '/' + this.v_otherFilters + '/' + this.v_order + '/' + searchTag + '/' + this.v_postItems + '?page='+n).then(res=>{
 
                         this.posts = res.data.posts.data;
                         this.totalPage = res.data.posts.last_page;
@@ -1177,7 +1177,7 @@
 
                 var n = 1;
                 this.currentPage = 1;
-                axios.get('/api/posts/'+ this.category.id + '/' + searchKeyword + '/' + this.searchType + '/' + this.v_timeFilter + '/' + this.v_year + '/' + this.v_order + '/' + searchTag + '/' + this.v_postItems + '/?page='+n).then(res=>{
+                axios.get('/api/posts/'+ this.category.id + '/' + searchKeyword + '/' + this.searchType + '/' + this.v_timeFilter + '/' + this.v_year + '/' + this.v_order + '/' + searchTag + '/' + this.v_postItems + '?page='+n).then(res=>{
 
                         this.posts = res.data.posts.data;
                         this.totalPage = res.data.posts.last_page

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Permission\Models\Role;
+use URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +31,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        If(env('APP_ENV') !== 'local') {
+            URL::forceScheme('https');
+        }
+
         view()->composer('frontend.layout.master' , function ($view){
 
             $majors = Category::with('childrenRecursive')->whereSort('major')->where('parent_id' , 1)->get();

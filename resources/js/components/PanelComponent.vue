@@ -1641,9 +1641,9 @@
                 upload(type) {
                     var url = '';
                     if (type === 'header') {
-                        url = 'http://localhost:8000/api/upload/header';
+                        url = '/api/upload/header';
                     } else if (type === 'profile') {
-                        url = 'http://localhost:8000/api/upload';
+                        url = '/api/upload';
                     }
 
                     if (!this.croppa.hasImage()) {

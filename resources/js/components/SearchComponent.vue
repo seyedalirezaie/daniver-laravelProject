@@ -123,8 +123,12 @@
                 if (n === 1){
                     this.users = []
                 }
+                var searchQuery = 'no-search'
+                if (this.v_searchQuery.trim() !== ''){
+                    searchQuery = this.v_searchQuery;
+                }
 
-                    axios.get('/api/getUsers/' + this.v_searchQuery.trim() + '?page=' + n).then(res => {
+                    axios.get('/api/getUsers/' + searchQuery + '?page=' + n).then(res => {
                         this.listUsers = []
                         this.listUsers = res.data.users.data;
                         for (var i = 0; i < this.listUsers.length; i++) {

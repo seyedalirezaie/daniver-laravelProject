@@ -316,7 +316,7 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        url: 'http://localhost:8000/api/administrator/post/upload',
+                        url: '/api/administrator/post/upload',
                         data: fd,
                         type: 'POST',
                         processData: false,

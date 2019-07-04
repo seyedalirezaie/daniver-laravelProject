@@ -2,7 +2,7 @@
 
     <div>
 
-        <div class="ui-block blog-posts-home" v-for="post in posts">
+        <div class="ui-block blog-posts-home blog-hover" v-for="post in posts">
 
 
             <!-- Post -->

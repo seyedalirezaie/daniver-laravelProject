@@ -1,4 +1,4 @@
-@extends('frontend.layout.master' , ['noHeader' => 'noHeader' , 'container' => 'container-fluid'])
+@extends('frontend.layout.master' , ['noHeader' => 'noHeader'])
 
 @section('styles')
     <link rel="stylesheet" href="https://unpkg.com/vue2-animate/dist/vue2-animate.min.css"/>

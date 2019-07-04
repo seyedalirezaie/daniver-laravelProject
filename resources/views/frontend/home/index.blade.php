@@ -97,7 +97,10 @@
 
             <div class="ui-block bg-transparent">
 
-                <div class="ui-block-title bg-white mb-3 text-right rounded"><h6 class="title">فعال ترین گروه ها</h6></div>
+                <div class="ui-block-title bg-white mb-3 text-right rounded"><h6 class="title">
+                        <i class="fas fa-question-circle fs1-2 guid-item" data-type="activest"></i>
+                        فعال ترین گروه ها</h6>
+                </div>
 
                 <div class="container-fluid" dir="rtl">
                 <div class="row">
@@ -169,7 +172,7 @@
 
             </div>
 
-            <div class="ui-block-title bg-white mb-3 text-right rounded"><h6 class="title">وبلاگ</h6></div>
+            <div class="ui-block-title bg-white mb-3 text-right rounded blog-hover"><h6 class="title">وبلاگ</h6></div>
 
             <blog-posts-component></blog-posts-component>
 

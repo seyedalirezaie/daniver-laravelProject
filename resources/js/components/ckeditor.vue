@@ -63,7 +63,7 @@
                                             console.log(uploadedFile);
                                             data.append('allowSize', 10);
                                             $.ajax({
-                                                url: 'http://localhost:8000/api/upload/post',
+                                                url: '/api/upload/post',
                                                 type: 'POST',
                                                 data: data,
                                                 dataType: 'json',

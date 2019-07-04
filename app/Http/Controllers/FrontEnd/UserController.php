@@ -65,11 +65,13 @@ class UserController extends Controller
 
     public function getUsers($searchQuery='')
     {
-        $users = User::with('photo' , 'categories')
+
+
+        $users = User::with('categories')
             ->where('active' , 1)
             ->where('email_verified_at' , '!=' , null)
             ->where('visible' , 1)
-            ->when($searchQuery != '' , function ($q) use($searchQuery){
+            ->when($searchQuery != 'no-search' , function ($q) use($searchQuery){
             $q->where(\DB::raw('concat(name, " ", last_name)'), 'LIKE', "%{$searchQuery}%")->orWhere('alias_original' , 'like' , "%".$searchQuery."%")
                 ->where('email_verified_at' , '!=' , null);
         })

@@ -1178,7 +1178,7 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        url: 'http://localhost:8000/api/upload',
+                        url: '/api/upload',
                         data: fd,
                         type: 'POST',
                         processData: false,

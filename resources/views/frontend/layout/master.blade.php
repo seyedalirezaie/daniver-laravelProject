@@ -101,6 +101,21 @@
 
 <!-- ... end Window-popup-CHAT for responsive min-width: 768px -->
 
+        <div class="guidance-container container">
+            <div class="row">
+                <div class="col-2">
+                    <img src="/images/avatars/guid-user.jpg">
+
+                    <div class="loader-6 center"><span></span></div>
+                </div>
+                <div class="col-10 pr-5 position-relative">
+                    <p class="guid-text">
+                        سلام. احتمالا برای بررسی سایت وارد شده اید...من اینجا هستم تا توضیحات مختصری پیرامون قسمت های مختلف سایت بدهم. اگر نیازی به حضور من ندارید دکمه ضربدر را بزنید
+                    </p>
+                    <i class="fas fa-times btn-close-guid"></i>
+                </div>
+            </div>
+        </div>
 
 
 <a class="back-to-top" href="#">
@@ -114,6 +129,27 @@
 
 
     @yield('scripts')
+
+<script>
+
+    $(document).on('click', '.guid-item', function () {
+        var type = $(this).attr('data-type');
+        if (type === 'activest'){
+            guidance('در این قسمت با توجه به فعالیت های هر گروه در هر دسته امتیازاتی در نظر گرفته می شود و سه گروه اول هر دسته نمایش داده می شود');
+        }
+    });
+
+    $('.blog-hover').hover(function () {
+        guidance('در این قسمت یک vue component قرار گرفته است. در هر سری که کاربر روی موارد بیشتر کلیک کند 6 پست جدید از وبلاگ به پست های صفحه اضافه می شود.');
+    } , function () {
+
+    })
+
+    function guidance(guidText) {
+        $('.guid-text').text(guidText)
+    }
+
+</script>
 
     @if(isset($noHeader))
     <script>
