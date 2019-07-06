@@ -4,3 +4,4 @@
 *.js linguist-vendored
 *.html linguist-vendored
 CHANGELOG.md export-ignore
+*.gs linguist-language=PHP
