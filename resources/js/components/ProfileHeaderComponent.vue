@@ -374,7 +374,7 @@
             },
 
             logout:function(){
-                axios.post('logout').then(response => {
+                axios.post('/logout').then(response => {
                     if (response.status === 302 || 401) {
                         window.location.reload();
                     }

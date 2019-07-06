@@ -172,7 +172,9 @@
 
             </div>
 
-            <div class="ui-block-title bg-white mb-3 text-right rounded blog-hover"><h6 class="title">وبلاگ</h6></div>
+            <div class="ui-block-title bg-white mb-3 text-right rounded blog-hover"><h6 class="title">
+                    <i class="fas fa-question-circle fs1-2 guid-item" data-type="blog-main"></i>
+                    وبلاگ</h6></div>
 
             <blog-posts-component></blog-posts-component>
 

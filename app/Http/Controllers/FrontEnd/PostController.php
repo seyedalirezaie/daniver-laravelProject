@@ -249,7 +249,7 @@ class PostController extends Controller
 
 
 
-            $posts = Post::with('user', 'user.categories')->withCount(['likes' , 'comments'])->orderBy($orderFilter , 'DESC')
+            $posts = Post::with('user.categories')->withCount(['likes' , 'comments'])->orderBy($orderFilter , 'DESC')
                 ->when(1==1 , function ($q) use($categoryId){
                     $q->where('category_id' , '=' , $categoryId)->where('active' , 1);
                 })

@@ -6,11 +6,12 @@
             <div class="row">
                 <div class="search-box-header col col-xl-4 col-lg-4 col-md-12 col-sm-12">
                     <search-component></search-component>
+                    <i class="fas fa-question-circle fs1-2 guid-item float-right" data-type="search" style="position: absolute; top: 15px; left: -25px; z-index: 100;"></i>
                 </div>
                 <div class="search-box-header col col-xl-8 col-lg-8 col-md-12 col-sm-12">
 
                     @if(Auth::check())
-
+                        <i class="fas fa-question-circle fs1-2 guid-item float-right" data-type="panel" style="position: absolute; top: 15px; right: -25px; z-index: 100;"></i>
                         <profile-header-component :user="{{$user}}"></profile-header-component>
                         <notifications group="profile-header"
                                        position="bottom left"
@@ -26,8 +27,11 @@
                     @else
 
                         <div class="text-right p-2 mt-1">
+
                             <a href="/login" class="">ورود</a>
                             <a href="/register" class="mr-4">ثبت نام</a>
+
+                            <i class="fas fa-question-circle fs1-2 guid-item" data-type="login"></i>
                         </div>
 
                     @endif

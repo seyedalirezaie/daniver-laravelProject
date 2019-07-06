@@ -40,9 +40,9 @@
             $('.photos-path').val(srcArray);
         });
 
-        $(document).on('click', '.reply-post-comment', function () {
-
-        });
+        $(document).ready(function () {
+            guidance('ساخته شده است vue.js این صفحه با به صورت کامل با' + '<br/>' + 'ستفاده شده است ckeditor5 و برای ارسال پست از پلاگین emojiarea برای درج نظر از پلاگین جی کوئری' + '<br/>' + 'سیستم جستجو با لاراول و بدون پلاگین خاصی پیاده سازی شده است');
+        })
 
 
     </script>

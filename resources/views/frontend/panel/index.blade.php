@@ -13,3 +13,11 @@
                    width="400"
                    :speed="500"></notifications>
 @endsection
+
+@section('scripts')
+    <script>
+        $(document).ready(function () {
+            guidance('ساخته شده است و در هیچ یک از تب های آن صفحه بارگذاری مجدد نمی شود vue.js این صفحه نیز با به صورت کامل با');
+        })
+    </script>
+@endsection

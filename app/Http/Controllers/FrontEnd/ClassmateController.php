@@ -46,6 +46,6 @@ class ClassmateController extends Controller
 
         $category = Category::whereSlug($slug)->first();
         $categoryId = $category['id'];
-        return view('frontend.posts.posts' , compact(['categoryId' , 'year']));
+        return view('frontend.posts.posts' , compact(['category' , 'year']));
     }
 }

@@ -39,4 +39,10 @@
 
 @section('scripts')
     <script src="{{asset('/js/app.js')}}"></script>
+
+    <script>
+        $(document).ready(function () {
+            guidance('ساخته شده است و در هیچ یک از تب های آن صفحه بارگذاری مجدد نمی شود vue.js این صفحه نیز با به صورت کامل با');
+        })
+    </script>
 @endsection

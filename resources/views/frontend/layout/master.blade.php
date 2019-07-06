@@ -100,19 +100,47 @@
     @endif
 
 <!-- ... end Window-popup-CHAT for responsive min-width: 768px -->
-
+        <div style="position: fixed; left: 0; bottom: 30px; padding: 6px; z-index: 2500">
+        <img class="img-guid" style="width: 45px;" src="/images/avatars/guid-user.jpg">
+        </div>
         <div class="guidance-container container">
             <div class="row">
-                <div class="col-2">
-                    <img src="/images/avatars/guid-user.jpg">
-
-                    <div class="loader-6 center"><span></span></div>
-                </div>
-                <div class="col-10 pr-5 position-relative">
+                <div class="col-12 pr-5 position-relative guid-content">
                     <p class="guid-text">
-                        سلام. احتمالا برای بررسی سایت وارد شده اید...من اینجا هستم تا توضیحات مختصری پیرامون قسمت های مختلف سایت بدهم. اگر نیازی به حضور من ندارید دکمه ضربدر را بزنید
+                        درود. من همین گوشه پایین سمت چپ صفحه هستم. در زمان بازدید هرجایی که علامت
+                        <i class="fas fa-question-circle fs1-2 guid-item" data-type="blog-main"></i>
+                         دیدید، روی آن کلیک کنید تا توضیح مختصری درباره آن بدهم
+
                     </p>
                     <i class="fas fa-times btn-close-guid"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- The Modal -->
+        <div class="modal fade" id="myModal" dir="rtl">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <img style="width: 45px;" src="/images/avatars/guid-user.jpg">
+                        <button type="button" class="close" data-dismiss="modal">×</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <p class="text-right">
+                            سلام. احتمالا برای بررسی سایت وارد شده اید. اگر با حضور من در ادامه بازدید از سایت مشکلی ندارید گزینه ی زیر را کلیک کنید.
+                        </p>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-green ml-2" data-dismiss="modal" onclick="startGuidance()">مشکلی ندارم</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">بستن</button>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -132,21 +160,105 @@
 
 <script>
 
+    $(document).ready(function(){
+        if (!localStorage.getItem('guid')){
+            setTimeout(function () {
+                $("#myModal").modal();
+            },6000);
+        } else {
+            $('.guid-item').show();
+            $('.guidance-container').css('display' , 'block');
+            $('.img-guid').css('display' , 'block');
+            if (localStorage.getItem('guid-size') === 'max'){
+                maxGuidance();
+            }
+            if (localStorage.getItem('guid-size') === 'min'){
+                minGuidance();
+            }
+        }
+
+    });
+
+    function minGuidance() {
+        $('.guidance-container').addClass('min');
+        $('.img-guid').addClass('min');
+        $('.guidance-container').animate({'width' : 60} , 700);
+        $('.guid-content p').hide();
+        $('.btn-close-guid').hide();
+        localStorage.setItem('guid-size' , 'min');
+    }
+
+    function maxGuidance() {
+        $('.img-guid').removeClass('min');
+        $('.guidance-container').removeClass('min')
+        $('.guidance-container').animate({'width' : '65%'} , 700);
+        setTimeout(function () {
+            $('.guid-content p').fadeIn();
+            $('.btn-close-guid').fadeIn();
+        },1500)
+        localStorage.setItem('guid-size' , 'max');
+    }
+
+    function startGuidance(){
+        localStorage.setItem('guid' , true);
+        $('.guid-item').show();
+        minGuidance();
+        setTimeout(function () {
+            $('.guidance-container').css('display' , 'block');
+            $('.img-guid').css('display' , 'block');
+            setTimeout(function () {
+                maxGuidance();
+            },1500)
+
+        },400)
+    }
+
     $(document).on('click', '.guid-item', function () {
         var type = $(this).attr('data-type');
         if (type === 'activest'){
             guidance('در این قسمت با توجه به فعالیت های هر گروه در هر دسته امتیازاتی در نظر گرفته می شود و سه گروه اول هر دسته نمایش داده می شود');
         }
+        if (type === 'blog-main'){
+            guidance('نمایش پست های جدید وبلاگ از طریق یک کامپوننت ویو جی اس انجام می شود.' + '<br/>' + 'پست های وبلاگ از طریق پنل مدیریت ایجاد و انتخاب می شود که در حال حاضر قسمت ایجاد پست آن در پنل مدیریت پیاده سازی شده است و تنها کاربرانی که دارای نقش مدیر یا نویسنده وبلاگ باشند می توانند به پنل وارد شوند. در صورتی که با نقش مدیر وارد سایت شوید در نوار بالای سایت دکمه ورود به پنل مدیریت را خواهید دید');
+        }
+        if (type === 'login'){
+            guidance('هرچند از صفحه ورود می توانید به سایت وارد شوید اما می توانید به طور مستقیم نیز به عناوین زیر وارد شوید' + '<br/>' + '<span class="btn btn-sm btn-green mt-4 fs0-9 btn-login-auto" data-type="admin">ورود به عنوان مدیر سایت</span>' + '<br/>' + '<span class="btn btn-sm btn-danger fs0-9 btn-login-auto" data-type="user">ورود به عنوان کاربر معمولی</span>' + '<br/>' + '<span class="btn btn-sm btn-purple fs0-9 btn-login-auto" data-type="writer">ورود به عنوان نویسنده وبلاگ</span>');
+        }
+        if (type === 'search'){
+            guidance(' که کلیدواژه وارد شده را در میان نام، نام خانوادگی و نام مستعار کاربران جستجو می کند vue component یک');
+        }
+        if (type === 'panel'){
+            guidance('ساخته شده است و اعلان های خوانده نشده را به کاربر نمایش می دهد vue.js این قسمت نیز با' + '<br/>' + ' اعلان ها به صورت خوانده شده در می آیند EventListener در صورتی که کاربر اعلان ها را بخواند توسط یک ');
+        }
     });
 
-    $('.blog-hover').hover(function () {
-        guidance('در این قسمت یک vue component قرار گرفته است. در هر سری که کاربر روی موارد بیشتر کلیک کند 6 پست جدید از وبلاگ به پست های صفحه اضافه می شود.');
-    } , function () {
+    $(document).on('click', '.btn-close-guid', function () {
+        minGuidance();
 
+        $('.img-guid').hover(function () {
+            if ($(this).hasClass('min')) {
+                $('.guidance-container').animate({'width' : 80} , 400)
+            }
+        } , function () {
+            if ($(this).hasClass('min')) {
+                $('.guidance-container').animate({'width': 60}, 400)
+            }
+        });
     })
 
+    $(document).on('click', '.img-guid.min', function () {
+        maxGuidance();
+    })
+
+
+
     function guidance(guidText) {
-        $('.guid-text').text(guidText)
+        minGuidance();
+        setTimeout(function () {
+            maxGuidance();
+        },1000)
+        $('.guid-text').html(guidText);
+
     }
 
 </script>
@@ -201,6 +313,20 @@
                     }
 
 
+                });
+
+                $(document).on('click', '.btn-login-auto', function () {
+                    var type = $(this).attr('data-type');
+                    $.ajax({
+                        type: 'POST',
+                        url: '/api/autoLogin' +'?_token=' + '{{ csrf_token() }}',
+                        data: {'type' : type},
+                        success: function (data){
+                            window.location.reload();
+                        },
+                        error: function(e) {
+
+                        }});
                 });
 
             })

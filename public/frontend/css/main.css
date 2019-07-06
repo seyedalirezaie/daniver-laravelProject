@@ -16865,17 +16865,33 @@ blockquote span{
   box-shadow: 1px 1px 8px 6px rgba(0,0,0,.3);
   padding: 6px;
   border-radius: 0 8px 8px 0;
+  min-height: 60px;
+  display: none;
+  z-index: 2000;
 }
 
-.guidance-container img{
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
+.guidance-container.min{
+  cursor: pointer;
+}
+
+.img-guid{
+  display: none;
+  z-index: 4100!important;
+}
+
+.img-guid.min{
+  cursor: pointer;
+}
+
+.guidance-container.min:hover{
+  width: 80px;
+  transition: .4s;
 }
 
 .guid-text{
   text-align: right;
   margin-bottom: 0;
+  padding-left: 50px;
 }
 
 .btn-close-guid{
@@ -16894,6 +16910,15 @@ blockquote span{
   color: #1caf00;
   transform: scale(1.1) rotate(10deg);
   cursor: pointer;
+}
+
+.welcome-guidance-text{
+  font-size: 1rem;
+  padding: 0 350px 0 350px;
+}
+
+.guid-item{
+  display: none;
 }
 
 

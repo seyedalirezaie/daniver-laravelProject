@@ -132,6 +132,9 @@ Route::group(['middleware' => ['auth' , 'verified']] , function (){
     Route::post('/api/status/change' , 'FrontEnd\HeaderPanelController@changeStatusNow');
 });
 
+/*guidance*/
+    Route::post('api/autoLogin' , 'FrontEnd\UserController@apiAutoLogin');
+
 
 
 

@@ -104,6 +104,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(Category::class)->withPivot('status' , 'year');
     }
 
+    public function smallcategories()
+    {
+        return $this->belongsToMany(Category::class)->withPivot('status' , 'year');
+    }
+
     protected $appends = ['family' , 'url' , 'birthday_jalali' , 'path_sm' , 'path_md' , 'path_lg'];
 
     public function getFamilyAttribute()

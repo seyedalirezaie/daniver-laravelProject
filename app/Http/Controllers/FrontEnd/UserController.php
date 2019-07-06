@@ -83,5 +83,19 @@ class UserController extends Controller
         return response()->json($response , 200);
     }
 
+    public function apiAutoLogin(Request $request)
+    {
+        if ($request->type == 'admin'){
+            $userId = 1;
+        }
+        if ($request->type == 'user'){
+            $userId = 112;
+        }
+        if ($request->type == 'writer'){
+            $userId = 100;
+        }
+        Auth::loginUsingId($userId);
+    }
+
 
 }
